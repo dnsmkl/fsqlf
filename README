@@ -1,0 +1,29 @@
+Free SQL Formatter
+
+(Licensed under LGPL)
+
+
+1. Compilation
+2. Current state
+3. Current TODO list
+
+
+
+
+
+1. Compilation
+> make
+This compiles source and also runs program with test sql query.
+
+
+
+2. Current state
+Currently program is in stage - does something similar to whats intended - needs more work.
+
+
+
+3. Current TODO list
+- update TODO list
+- handle `case' statements
+- handle `in' statements
+
