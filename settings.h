@@ -16,7 +16,6 @@ typedef struct t_sel_item {
 } t_sel_item  ;
 
 /*
-
 sel_list_item.nl_before_comma = 1;
 sel_list_item.nl_after_comma  = 0;
 sel_list_item.nl_before_comma = 0;

@@ -23,7 +23,10 @@ Currently program is in stage - does something similar to whats intended - needs
 
 
 3. Current TODO list
-- update TODO list
+- update TODO list 
 - handle `case' statements
-- handle `in' statements
-
+- [done] handle `in' statements 
+- comments (one line and multiline)
+- strings
+- formating configurations
+- reading command line arguments

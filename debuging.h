@@ -5,7 +5,7 @@
 
 int debug_p(){
     if(debug_level & DEBUGPARCOUNTS)
-        printf("\n\t***  (=%d; )=%d; subselect_level=%d)  ***\n", left_p , right_p, subselect_level);
+        printf("\n\t***  '('=%d; ')'=%d; subselect_level=%d)  ***\n", left_p , right_p, subselect_level);
 }
 
 int debug_match(char * debugstring){
@@ -13,34 +13,28 @@ int debug_match(char * debugstring){
         printf("\n\t**   %s   **\n", debugstring);
 }
 
+
 char* state_to_char(int state){
-    char* sate_str;
+    char* state_str;
     switch(state)
     {
-        case INITIAL:  sate_str="INITIAL"   ; break;
-        case stSELECT: sate_str="stSELECT"  ; break;
-        case stFROM:   sate_str="stFROM"    ; break;
-        case stWHERE:  sate_str="stWHERE"   ; break;
-        case stON:     sate_str="stON"      ; break;
-        case stEXISTS: sate_str="stEXISTS"  ; break;
-        case stLEFTP:  sate_str="stLEFTP"   ; break;
-        case stJOIN:   sate_str="stJOIN"    ; break;
-        case stCOMMA:  sate_str="stCOMMA"   ; break;
-        default:       sate_str="STATE NOT AVAILABLE";
+        case INITIAL:  state_str="INITIAL"   ; break;
+        case stSELECT: state_str="stSELECT"  ; break;
+        case stFROM:   state_str="stFROM"    ; break;
+        case stWHERE:  state_str="stWHERE"   ; break;
+        case stON:     state_str="stON"      ; break;
+        case stEXISTS: state_str="stEXISTS"  ; break;
+        case stLEFTP:  state_str="stLEFTP"   ; break;
+        case stJOIN:   state_str="stJOIN"    ; break;
+        case stCOMMA:  state_str="stCOMMA"   ; break;
+        case stIN:     state_str="stIN"      ; break;
+        default:       state_str="STATE NOT AVAILABLE";
     }
-    return sate_str;
+    return state_str;
 }
 
-int debug_stchange(char* newstate)
-{
-    char * currentstate;
-    
-    currentstate=state_to_char(YY_START);
-    
-    if(debug_level & DEBUGSTATES)printf("\n\t*   %s->%s   *\n", currentstate,newstate);
-}
 
-int debug_stchange2(int newstate_int)
+int debug_stchange(int newstate_int)
 {
     char* currentstate;
     char* newstate;

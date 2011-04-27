@@ -2,8 +2,11 @@
 #define print_keywords_h
 
 #include "settings.h"
+#include "global_variables.h"
 
-#define BEGIN_STATE(NEWSTATE) debug_stchange2(NEWSTATE); BEGIN (NEWSTATE);
+#define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
+#define PUSH_STATE(NEWSTATE)  push_stack(YY_START); BEGIN_STATE(NEWSTATE);
+#define POP_STATE() BEGIN_STATE(peek_stack()); pop_stack();
 
 
 int printm() {int i=0;    for(i=0;i<currindent;i++)        printf("    ");}
@@ -34,13 +37,20 @@ void print_AND()   {new_line();printf("AND ")  ; }
 
 void print_COMMA_stSELECT(){  new_line();printf( ", ");}
 void print_EXISTS(){ printf("EXISTS");}
-void print_LEFTP() { printf("(") ;}
-void print_RIGHTP(){ printf(")") ;}
 void print_AS()    { printf(" as ");}
 void print_FROM()  { printf( " from " );}
 
+void print_LEFTP() { debug_p();printf("(") ; }
+void print_RIGHTP(){ debug_p();printf(")") ; }
+
+void print_inc_LEFTP() {left_p++ ; printf("(") ; debug_p(); }
+void print_inc_RIGHTP(){right_p++; printf(")") ; debug_p(); }
+
 void begin_SUB(){left_p++; subselect_level++; currindent++;}
-void print_LEFTP_begin_SUB(){new_line();    printf("(") ; begin_SUB();}
+void end_SUB()  {subselect_level--; currindent--;}
+void print_LEFTP_begin_SUB(){new_line();  debug_p();  printf("(") ;  begin_SUB(); }
+
+print_IN()  { printf("in ");}
 
 #endif
 

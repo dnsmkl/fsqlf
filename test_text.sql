@@ -16,5 +16,5 @@
   (select 1 from t where b=g and 
     not   exists      (  
       SELECT     1     FROM 
-          T     WHERE    g     =   v   )   )   ;
+          T        )   )  AND 1=1 and a in (select 1 from hsd) and b in   (  1   ,    2   ,   3) ;
 

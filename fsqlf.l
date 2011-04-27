@@ -18,6 +18,7 @@ DIGIT   [0-9]
 NUMBER  {DIGIT}+([.]{DIGIT}+)?
 ID      [A-Za-z_][A-Za-z0-9_]*
 SPACE   [ \t\n]
+NONSPACE [^ \n\r\t]
 
 DBOBJECT    {ID}[.]{ID}|{ID}
 
@@ -45,29 +46,26 @@ IN      (?i:in)
 COMMA [,]
 
 %{
-#include "settings.h"
-
-int currindent=0;
-int left_p  = 0;
-int right_p = 0;
-int subselect_level = 0;
-
 #include "print_keywords.h"
+#include "settings.h"
+#include "global_variables.h"
+
+
 %}
 
 
 %s special
-%x stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stCOMMA
+%x stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST
 
 %%
                 /* SELECT ... FROM */
 <INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); print_SELECT(); };
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA ); print_COMMA_stSELECT();};
-<stSELECT,stCOMMA>{LEFTP}   {BEGIN_STATE(stLEFTP ); print_LEFTP() ; left_p++; };
-<stLEFTP>{LEFTP}            {debug_match("{LEFTP}");debug_p(); print_LEFTP(); left_p++; };
+<stSELECT,stCOMMA>{LEFTP}   {BEGIN_STATE(stLEFTP ); print_inc_LEFTP();  };
+<stLEFTP>{LEFTP}            {debug_match("{LEFTP}");print_inc_LEFTP();  };
 <stLEFTP>{FROM}             {debug_match("{FROM}" );print_FROM();};
-<stLEFTP>{RIGHTP}           {if(p_level()==1)
-                             BEGIN_STATE(stSELECT); print_RIGHTP(); right_p++; debug_p();};
+<stLEFTP>{RIGHTP}           {if(p_level()==1) BEGIN_STATE(stSELECT);
+                                print_inc_RIGHTP(); };
 <stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  ); print_stFROM()  ; };
 
                 /* FROM ... JOIN ... ON ... WHERE */
@@ -82,27 +80,35 @@ int subselect_level = 0;
 
 <stFROM,stJOIN,stON>{WHERE} {BEGIN_STATE(stWHERE ); print_WHERE() ; };
 
-<stWHERE>{EXISTS}   {BEGIN_STATE(stEXISTS); print_EXISTS(); };
-<stEXISTS>{LEFTP}   {BEGIN_STATE(INITIAL ); print_LEFTP_begin_SUB(); };
+<stWHERE>{AND}     {debug_match("{AND}");print_AND();};
+<stWHERE>{EXISTS}   {PUSH_STATE(stEXISTS); print_EXISTS(); };
+<stEXISTS>{LEFTP}   {PUSH_STATE(INITIAL ); print_LEFTP_begin_SUB(); };
+
+<stWHERE>{IN}    { PUSH_STATE(stIN); print_IN();};
+<stIN>{LEFTP}    { ; };
+<stIN>{SELECT}   { print_LEFTP_begin_SUB(); PUSH_STATE(stSELECT); print_SELECT(); };
+<stIN>{NONSPACE} { BEGIN_STATE(stINLIST);print_LEFTP(); ECHO;}
+
+<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );print_AS();};
 
 
-<stLEFTP,stSELECT>{AS}      {debug_match("{AS} "  );print_AS();};
-
-
-<*>{LEFTP}     { left_p++; ECHO; };
+<*>{LEFTP}     { print_inc_LEFTP(); };
 <*>{RIGHTP}    { right_p++;
-                if(subselect_level && p_level()<=0){
-                    currindent--;
-                new_line();
+                if(subselect_level && p_level()<=0){printf("sdgsdgdsg");
+                    POP_STATE();POP_STATE();
+                    end_SUB();
+                    new_line();
                 }
-                ECHO;
+                print_RIGHTP();
                };
-<*>{SPACE}+     printf("");
+<*>{SPACE}+     printf(" ");
+<*>";"          printf("\n;");
 <*>.            ECHO;
 
 
+
 <<EOF>> {printf("\n"); return 0 ;}
-.           printf( "Unrecognized character(s) : %s\n", yytext ); // just checking.. :)
+        /*.           printf( "Unrecognized character(s) : %s\n", yytext ); // just checking.. :)*/
 %%
 
 
