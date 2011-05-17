@@ -22,11 +22,22 @@ Currently program is in stage - does something similar to whats intended - needs
 
 
 
-3. Current TODO list
-- update TODO list 
-- handle `case' statements
-- [done] handle `in' statements 
-- comments (one line and multiline)
+
+3. Current TODO lists:
+ to have working version 1
+- `case' statements (redo stack functions; add handling)
+- `in' statements [done] 
+- comments one line [done]
+- comments multiline [done]
 - strings
+- analytical functions
+
+ more comfortable usage
 - formating configurations
 - reading command line arguments
+- GUI
+
+ possible extra functionality
+- in equality condition align all comparison signs ('=' , '<>', etc.)
+-   
+ 

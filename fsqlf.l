@@ -5,15 +5,6 @@ Helped to learn about flex a bit
 */
 
 
-/*
--compile using: 
-    flex sqlb.l ; gcc -o sqlb lex.yy.c -lfl; rm lex.yy.c
-    (needs flex; works on ubuntu; actualy there is/should be  makefile)
--execute using:
-    cat test_text.sql | ./sqlb
-
-  
-*/
 DIGIT   [0-9]
 NUMBER  {DIGIT}+([.]{DIGIT}+)?
 ID      [A-Za-z_][A-Za-z0-9_]*
@@ -29,11 +20,11 @@ SELECT  (?i:select|sel)
 AS      (?i:as)
 FROM    (?i:from)
 
-IJOIN   (?i:(INNER{SPACE}+)?JOIN)
-LJOIN   (?i:LEFT{SPACE}+(OUTER{SPACE}+)?JOIN)
-RJOIN   (?i:RIGHT{SPACE}+(OUTER{SPACE}+)?JOIN)
-FJOIN   (?i:FULL{SPACE}+(OUTER{SPACE}+)?JOIN)
-CJOIN   (?i:CROSS{SPACE}+JOIN{SPACE}+)
+IJOIN   (?i:(inner{SPACE}+)?JOIN)
+LJOIN   (?i:left{SPACE}+(OUTER{SPACE}+)?JOIN)
+RJOIN   (?i:right{SPACE}+(OUTER{SPACE}+)?JOIN)
+FJOIN   (?i:full{SPACE}+(OUTER{SPACE}+)?JOIN)
+CJOIN   (?i:cross{SPACE}+JOIN{SPACE}+)
 ANYJOIN ({LJOIN}|{RJOIN}|{FJOIN}|{CJOIN})
 
 ON      (?i:on)
@@ -45,6 +36,12 @@ IN      (?i:in)
 
 COMMA [,]
 
+COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
+COMMENT_ML_START [/][*]+
+COMMENT_ML_PART1 [^*]+
+COMMENT_ML_PART2 [*]+[^/]
+COMMENT_ML_END   [*]+[/]
+
 %{
 #include "print_keywords.h"
 #include "settings.h"
@@ -55,7 +52,7 @@ COMMA [,]
 
 
 %s special
-%x stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST
+%x stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stCOMMENTML
 
 %%
                 /* SELECT ... FROM */
@@ -64,7 +61,7 @@ COMMA [,]
 <stSELECT,stCOMMA>{LEFTP}   {BEGIN_STATE(stLEFTP ); print_inc_LEFTP();  };
 <stLEFTP>{LEFTP}            {debug_match("{LEFTP}");print_inc_LEFTP();  };
 <stLEFTP>{FROM}             {debug_match("{FROM}" );print_FROM();};
-<stLEFTP>{RIGHTP}           {if(p_level()==1) BEGIN_STATE(stSELECT);
+<stLEFTP>{RIGHTP}           {if(p_level()==1){ BEGIN_STATE(stSELECT);}
                                 print_inc_RIGHTP(); };
 <stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  ); print_stFROM()  ; };
 
@@ -85,11 +82,12 @@ COMMA [,]
 <stEXISTS>{LEFTP}   {PUSH_STATE(INITIAL ); print_LEFTP_begin_SUB(); };
 
 <stWHERE>{IN}    { PUSH_STATE(stIN); print_IN();};
-<stIN>{LEFTP}    { ; };
+<stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or list expression, '(' will be printed later
 <stIN>{SELECT}   { print_LEFTP_begin_SUB(); PUSH_STATE(stSELECT); print_SELECT(); };
-<stIN>{NONSPACE} { BEGIN_STATE(stINLIST);print_LEFTP(); ECHO;}
+<stIN>{NONSPACE} { BEGIN_STATE(stINLIST);print_LEFTP(); ECHO;};
 
 <stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );print_AS();};
+
 
 
 <*>{LEFTP}     { print_inc_LEFTP(); };
@@ -101,14 +99,22 @@ COMMA [,]
                 }
                 print_RIGHTP();
                };
+
+<*>{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
+<stCOMMENTML>{COMMENT_ML_PART1}     {ECHO;};
+<stCOMMENTML>{COMMENT_ML_PART2}     {ECHO;};
+<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n");};
+
+<*>{COMMENT_ONE_LINE}     {if(YY_START != stCOMMENTML) {ECHO;} }
+
 <*>{SPACE}+     printf(" ");
 <*>";"          printf("\n;");
 <*>.            ECHO;
-
-
+<*>{DBOBJECT}   ECHO;
+<*>{NUMBER}   ECHO;
 
 <<EOF>> {printf("\n"); return 0 ;}
-        /*.           printf( "Unrecognized character(s) : %s\n", yytext ); // just checking.. :)*/
+
 %%
 
 
@@ -116,7 +122,15 @@ COMMA [,]
 
 
 
+int     yywrap (void)
+{
+	return 1;
+}
 
+int     main (int argc, char * argv[])
+{
+	while (yylex () != 0) ;
 
-
+	return 0;
+}
 
