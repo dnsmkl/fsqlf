@@ -111,7 +111,7 @@ COMMENT_ML_END   [*]+[/]
 <*>";"          printf("\n;");
 <*>.            ECHO;
 <*>{DBOBJECT}   ECHO;
-<*>{NUMBER}   ECHO;
+<*>{NUMBER}     ECHO;
 
 <<EOF>> {printf("\n"); return 0 ;}
 
