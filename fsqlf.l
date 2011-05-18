@@ -52,7 +52,7 @@ COMMENT_ML_END   [*]+[/]
 
 
 %s special
-%x stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stCOMMENTML
+%x stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stCOMMENTML stSTRING
 
 %%
                 /* SELECT ... FROM */
@@ -101,19 +101,24 @@ COMMENT_ML_END   [*]+[/]
                };
 
 <*>{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
-<stCOMMENTML>{COMMENT_ML_PART1}     {ECHO;};
-<stCOMMENTML>{COMMENT_ML_PART2}     {ECHO;};
+<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
+<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
 <stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n");};
 
-<*>{COMMENT_ONE_LINE}     {if(YY_START != stCOMMENTML) {ECHO;} }
+<*>{COMMENT_ONE_LINE}     {ECHO;};
 
+<*>['][^'][']		  {ECHO;};
+	
 <*>{SPACE}+     printf(" ");
 <*>";"          printf("\n;");
 <*>.            ECHO;
 <*>{DBOBJECT}   ECHO;
 <*>{NUMBER}     ECHO;
 
-<<EOF>> {printf("\n"); return 0 ;}
+
+<<EOF>> {printf("\n"); if(YY_START == stCOMMENTML || YY_START == stSTRING){printf("--unterminated comment or string\n");} return 0 ;}
+
+
 
 %%
 

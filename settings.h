@@ -6,7 +6,7 @@
 #define DEBUGMATCHES (2)
 #define DEBUGPARCOUNTS (4)
 
-const int debug_level = DEBUGNONE ; //DEBUGSTATES | DEBUGPARCOUNTS;
+const int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 typedef struct t_sel_item {
     int nl_before_comma ;

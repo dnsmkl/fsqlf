@@ -12,32 +12,32 @@ Free SQL Formatter
 
 
 1. Compilation
-> make
-This compiles source and also runs program with test sql query.
+> make all #This compiles source for LINUX and WINDOWS (requires mingw)
+> make test # compiles LINUX version and runs program on test file
 
 
 
 2. Current state
-Currently program is in stage - does something similar to whats intended - needs more work.
-
+Though there are two tasks still left on the TODO basic list, formatter seems usable.
+My usecases are making long generated SQL code readable
 
 
 
 3. Current TODO lists:
- to have working version 1
+basic - to have working version 1
 - `case' statements (redo stack functions; add handling)
 - `in' statements [done] 
 - comments one line [done]
 - comments multiline [done]
-- strings
+- strings [done]
 - analytical functions
 
- more comfortable usage
+extention - more comfortable usage (next level)
 - formating configurations
 - reading command line arguments
 - GUI
 
- possible extra functionality
+future rewrite? - possible extra functionality (even more `next' level, which probably would need a rewrite of big part)
 - in equality condition align all comparison signs ('=' , '<>', etc.)
--   
- 
+- align comments them selfs and content of comments
+
