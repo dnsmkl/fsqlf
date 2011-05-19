@@ -47,4 +47,6 @@ int debug_stchange(int newstate_int)
     if(debug_level & DEBUGSTATES)printf("\n\t*   %s->%s   *\n", currentstate,newstate);
 }
 
+
+
 #endif

@@ -6,7 +6,7 @@ Free SQL Formatter
 1. Compilation
 2. Current state
 3. Current TODO list
-
+4. Usage
 
 
 
@@ -41,3 +41,15 @@ future rewrite? - possible extra functionality (even more `next' level, which pr
 - in equality condition align all comparison signs ('=' , '<>', etc.)
 - align comments them selfs and content of comments
 
+
+
+4. Usage
+currently only supported from cmd.exe
+input_file.sql and output_file.sql are ofcourse filenames of you chosing
+
+window
+  fsqlf.exe < input_file.sql > output_file.sql
+
+linux
+  fsqlf < input_file.sql > output_file.sql
+ 

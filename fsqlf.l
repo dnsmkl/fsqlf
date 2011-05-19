@@ -51,18 +51,18 @@ COMMENT_ML_END   [*]+[/]
 %}
 
 
-%s special
-%x stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stCOMMENTML stSTRING
+%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST
+%x stCOMMENTML stSTRING
 
 %%
                 /* SELECT ... FROM */
 <INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); print_SELECT(); };
-<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA ); print_COMMA_stSELECT();};
-<stSELECT,stCOMMA>{LEFTP}   {BEGIN_STATE(stLEFTP ); print_inc_LEFTP();  };
-<stLEFTP>{LEFTP}            {debug_match("{LEFTP}");print_inc_LEFTP();  };
+<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); print_COMMA_stSELECT();};
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); print_inc_LEFTP();  };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");print_inc_LEFTP();  };
+<stLEFTP>{COMMA}            {ECHO; };
 <stLEFTP>{FROM}             {debug_match("{FROM}" );print_FROM();};
-<stLEFTP>{RIGHTP}           {if(p_level()==1){ BEGIN_STATE(stSELECT);}
-                                print_inc_RIGHTP(); };
+<stLEFTP>{RIGHTP}           {POP_STATE(); print_inc_RIGHTP(); };
 <stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  ); print_stFROM()  ; };
 
                 /* FROM ... JOIN ... ON ... WHERE */
@@ -82,7 +82,7 @@ COMMENT_ML_END   [*]+[/]
 <stEXISTS>{LEFTP}   {PUSH_STATE(INITIAL ); print_LEFTP_begin_SUB(); };
 
 <stWHERE>{IN}    { PUSH_STATE(stIN); print_IN();};
-<stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or list expression, '(' will be printed later
+<stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or constant list expression, '(' will be printed later
 <stIN>{SELECT}   { print_LEFTP_begin_SUB(); PUSH_STATE(stSELECT); print_SELECT(); };
 <stIN>{NONSPACE} { BEGIN_STATE(stINLIST);print_LEFTP(); ECHO;};
 
@@ -90,33 +90,51 @@ COMMENT_ML_END   [*]+[/]
 
 
 
-<*>{LEFTP}     { print_inc_LEFTP(); };
-<*>{RIGHTP}    { right_p++;
-                if(subselect_level && p_level()<=0){printf("sdgsdgdsg");
-                    POP_STATE();POP_STATE();
-                    end_SUB();
-                    new_line();
-                }
-                print_RIGHTP();
-               };
+
 
 <*>{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
 <stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n");};
 
-<*>{COMMENT_ONE_LINE}     {ECHO;};
+{COMMENT_ONE_LINE}     {ECHO;};
 
-<*>['][^'][']		  {ECHO;};
+['][^'][']		  {ECHO;};
+
+
+{LEFTP}     { print_inc_LEFTP(); };
+{RIGHTP}    { right_p++;
+                if(subselect_level && p_level()<=0){printf("sdgsdgdsg");
+                    POP_STATE();POP_STATE();
+                    end_SUB();
+                    new_line();
+                }
+                if(YY_START==stLEFTP){printf("sdgsdgdsg");
+                    POP_STATE();
+                }
+                debug_match("<wtf-leftp>");
+                print_RIGHTP();
+               };
 	
-<*>{SPACE}+     printf(" ");
-<*>";"          printf("\n;");
-<*>.            ECHO;
-<*>{DBOBJECT}   ECHO;
-<*>{NUMBER}     ECHO;
+{SPACE}+     printf(" ");
+";"          printf("\n;");
+{DBOBJECT}   ECHO;
+{NUMBER}     ECHO;
+
+<*>.            {debug_match("<*>.");ECHO;};
 
 
-<<EOF>> {printf("\n"); if(YY_START == stCOMMENTML || YY_START == stSTRING){printf("--unterminated comment or string\n");} return 0 ;}
+
+<<EOF>> {
+            printf("\n");
+            switch(YY_START){
+            //if(YY_START == stCOMMENTML || YY_START == stSTRING)
+                case stCOMMENTML: printf("--unterminated comment \n"); break;
+                case stSTRING: printf("--unterminated  string\n"); break;
+                default: ;
+            }
+            return 0 ;
+        }
 
 
 

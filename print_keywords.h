@@ -5,8 +5,8 @@
 #include "global_variables.h"
 
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
-#define PUSH_STATE(NEWSTATE)  push_stack(YY_START); BEGIN_STATE(NEWSTATE);
-#define POP_STATE() BEGIN_STATE(peek_stack()); pop_stack();
+#define PUSH_STATE(NEWSTATE)  push_stack(YY_START); /*printf("\nPUSH");*/ BEGIN_STATE(NEWSTATE);
+#define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
 
 
 int printm() {int i=0;    for(i=0;i<currindent;i++)        printf("    ");}
