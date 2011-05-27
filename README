@@ -10,46 +10,56 @@ Free SQL Formatter
 
 
 
-
 1. Compilation
-> make all #This compiles source for LINUX and WINDOWS (requires mingw)
-> make test # compiles LINUX version and runs program on test file
+1.1 Compilation process: 
+make all #This compiles source for LINUX and WINDOWS (requires mingw)
+make test # compiles LINUX version and runs program on test file
+
+
+1.2 Requirements for compilation:
+To successfully compile you will need following programs installed:
+	flex, gcc, make, mingw cross compiler (for compiling windows binaries)
+
 
 
 
 2. Current state
-Though there are two tasks still left on the TODO basic list, formatter seems usable.
-My usecases are making long generated SQL code readable
+`fsqlf' can allready be used.
+My use case is formating generated SQL code (making readable one line of code that actualy should be 300 lines)
+
 
 
 
 3. Current TODO lists:
 basic - to have working version 1
-- `case' statements (redo stack functions; add handling)
 - `in' statements [done] 
 - comments one line [done]
 - comments multiline [done]
 - strings [done]
-- analytical functions
 
-extention - more comfortable usage (next level)
+extention #1 - more comfortable usage (next level)
 - formating configurations
 - reading command line arguments
 - GUI
 
-future rewrite? - possible extra functionality (even more `next' level, which probably would need a rewrite of big part)
+extension #2 - better formating
+- `case' statements (redo stack functions; add handling)
+- analytical functions
+
+possible extra functionality/ideas for the future
 - in equality condition align all comparison signs ('=' , '<>', etc.)
 - align comments them selfs and content of comments
 
 
 
 4. Usage
-currently only supported from cmd.exe
-input_file.sql and output_file.sql are ofcourse filenames of you chosing
+currently only supported from from command line (`command prompt' `cmd.exe' in windows)
 
 window
   fsqlf.exe < input_file.sql > output_file.sql
 
 linux
   fsqlf < input_file.sql > output_file.sql
+
+("input_file.sql" and "output_file.sql" are ofcourse filenames of you chosing)
  
