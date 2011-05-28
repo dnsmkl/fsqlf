@@ -42,6 +42,8 @@ COMMENT_ML_PART1 [^*]+
 COMMENT_ML_PART2 [*]+[^/]
 COMMENT_ML_END   [*]+[/]
 
+STRING ['][^'][']
+
 %{
 #include "print_keywords.h"
 #include "settings.h"
@@ -99,7 +101,7 @@ COMMENT_ML_END   [*]+[/]
 
 {COMMENT_ONE_LINE}     {ECHO;};
 
-['][^'][']		  {ECHO;};
+{STRING}               {ECHO;};
 
 
 {LEFTP}     { print_inc_LEFTP(); };
