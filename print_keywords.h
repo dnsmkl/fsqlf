@@ -8,9 +8,54 @@
 #define PUSH_STATE(NEWSTATE)  push_stack(YY_START); /*printf("\nPUSH");*/ BEGIN_STATE(NEWSTATE);
 #define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
 
+// this is variable to be able switch between spaces "    " and tabs '\t'
+char * tab_string = "    ";
 
-int printm() {int i=0;    for(i=0;i<currindent;i++)        printf("    ");}
-int new_line() {    int i=0;    printf("\n");    for(i=0;i<currindent;i++)        printf("    ");}
+int new_line() {
+    int i=0;
+    printf("\n");
+    for(i=0;i<currindent;i++)
+        printf("%s",tab_string);
+}
+
+
+
+int sp_b(t_spacing_settings s){
+// sp_b - spacing before
+    int i=0;
+
+    for(i=0;i<s.nl_before;i++)
+        printf("\n");
+
+    if(s.nl_before>0)
+        for(i=0;i<currindent;i++)
+            printf("%s",tab_string);
+
+    for(i=0;i<s.tab_before;i++)
+        printf("%s",tab_string);
+    for(i=0;i<s.space_before;i++)
+        printf(" ");
+
+}
+
+
+
+int sp_a(t_spacing_settings s){
+// sp_a - spacing after
+    int i=0;
+
+    for(i=0;i<s.nl_after;i++)
+        printf("\n");
+
+    if(s.nl_after>0)
+        for(i=0;i<currindent;i++)
+            printf("%s",tab_string);
+
+    for(i=0;i<s.tab_after;i++)
+        printf("%s",tab_string);
+    for(i=0;i<s.space_after;i++)
+        printf(" ");
+}
 
 
 
@@ -24,6 +69,13 @@ int p_level(){
 
 
 void print_SELECT(){new_line();printf("SELECT");   new_line(); printf("  ");}
+
+void print_COMMA_stSELECT(){
+     sp_b(sp_comma);
+     printf( ",");
+     sp_a(sp_comma);
+}
+
 void print_stFROM()  {new_line();printf( "FROM " );}
 void print_WHERE() {new_line();printf( "WHERE " );}
 void print_IJOIN() {new_line();printf( "JOIN " );       }
@@ -35,7 +87,7 @@ void print_ON()    {new_line();printf( " ON " ); }
 void print_AND()   {new_line();printf("AND ")  ; }
 
 
-void print_COMMA_stSELECT(){  new_line();printf( ", ");}
+
 void print_EXISTS(){ printf("EXISTS");}
 void print_AS()    { printf(" as ");}
 void print_FROM()  { printf( " from " );}
