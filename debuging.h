@@ -2,7 +2,7 @@
 #define debuging_h
 
 #include "settings.h"
-
+int d(){printf("|XXX|");}
 int debug_p(){
     if(debug_level & DEBUGPARCOUNTS)
         printf("\n\t***  '('=%d; ')'=%d; subselect_level=%d)  ***\n", left_p , right_p, subselect_level);

@@ -42,7 +42,7 @@ COMMENT_ML_PART1 [^*]+
 COMMENT_ML_PART2 [*]+[^/]
 COMMENT_ML_END   [*]+[/]
 
-STRING ['][^'][']
+STRING (['][^']*['])+
 
 %{
 #include "print_keywords.h"
@@ -59,7 +59,7 @@ STRING ['][^'][']
 %%
                 /* SELECT ... FROM */
 <INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); print_SELECT(); };
-<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); print_COMMA_stSELECT();};
+<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); print_COMMA_stSELECT(); };
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); print_inc_LEFTP();  };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");print_inc_LEFTP();  };
 <stLEFTP>{COMMA}            {ECHO; };
@@ -94,7 +94,7 @@ STRING ['][^'][']
 
 
 
-<*>{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
+{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
 <stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n");};
@@ -120,10 +120,10 @@ STRING ['][^'][']
 	
 {SPACE}+     printf(" ");
 ";"          printf("\n;");
-{DBOBJECT}   ECHO;
-{NUMBER}     ECHO;
+{DBOBJECT}   {ECHO;}
+{NUMBER}     {ECHO;}
 
-<*>.            {debug_match("<*>.");ECHO;};
+<*>.         {debug_match("<*>.");ECHO;};
 
 
 
