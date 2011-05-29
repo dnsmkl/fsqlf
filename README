@@ -1,65 +1,94 @@
 Free SQL Formatter
 
-(Licensed under LGPL)
+Licensed under LGPL.
+Full license is available in file `LICENCE' which you should have received with the program
+
 
 
 1. Compilation
-2. Current state
-3. Current TODO list
+2. Current state of development
+3. TODO list
 4. Usage
+5. Project site
+
 
 
 
 1. Compilation
-1.1 Compilation process: 
-make all #This compiles source for LINUX and WINDOWS (requires mingw)
-make test # compiles LINUX version and runs program on test file
+1.1 Requirements
+    Basicaly you just need:
+    - flex (http://flex.sourceforge.net/)
+    - C compiler
+
+1.2 Compilation process
+    Basicaly you just need to use flex on `fsqlf.l' and then compile the result of it.
+    In my case (flex produces `lex.yy.c', and I use `gcc' compiler on linux):
+    > flex fsqlf.l  # produce C file `lex.yy.c'
+    > gcc lex.yy.c  # produce executable a.out
+
+    If you use linux and have installed needed programs (flex, gcc, make, mingw32, zip) then you can use makefile to compile
+    > make all      # Compile source for LINUX and WINDOWS into excutables named `fsqlf' and `fsqlf.exe' respectivly
+    > make test     # Compile and run program on test file `test.sql' and print output to console
+    > make zip      # Create zip archive with executables and source code binaries (for publishing)
+    > make clean    # Leave only source code files. Intended to remove all files created with other make commands
 
 
-1.2 Requirements for compilation:
-To successfully compile you will need following programs installed:
-	flex, gcc, make, mingw cross compiler (for compiling windows binaries)
 
 
+2. Current state of development
+    `fsqlf' can allready be used to some level. My use case is formating generated SQL code (making something readable out of one long long line of SQL code)
 
+    Current list of implemented capabilities:
+    - indent subqueries
+    - new line for some needed cases (items in SELECT list. Keywords FROM, JOIN, ON, AND)
+    - capitalisation of some recognised keywords
 
-2. Current state
-`fsqlf' can allready be used.
-My use case is formating generated SQL code (making readable one line of code that actualy should be 300 lines)
+    Though as I have mentioned it is allready a bit usable, there is still much to do.
 
 
 
 
 3. Current TODO lists:
-basic - to have working version 1
-- `in' statements [done] 
-- comments one line [done]
-- comments multiline [done]
-- strings [done]
+    basic - to have working version 1
+    - `in' statements [done] 
+    - comments one line [done]
+    - comments multiline [done]
+    - strings [done]
+    - subqueries in FROM/JOIN parts
+    - OR
+    - paranthesis in restrictions (e.g.   AND (a=1 OR b=1)   )
+    - paranthesis in FROM/JOIN parts (e.g.   FROM X LEFT JOIN (Y JOIN Z)   )
 
-extention #1 - more comfortable usage (next level)
-- formating configurations
-- reading command line arguments
-- GUI
+    extention #1 - more comfortable usage (next level)
+    - formating configurations
+    - reading command line arguments
+    - GUI
 
-extension #2 - better formating
-- `case' statements (redo stack functions; add handling)
-- analytical functions
+    extension #2 - better formating
+    - `case' statements (redo stack functions; add handling)
+    - analytical functions
 
-possible extra functionality/ideas for the future
-- in equality condition align all comparison signs ('=' , '<>', etc.)
-- align comments them selfs and content of comments
+    possible extra functionality/ideas for the future
+    - in equality condition align all comparison signs ('=' , '<>', etc.)
+    - align comments them selfs and content of comments
+
 
 
 
 4. Usage
-currently only supported from from command line (`command prompt' `cmd.exe' in windows)
+    Currently program uses STDIN for input and STDOUT for output.
+    That means only usage possible is from command line (`command prompt' `cmd.exe' in windows) by redirecting input/output if needed
+    Example:
+    Lets say you have file "input_file.sql" which contains SQL code you want to format and you want the output to go into file "output_file.sql" then you do:
+    window
+        fsqlf.exe < input_file.sql > output_file.sql
 
-window
-  fsqlf.exe < input_file.sql > output_file.sql
+    linux
+        ./fsqlf < input_file.sql > output_file.sql
 
-linux
-  fsqlf < input_file.sql > output_file.sql
 
-("input_file.sql" and "output_file.sql" are ofcourse filenames of you chosing)
- 
+
+
+5. Project site
+    Most recent source code can be found in sourceforge.
+    Project site address http://sourceforge.net/projects/fsqlf/
