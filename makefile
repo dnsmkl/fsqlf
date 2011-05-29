@@ -17,7 +17,7 @@ HEADERS=$(wildcard *.h)
 
 # needed for building archive
 NAME:=$(shell git describe master)
-ZIP_NAME:=fsqlf.$(NAME).zip
+ZIP_NAME:=$(PROJECTFOLDER).$(NAME).zip
 
 
 
@@ -52,7 +52,7 @@ $(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
 #ponies!
 .PHONY: test clean zip
 clean:
-	rm -f lex.yy.c $(EXECUTABLES) $(TMP_BACKUPS) $(ZIP_NAME)
+	rm -f lex.yy.c $(EXECUTABLES) $(TMP_BACKUPS) $(PROJECTFOLDER)*.zip
 
 test:$(EXECUTABLES)
 	cat test_text.sql | ./$(LINEXEC)
