@@ -1,38 +1,62 @@
 
-#windows specific
+#for windows building
 WINCC=i586-mingw32msvc-gcc
 WINEXEC=fsqlf.exe
 
-#linux specific
+#for linux building
 CC=gcc
-EXEC=fsqlf
+LINEXEC=fsqlf
 
 
+EXECUTABLES=$(WINEXEC) $(LINEXEC)
 
-
+PROJECTFOLDER=fsqlf
 SRC=fsqlf.l
 HEADERS=$(wildcard *.h)
 
-.PHONY: test clean
 
-all:$(WINEXEC) $(EXEC)
+# needed for building archive
+NAME:=$(shell git describe master)
+ZIP_NAME:=fsqlf.$(NAME).zip
+
+
+
+# For cleaning up. These are produced by some editors.
+TMP_BACKUPS=$(wildcard *~)
+
+
+
 
 
 $(WINEXEC):lex.yy.c 
-	$(WINCC) lex.yy.c -o $@
+	$(WINCC) $^ -o $@
 	strip $@
-	
-$(EXEC):lex.yy.c 
-	$(CC) lex.yy.c -o $@
+
+$(LINEXEC):lex.yy.c 
+	$(CC) $^ -o $@
 	strip $@
 
 lex.yy.c: $(SRC) $(HEADERS)
 	flex $(SRC)
 
-#ponies!
-clean:
-	rm -f lex.yy.c 
-	rm -f $(EXEC) $(WINEXEC)
 
-test:fsqlf
-	cat test_text.sql | ./$(EXEC)
+
+$(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
+	git archive master --prefix='$(PROJECTFOLDER)/source/' --format=zip -o $@
+	cd .. && zip -q $(PROJECTFOLDER)/$@ $(PROJECTFOLDER)/$(LINEXEC) $(PROJECTFOLDER)/$(WINEXEC) $(PROJECTFOLDER)/LICENSE $(PROJECTFOLDER)/README
+
+
+
+
+
+#ponies!
+.PHONY: test clean zip
+clean:
+	rm -f lex.yy.c $(EXECUTABLES) $(TMP_BACKUPS) $(ZIP_NAME)
+
+test:$(EXECUTABLES)
+	cat test_text.sql | ./$(LINEXEC)
+
+zip:$(ZIP_NAME)
+
+all:$(EXECUTABLES)
