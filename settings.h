@@ -14,7 +14,7 @@ const int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 
 
-// struture which to store spacing (space/tab/newline) before/after some keyword
+// struture to store text keyword text  space,tab,newline, function to execute  before/after printig the keyword
 typedef struct t_kw_settings {
     int nl_before;
     int tab_before;
@@ -78,7 +78,7 @@ int debug_p();
 
 void init_all_settings(){
     sp_comma      = new_settings(1,0,0,0,0,0,",");
-    kw_select     = new_settings(1,0,0,0,0,1,"SelecT");
+    kw_select     = new_settings(1,0,0,1,0,2,"SelecT");
     kw_inner_join = new_settings(1,0,0,0,0,1,"JoiN");
     kw_left_join  = new_settings(1,0,0,0,0,1,"LefT JoiN");
     kw_right_join = new_settings(1,0,0,0,0,1,"RighT JoiN");
