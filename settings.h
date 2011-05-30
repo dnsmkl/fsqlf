@@ -52,20 +52,13 @@ t_kw_settings new_settings
 t_kw_settings new_settings_w_funct
     (int nl_before, int tab_before, int space_before, int nl_after, int tab_after, int space_after, char * text , int (*f1)(), int (*f2)() )
 {
-    t_kw_settings new_settings;
+    t_kw_settings new_set;
 
-    new_settings.nl_before    = nl_before;
-    new_settings.tab_before   = tab_before;
-    new_settings.space_before = space_before;
+    new_set = new_settings(nl_before, tab_before, space_before, nl_after, tab_after, space_after, text);
 
-    new_settings.nl_after     = nl_after;
-    new_settings.tab_after    = tab_after;
-    new_settings.space_after  = space_after;
-    new_settings.text         = text;
-
-    new_settings.function_before = f1;
-    new_settings.function_after  = f2;
-    return new_settings;
+    new_set.function_before = f1;
+    new_set.function_after  = f2;
+    return new_set;
 }
 
 void debug_kw_settings(t_kw_settings s){
