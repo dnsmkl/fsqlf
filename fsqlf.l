@@ -59,7 +59,7 @@ STRING (['][^']*['])+
 %%
                 /* SELECT ... FROM */
 <INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); kw_print(kw_select); };
-<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(sp_comma); };
+<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); print_inc_LEFTP();  };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");print_inc_LEFTP();  };
 <stLEFTP>{COMMA}            {ECHO; };
