@@ -58,9 +58,12 @@ int sp_a(t_spacing_settings s){
 }
 
 void kw_print(t_spacing_settings s){
+    
+    if (s.function_before != NULL) s.function_before();
     sp_b(s);
     printf("%s",s.text);
     sp_a(s);
+    if (s.function_after != NULL) s.function_after();
 }
 
 
@@ -71,36 +74,13 @@ int p_level(){
 
 
 
-
-void print_SELECT()        { kw_print(kw_select);}
-
-void print_COMMA_stSELECT(){ kw_print(sp_comma); }
-
-void print_stFROM(){ kw_print(kw_from);}
-void print_WHERE() { kw_print(kw_where);}
-void print_IJOIN() { kw_print(kw_inner_join); }
-void print_LJOIN() { kw_print(kw_left_join); }
-void print_RJOIN() { kw_print(kw_right_join); }
-void print_FJOIN() { kw_print(kw_full_join); }
-void print_CJOIN() { kw_print(kw_cross_join); }
-void print_ON()    { kw_print(kw_on); }
-void print_AND()   { kw_print(kw_and); }
-
-void print_EXISTS(){ kw_print(kw_exists);}
-void print_AS()    { kw_print(kw_as);}
-void print_FROM()  { kw_print(kw_from_2);}
-print_IN()  { kw_print(kw_in);}
-
-void print_LEFTP() { debug_p(); kw_print(kw_left_p); }
-void print_RIGHTP(){ debug_p(); kw_print(kw_right_p); }
-
-void print_inc_LEFTP() {left_p++ ; kw_print(kw_left_p);  debug_p(); }
-void print_inc_RIGHTP(){right_p++; kw_print(kw_right_p); debug_p(); }
+void print_inc_LEFTP() {left_p++ ; kw_print(kw_left_p);   }
+void print_inc_RIGHTP(){right_p++; kw_print(kw_right_p);  }
 
 void print_LEFTP_begin_SUB(){new_line();  debug_p();  kw_print(kw_left_p);  begin_SUB(); }
 
-void begin_SUB(){left_p++; subselect_level++; currindent++;}
-void end_SUB()  {subselect_level--; currindent--;}
+int begin_SUB(){left_p++; subselect_level++; currindent++;}
+int end_SUB()  {subselect_level--; currindent--;}
 
 
 

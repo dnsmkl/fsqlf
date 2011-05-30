@@ -58,37 +58,37 @@ STRING (['][^']*['])+
 
 %%
                 /* SELECT ... FROM */
-<INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); print_SELECT(); };
-<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); print_COMMA_stSELECT(); };
+<INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); kw_print(kw_select); };
+<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(sp_comma); };
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); print_inc_LEFTP();  };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");print_inc_LEFTP();  };
 <stLEFTP>{COMMA}            {ECHO; };
-<stLEFTP>{FROM}             {debug_match("{FROM}" );print_FROM();};
+<stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(kw_from_2);};
 <stLEFTP>{RIGHTP}           {POP_STATE(); print_inc_RIGHTP(); };
-<stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  ); print_stFROM()  ; };
+<stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  );  kw_print(kw_from); };
 
                 /* FROM ... JOIN ... ON ... WHERE */
-<stON,stFROM>{IJOIN} { BEGIN_STATE(stJOIN)  ;print_IJOIN(); };
-<stON,stFROM>{LJOIN} { BEGIN_STATE(stJOIN)  ;print_LJOIN(); };
-<stON,stFROM>{RJOIN} { BEGIN_STATE(stJOIN)  ;print_RJOIN(); };
-<stON,stFROM>{FJOIN} { BEGIN_STATE(stJOIN)  ;print_FJOIN(); };
-<stON,stFROM>{CJOIN} { BEGIN_STATE(stJOIN)  ;print_CJOIN(); };
+<stON,stFROM>{IJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_inner_join); };
+<stON,stFROM>{LJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_left_join); };
+<stON,stFROM>{RJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_right_join); };
+<stON,stFROM>{FJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_full_join); };
+<stON,stFROM>{CJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_cross_join); };
 
-<stJOIN>{ON}    {BEGIN_STATE(stON);   print_ON(); };
-<stON>{AND}     {debug_match("{AND}");print_AND();};
+<stJOIN>{ON}    {BEGIN_STATE(stON);   kw_print(kw_on); };
+<stON>{AND}     {debug_match("{AND}");kw_print(kw_and);};
 
-<stFROM,stJOIN,stON>{WHERE} {BEGIN_STATE(stWHERE ); print_WHERE() ; };
+<stFROM,stJOIN,stON>{WHERE} {BEGIN_STATE(stWHERE ); kw_print(kw_where); };
 
-<stWHERE>{AND}     {debug_match("{AND}");print_AND();};
-<stWHERE>{EXISTS}   {PUSH_STATE(stEXISTS); print_EXISTS(); };
+<stWHERE>{AND}      {debug_match("{AND}"); kw_print(kw_and);};
+<stWHERE>{EXISTS}   {PUSH_STATE(stEXISTS); kw_print(kw_exists); };
 <stEXISTS>{LEFTP}   {PUSH_STATE(INITIAL ); print_LEFTP_begin_SUB(); };
 
-<stWHERE>{IN}    { PUSH_STATE(stIN); print_IN();};
+<stWHERE>{IN}    { PUSH_STATE(stIN); kw_print(kw_in);};
 <stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or constant list expression, '(' will be printed later
-<stIN>{SELECT}   { print_LEFTP_begin_SUB(); PUSH_STATE(stSELECT); print_SELECT(); };
-<stIN>{NONSPACE} { BEGIN_STATE(stINLIST);print_LEFTP(); ECHO;};
+<stIN>{SELECT}   { print_LEFTP_begin_SUB(); PUSH_STATE(stSELECT); kw_print(kw_select); };
+<stIN>{NONSPACE} { BEGIN_STATE(stINLIST);kw_print(kw_left_p); ECHO;};
 
-<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );print_AS();};
+<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );kw_print(kw_as);};
 
 
 
@@ -115,7 +115,7 @@ STRING (['][^']*['])+
                     POP_STATE();
                 }
                 debug_match("<wtf-leftp>");
-                print_RIGHTP();
+                kw_print(kw_right_p);
                };
 	
 {SPACE}+     printf(" ");
