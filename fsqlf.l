@@ -64,7 +64,7 @@ STRING (['][^']*['])+
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");print_inc_LEFTP();  };
 <stLEFTP>{COMMA}            {ECHO; };
 <stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(kw_from_2);};
-<stLEFTP>{RIGHTP}           {POP_STATE(); print_inc_RIGHTP(); };
+<stLEFTP>{RIGHTP}           {POP_STATE(); kw_print(kw_right_p); };
 <stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  );  kw_print(kw_from); };
 
                 /* FROM ... JOIN ... ON ... WHERE */
@@ -81,11 +81,11 @@ STRING (['][^']*['])+
 
 <stWHERE>{AND}      {debug_match("{AND}"); kw_print(kw_and);};
 <stWHERE>{EXISTS}   {PUSH_STATE(stEXISTS); kw_print(kw_exists); };
-<stEXISTS>{LEFTP}   {PUSH_STATE(INITIAL ); print_LEFTP_begin_SUB(); };
+<stEXISTS>{LEFTP}   {PUSH_STATE(INITIAL ); kw_print(kw_left_p_sub); };
 
 <stWHERE>{IN}    { PUSH_STATE(stIN); kw_print(kw_in);};
 <stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or constant list expression, '(' will be printed later
-<stIN>{SELECT}   { print_LEFTP_begin_SUB(); PUSH_STATE(stSELECT); kw_print(kw_select); };
+<stIN>{SELECT}   { kw_print(kw_left_p_sub); PUSH_STATE(stSELECT); kw_print(kw_select); };
 <stIN>{NONSPACE} { BEGIN_STATE(stINLIST);kw_print(kw_left_p); ECHO;};
 
 <stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );kw_print(kw_as);};
@@ -105,17 +105,21 @@ STRING (['][^']*['])+
 
 
 {LEFTP}     { print_inc_LEFTP(); };
-{RIGHTP}    { right_p++;
-                if(subselect_level && p_level()<=0){printf("sdgsdgdsg");
-                    POP_STATE();POP_STATE();
-                    end_SUB();
-                    new_line();
-                }
-                if(YY_START==stLEFTP){printf("sdgsdgdsg");
+{RIGHTP}    { 
+                if(YY_START==stLEFTP){
+                    printf("|||hnhnhnhnhnh|||");//debug line
                     POP_STATE();
                 }
+                if(subselect_level && p_level()-1<=0){
+                    //printf("|||sdgsdgdsg|||");//debug line
+                    POP_STATE();
+                    kw_print(kw_right_p_sub);
+                    POP_STATE();
+                } else {
                 debug_match("<wtf-leftp>");
                 kw_print(kw_right_p);
+                }
+                right_p++;
                };
 	
 {SPACE}+     printf(" ");
@@ -130,7 +134,6 @@ STRING (['][^']*['])+
 <<EOF>> {
             printf("\n");
             switch(YY_START){
-            //if(YY_START == stCOMMENTML || YY_START == stSTRING)
                 case stCOMMENTML: printf("--unterminated comment \n"); break;
                 case stSTRING: printf("--unterminated  string\n"); break;
                 default: ;

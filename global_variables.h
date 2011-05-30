@@ -6,13 +6,23 @@ int left_p  = 0;
 int right_p = 0;
 int subselect_level = 0;
 
+int inc_LEFTP() {left_p++ ;}
+int inc_RIGHTP(){right_p++;}
+
+int p_level(){
+    return left_p - right_p - subselect_level;
+}
+
+int begin_SUB(){ subselect_level++; currindent++; }
+int end_SUB()  { subselect_level--; currindent--; }
+
+
 #define STATE_STACK_SIZE (100)
 int state_stack[STATE_STACK_SIZE];
 int state_stack_index;
 
 void init_stack()
 {
-
     state_stack_index = 0;
 }
 
