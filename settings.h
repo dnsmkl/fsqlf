@@ -15,7 +15,7 @@ const int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 
 // struture which to store spacing (space/tab/newline) before/after some keyword
-typedef struct t_spacing_settings {
+typedef struct t_kw_settings {
     int nl_before;
     int tab_before;
     int space_before;
@@ -28,12 +28,12 @@ typedef struct t_spacing_settings {
     
     int (*function_before)();
     int (*function_after)();
-} t_spacing_settings;
+} t_kw_settings;
 
-t_spacing_settings new_settings
+t_kw_settings new_settings
     (int nl_before, int tab_before, int space_before, int nl_after, int tab_after, int space_after, char * text )
 {
-    t_spacing_settings new_settings;
+    t_kw_settings new_settings;
 
     new_settings.nl_before    = nl_before;
     new_settings.tab_before   = tab_before;
@@ -49,10 +49,10 @@ t_spacing_settings new_settings
     return new_settings;
 }
 
-t_spacing_settings new_settings_w_funct
+t_kw_settings new_settings_w_funct
     (int nl_before, int tab_before, int space_before, int nl_after, int tab_after, int space_after, char * text , int (*f1)(), int (*f2)() )
 {
-    t_spacing_settings new_settings;
+    t_kw_settings new_settings;
 
     new_settings.nl_before    = nl_before;
     new_settings.tab_before   = tab_before;
@@ -68,7 +68,7 @@ t_spacing_settings new_settings_w_funct
     return new_settings;
 }
 
-void debug_spacing_settings(t_spacing_settings s){
+void debug_kw_settings(t_kw_settings s){
     printf("\nspace_before %d , tab_before %d , nl_before %d , space_after %d , tab_after %d , nl_after %d\n , text %s "
            ,s.space_before,s.tab_before,s.nl_before,s.space_after,s.tab_after,s.nl_after, s.text);
 }
@@ -77,11 +77,9 @@ void debug_spacing_settings(t_spacing_settings s){
 
 
 
-t_spacing_settings sp_comma, kw_select, kw_inner_join, kw_left_join, kw_right_join, kw_full_join, kw_cross_join, kw_from, kw_on, kw_where, kw_and, kw_exists, kw_in, kw_from_2, kw_as;
+t_kw_settings sp_comma, kw_select, kw_inner_join, kw_left_join, kw_right_join, kw_full_join, kw_cross_join, kw_from, kw_on, kw_where, kw_and, kw_exists, kw_in, kw_from_2, kw_as;
 
-t_spacing_settings kw_left_p, kw_right_p;
-
-int testfunct(){printf("|xYx|");}
+t_kw_settings kw_left_p, kw_right_p;
 
 int debug_p();
 

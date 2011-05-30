@@ -20,7 +20,7 @@ int new_line() {
 
 
 
-int sp_b(t_spacing_settings s){
+int sp_b(t_kw_settings s){
 // sp_b - spacing before
     int i=0;
 
@@ -40,7 +40,7 @@ int sp_b(t_spacing_settings s){
 
 
 
-int sp_a(t_spacing_settings s){
+int sp_a(t_kw_settings s){
 // sp_a - spacing after
     int i=0;
 
@@ -57,7 +57,7 @@ int sp_a(t_spacing_settings s){
         printf(" ");
 }
 
-void kw_print(t_spacing_settings s){
+void kw_print(t_kw_settings s){
     
     if (s.function_before != NULL) s.function_before();
     sp_b(s);
