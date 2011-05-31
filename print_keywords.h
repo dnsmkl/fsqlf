@@ -154,17 +154,6 @@ void kw_print(t_kw_settings s){
 
 
 
-
-
-
-void print_inc_LEFTP() {left_p++ ; kw_print(kw_left_p);   }
-void print_inc_RIGHTP(){right_p++; kw_print(kw_right_p);  }
-
-
-
-
-
-
 void init_all_settings(){
    kw_set(&kw_comma      ,1,0,0,0,0,0,",");
    kw_set(&kw_select     ,1,0,0,1,0,2,"SelecT");
@@ -174,7 +163,7 @@ void init_all_settings(){
    kw_set(&kw_full_join  ,1,0,0,0,0,1,"FulL JoiN");
    kw_set(&kw_cross_join ,1,0,0,0,0,1,"CrosS JoiN");
    kw_set(&kw_from       ,1,0,0,0,0,1,"FroM");
-   kw_set(&kw_on         ,1,0,0,0,0,1,"oN");
+   kw_set(&kw_on         ,1,0,1,0,0,1,"oN");
    kw_set(&kw_where      ,1,0,0,0,0,1,"WherE");
    kw_set(&kw_and        ,1,0,0,0,0,1,"AnD");
    kw_set(&kw_exists     ,0,0,0,0,0,1,"exists");
@@ -187,7 +176,7 @@ void init_all_settings(){
    kw_set(&kw_right_p_sub,1,0,0,1,0,0,")");
 
    kw_add_funct( &kw_left_p     ,0, &debug_p   , NULL );
-   //kw_add_funct( &kw_left_p     ,1, &inc_LEFTP , NULL );
+   kw_add_funct( &kw_left_p     ,1, &inc_LEFTP , NULL );
    
    kw_add_funct( &kw_right_p    ,0, &debug_p   , NULL );
    kw_add_funct( &kw_right_p    ,1, &inc_RIGHTP, NULL );
@@ -197,20 +186,11 @@ void init_all_settings(){
 
    kw_add_funct( &kw_right_p_sub,0, &debug_p   , NULL );
    kw_add_funct( &kw_right_p_sub,1, &inc_RIGHTP, NULL );
-   kw_add_funct( &kw_right_p_sub,1, &end_SUB   , NULL );
+   kw_add_funct( &kw_right_p_sub,2, &end_SUB   , NULL );
 
 
 }
 
 
 #endif
-
-
-
-
-
-
-
-
-
 

@@ -60,8 +60,8 @@ STRING (['][^']*['])+
                 /* SELECT ... FROM */
 <INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); kw_print(kw_select); };
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
-<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); print_inc_LEFTP();  };
-<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");print_inc_LEFTP();  };
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); kw_print(kw_left_p);  };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");kw_print(kw_left_p);  };
 <stLEFTP>{COMMA}            {ECHO; };
 <stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(kw_from_2);};
 <stLEFTP>{RIGHTP}           {POP_STATE(); kw_print(kw_right_p); };
@@ -104,23 +104,22 @@ STRING (['][^']*['])+
 {STRING}               {ECHO;};
 
 
-{LEFTP}     { print_inc_LEFTP(); };
+{LEFTP}     { kw_print(kw_left_p); };
 {RIGHTP}    { 
                 if(YY_START==stLEFTP){
                     printf("|||hnhnhnhnhnh|||");//debug line
                     POP_STATE();
                 }
                 if(subselect_level && p_level()-1<=0){
-                    //printf("|||sdgsdgdsg|||");//debug line
                     POP_STATE();
                     kw_print(kw_right_p_sub);
                     POP_STATE();
                 } else {
-                debug_match("<wtf-leftp>");
-                kw_print(kw_right_p);
+                    debug_match("<wtf-leftp>");
+                    kw_print(kw_right_p);
                 }
-                right_p++;
-               };
+
+            };
 	
 {SPACE}+     printf(" ");
 ";"          printf("\n;");
