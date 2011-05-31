@@ -1,6 +1,8 @@
 #ifndef global_variables_h
 #define global_variables_h
 
+#include <stdio.h>
+
 int currindent=0;
 int left_p  = 0;
 int right_p = 0;

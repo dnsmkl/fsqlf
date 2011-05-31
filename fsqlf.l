@@ -4,6 +4,20 @@ Vattekkat Satheesh Babu, on Dec 30, 1998
 Helped to learn about flex a bit
 */
 
+%top{ /* This code goes at the "top" of the generated file. */
+#include "global_variables.h"
+#include "print_keywords.h"
+#include "settings.h"
+}
+
+
+%{
+
+//redefinition of macros will probably go here if needed
+
+
+%}
+
 
 DIGIT   [0-9]
 NUMBER  {DIGIT}+([.]{DIGIT}+)?
@@ -44,13 +58,7 @@ COMMENT_ML_END   [*]+[/]
 
 STRING (['][^']*['])+
 
-%{
-#include "print_keywords.h"
-#include "settings.h"
-#include "global_variables.h"
 
-
-%}
 
 
 %s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST

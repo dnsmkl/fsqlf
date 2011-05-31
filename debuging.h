@@ -2,6 +2,13 @@
 #define debuging_h
 
 #include "settings.h"
+
+
+// TODO : 
+// int ctr[YY_NUM_RULES];
+// #define YY_USER_ACTION ++ctr[yy_act]
+// yy_act gives the number of the matched rule (rules are numbered starting with 1)
+
 int d(){printf("|XXX|");}
 int debug_p(){
     if(debug_level & DEBUGPARCOUNTS)
