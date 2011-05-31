@@ -3,6 +3,7 @@
 
 #include "settings.h"
 #include "global_variables.h"
+#include <stdio.h>
 
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
 #define PUSH_STATE(NEWSTATE)  push_stack(YY_START); /*printf("\nPUSH");*/ BEGIN_STATE(NEWSTATE);
@@ -144,6 +145,8 @@ int sp_a(t_kw_settings s){
         printf("%s",tab_string);
     for(i=0;i<s.space_after;i++)
         printf(" ");
+
+    white_space_cnt=s.nl_after+s.tab_after+s.space_after;
 }
 
 void kw_print(t_kw_settings s){
@@ -164,7 +167,7 @@ void kw_print(t_kw_settings s){
 
 
 void init_all_settings(){
-   kw_set(&kw_comma      ,1,0,0,0,0,0,",");
+   kw_set(&kw_comma      ,1,0,0,0,0,1,",");
    kw_set(&kw_select     ,1,0,0,1,0,2,"SelecT");
    kw_set(&kw_inner_join ,1,0,0,0,0,1,"JoiN");
    kw_set(&kw_left_join  ,1,0,0,0,0,1,"LefT JoiN");

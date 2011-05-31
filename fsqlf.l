@@ -127,7 +127,10 @@ STRING (['][^']*['])+
 
             };
 	
-{SPACE}+     printf(" ");
+{SPACE}+     if(white_space_cnt==0){
+                printf(" ");
+                white_space_cnt=1;
+             }
 ";"          printf("\n;");
 {DBOBJECT}   {ECHO;}
 {NUMBER}     {ECHO;}

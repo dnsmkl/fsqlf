@@ -8,6 +8,8 @@ int left_p  = 0;
 int right_p = 0;
 int subselect_level = 0;
 
+int white_space_cnt;
+
 int inc_LEFTP() {left_p++ ;}
 int inc_RIGHTP(){right_p++;}
 
