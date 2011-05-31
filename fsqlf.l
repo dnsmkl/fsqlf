@@ -66,6 +66,7 @@ STRING (['][^']*['])+
 <stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(kw_from_2);};
 <stLEFTP>{RIGHTP}           {POP_STATE(); kw_print(kw_right_p); };
 <stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  );  kw_print(kw_from); };
+<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );kw_print(kw_as);};
 
                 /* FROM ... JOIN ... ON ... WHERE */
 <stON,stFROM>{IJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_inner_join); };
@@ -81,14 +82,15 @@ STRING (['][^']*['])+
 
 <stWHERE>{AND}      {debug_match("{AND}"); kw_print(kw_and);};
 <stWHERE>{EXISTS}   {PUSH_STATE(stEXISTS); kw_print(kw_exists); };
-<stEXISTS>{LEFTP}   {PUSH_STATE(INITIAL ); kw_print(kw_left_p_sub); };
+<stEXISTS>{LEFTP}   {BEGIN_STATE(INITIAL ); kw_print(kw_left_p_sub); };
 
 <stWHERE>{IN}    { PUSH_STATE(stIN); kw_print(kw_in);};
+
 <stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or constant list expression, '(' will be printed later
-<stIN>{SELECT}   { kw_print(kw_left_p_sub); PUSH_STATE(stSELECT); kw_print(kw_select); };
+<stIN>{SELECT}   { kw_print(kw_left_p_sub); BEGIN_STATE(stSELECT); kw_print(kw_select); };
 <stIN>{NONSPACE} { BEGIN_STATE(stINLIST);kw_print(kw_left_p); ECHO;};
 
-<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );kw_print(kw_as);};
+
 
 
 
@@ -106,17 +108,11 @@ STRING (['][^']*['])+
 
 {LEFTP}     { kw_print(kw_left_p); };
 {RIGHTP}    { 
-                if(YY_START==stLEFTP){
-                    printf("|||hnhnhnhnhnh|||");//debug line
-                    POP_STATE();
-                }
-                if(subselect_level && p_level()-1<=0){
-                    POP_STATE();
+                POP_STATE();
+                if(subselect_level && p_level()-1 <= 0){
                     kw_print(kw_right_p_sub);
-                    POP_STATE();
                 } else {
                     debug_match("<wtf-leftp>");
-                    POP_STATE();
                     kw_print(kw_right_p);
                 }
 
