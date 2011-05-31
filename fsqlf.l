@@ -4,7 +4,8 @@ Vattekkat Satheesh Babu, on Dec 30, 1998
 Helped to learn about flex a bit
 */
 
-%top{ /* This code goes at the "top" of the generated file. */
+%top{ 
+    /* This code goes at the "top" of the generated file. */
 #include "global_variables.h"
 #include "print_keywords.h"
 #include "settings.h"

@@ -58,17 +58,24 @@ void kw_set(t_kw_settings* kw_set
 
 
 
-void kw_add_funct(t_kw_settings* kw_set, int nr,  int (*fb)(), int (*fa)() )
+void kw_set_funct_before(t_kw_settings* kw_set, int nr, int (*f)() )
 {
     if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
-        printf("error: kw_add_funct - bounds.   n = %d\n", nr);
+        printf("\n -- error: kw_add_funct - bounds.   n = %d\n", nr);
         return;
     }
 
-    kw_set->funct_before[nr] = fb;
-    kw_set->funct_after[nr]  = fa;
-    //printf("before %X %X %X\n", kw_set->funct_before[0],kw_set->funct_before[1],kw_set->funct_before[2]);//debug string
-    //printf("after %X %X %X\n", kw_set->funct_after[0],kw_set->funct_after[1],kw_set->funct_after[2]);//debug string
+    kw_set->funct_before[nr] = f;
+}
+
+void kw_set_funct_after(t_kw_settings* kw_set, int nr, int (*f)() )
+{
+    if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
+        printf("\n -- error: kw_add_funct - bounds.   n = %d\n", nr);
+        return;
+    }
+
+    kw_set->funct_after[nr] = f;
 }
 
 
@@ -76,6 +83,8 @@ void kw_add_funct(t_kw_settings* kw_set, int nr,  int (*fb)(), int (*fa)() )
 void debug_kw_settings(t_kw_settings s){
     printf("\nspace_before %d , tab_before %d , nl_before %d , space_after %d , tab_after %d , nl_after %d\n , text %s "
            ,s.space_before,s.tab_before,s.nl_before,s.space_after,s.tab_after,s.nl_after, s.text);
+    //printf("after %X %X %X\n", s.funct_after[0],s.funct_after[1],s.funct_after[2]);//debug string
+    //printf("before %X %X %X\n", s.funct_before[0],s.funct_before[1],s.funct_before[2]);//debug string
 }
 
 
@@ -175,18 +184,19 @@ void init_all_settings(){
    kw_set(&kw_left_p_sub ,1,0,0,0,0,0,"(");
    kw_set(&kw_right_p_sub,1,0,0,1,0,0,")");
 
-   kw_add_funct( &kw_left_p     ,0, &debug_p   , NULL );
-   kw_add_funct( &kw_left_p     ,1, &inc_LEFTP , NULL );
-   
-   kw_add_funct( &kw_right_p    ,0, &debug_p   , NULL );
-   kw_add_funct( &kw_right_p    ,1, &inc_RIGHTP, NULL );
+   kw_set_funct_before( &kw_left_p     ,0, &debug_p   );
+   kw_set_funct_before( &kw_left_p     ,1, &inc_LEFTP );
 
-   kw_add_funct( &kw_left_p_sub ,0, &debug_p  , &begin_SUB );
-   kw_add_funct( &kw_left_p_sub ,1, &inc_LEFTP, NULL  );
+   kw_set_funct_before( &kw_right_p    ,0, &debug_p   );
+   kw_set_funct_before( &kw_right_p    ,1, &inc_RIGHTP);
 
-   kw_add_funct( &kw_right_p_sub,0, &debug_p   , NULL );
-   kw_add_funct( &kw_right_p_sub,1, &inc_RIGHTP, NULL );
-   kw_add_funct( &kw_right_p_sub,2, &end_SUB   , NULL );
+   kw_set_funct_before( &kw_left_p_sub ,0, &debug_p  );
+   kw_set_funct_before( &kw_left_p_sub ,1, &inc_LEFTP);
+   kw_set_funct_after( &kw_left_p_sub ,0, &begin_SUB  );
+
+   kw_set_funct_before( &kw_right_p_sub,0, &debug_p   );
+   kw_set_funct_before( &kw_right_p_sub,1, &inc_RIGHTP);
+   kw_set_funct_before( &kw_right_p_sub,2, &end_SUB   );
 
 
 }
