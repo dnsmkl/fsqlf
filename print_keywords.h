@@ -61,7 +61,7 @@ void kw_set(t_kw_settings* kw_set
 void kw_set_funct_before(t_kw_settings* kw_set, int nr, int (*f)() )
 {
     if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
-        printf("\n -- error: kw_add_funct - bounds.   n = %d\n", nr);
+        printf("\n -- error: kw_set_funct_before - bounds.   n = %d\n", nr);
         return;
     }
 
@@ -71,7 +71,7 @@ void kw_set_funct_before(t_kw_settings* kw_set, int nr, int (*f)() )
 void kw_set_funct_after(t_kw_settings* kw_set, int nr, int (*f)() )
 {
     if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
-        printf("\n -- error: kw_add_funct - bounds.   n = %d\n", nr);
+        printf("\n -- error: kw_set_funct_after - bounds.   n = %d\n", nr);
         return;
     }
 
@@ -197,8 +197,6 @@ void init_all_settings(){
    kw_set_funct_before( &kw_right_p_sub,0, &debug_p   );
    kw_set_funct_before( &kw_right_p_sub,1, &inc_RIGHTP);
    kw_set_funct_before( &kw_right_p_sub,2, &end_SUB   );
-
-
 }
 
 
