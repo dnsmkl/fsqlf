@@ -116,6 +116,7 @@ STRING (['][^']*['])+
                     POP_STATE();
                 } else {
                     debug_match("<wtf-leftp>");
+                    POP_STATE();
                     kw_print(kw_right_p);
                 }
 
