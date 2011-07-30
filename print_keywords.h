@@ -168,16 +168,16 @@ void kw_print(t_kw_settings s){
 
 void init_all_settings(){
    kw_set(&kw_comma      ,1,0,0,0,0,1,",");
-   kw_set(&kw_select     ,1,0,0,1,0,2,"SelecT");
-   kw_set(&kw_inner_join ,1,0,0,0,0,1,"JoiN");
-   kw_set(&kw_left_join  ,1,0,0,0,0,1,"LefT JoiN");
-   kw_set(&kw_right_join ,1,0,0,0,0,1,"RighT JoiN");
-   kw_set(&kw_full_join  ,1,0,0,0,0,1,"FulL JoiN");
-   kw_set(&kw_cross_join ,1,0,0,0,0,1,"CrosS JoiN");
-   kw_set(&kw_from       ,1,0,0,0,0,1,"FroM");
-   kw_set(&kw_on         ,1,0,1,0,0,1,"oN");
-   kw_set(&kw_where      ,1,0,0,0,0,1,"WherE");
-   kw_set(&kw_and        ,1,0,0,0,0,1,"AnD");
+   kw_set(&kw_select     ,1,0,0,1,0,2,"SELECT");
+   kw_set(&kw_inner_join ,1,0,0,0,0,1,"JOIN");
+   kw_set(&kw_left_join  ,1,0,0,0,0,1,"LEFT JOIN");
+   kw_set(&kw_right_join ,1,0,0,0,0,1,"RIGHT JOIN");
+   kw_set(&kw_full_join  ,1,0,0,0,0,1,"FULL JOIN");
+   kw_set(&kw_cross_join ,1,0,0,0,0,1,"CROSS JOIN");
+   kw_set(&kw_from       ,1,0,0,0,0,1,"FROM");
+   kw_set(&kw_on         ,1,0,1,0,0,1,"ON");
+   kw_set(&kw_where      ,1,0,0,0,0,1,"WHERE");
+   kw_set(&kw_and        ,1,0,0,0,0,1,"AND");
    kw_set(&kw_exists     ,0,0,0,0,0,1,"exists");
    kw_set(&kw_in         ,0,0,0,0,0,1,"in");
    kw_set(&kw_from_2     ,0,0,1,0,0,1,"from");
