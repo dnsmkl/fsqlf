@@ -9,18 +9,5 @@ select asbaba as g
 
 ,asextract(day from t) as _toto -- komentaras case select from
 from bobo    as gogo   left join baba on 1=1   and 1=1 and 1=1       left outer   join baba  on g=z   cross join gaga 
-where toto and exists 
-(select 1
-from t
-where b=g
-and 
-not
-exists (
-SELECT 1 FROM T
-)
-)
-AND 1=1
-and a in 
-(select 1 from hsd)
-and b in   (  1   ,    2   ,   3) ;
+where toto and exists (select 1 from t where b=g  and  not exists ( SELECT 1 FROM T ) ) AND 1=1 and a in  (select 1 from hsd) and b in   (  19   ,    2   ,   3) ;
 
