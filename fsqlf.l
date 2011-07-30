@@ -16,6 +16,9 @@ Helped to learn about flex a bit
 
 //redefinition of macros will probably go here if needed
 
+//#define YY_USER_ACTION printf("\n rule (%d) - ",yy_act);
+#define DMATCH(name) printf("%20s is rule (%d) : ", name , yy_act);
+
 
 %}
 
@@ -24,9 +27,9 @@ DIGIT   [0-9]
 NUMBER  {DIGIT}+([.]{DIGIT}+)?
 ID      [A-Za-z_][A-Za-z0-9_]*
 SPACE   [ \t\n]
-NONSPACE [^ \n\r\t]
+NONSPACE {NUMBER}|{STRING}|{DBOBJECT}
+DBOBJECT    ({ID}[.]){0,2}{ID}
 
-DBOBJECT    {ID}[.]{ID}|{ID}
 
 LEFTP   [(]
 RIGHTP  [)]
@@ -112,7 +115,7 @@ STRING (['][^']*['])+
 
 {COMMENT_ONE_LINE}     {ECHO;};
 
-{STRING}               {ECHO;};
+{STRING}               {ECHO;white_space_cnt=0;};
 
 
 {LEFTP}     { kw_print(kw_left_p); };
@@ -130,12 +133,13 @@ STRING (['][^']*['])+
 {SPACE}+     if(white_space_cnt==0){
                 printf(" ");
                 white_space_cnt=1;
-             }
-";"          printf("\n;");
-{DBOBJECT}   {ECHO;}
-{NUMBER}     {ECHO;}
+              }
 
-<*>.         {debug_match("<*>.");ECHO;};
+";"          printf("\n;");
+{DBOBJECT}   {ECHO;white_space_cnt=0;}
+{NUMBER}     {ECHO;white_space_cnt=0;}
+
+<*>.         {debug_match("<*>.");ECHO;white_space_cnt=0;};
 
 
 
