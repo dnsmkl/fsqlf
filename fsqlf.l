@@ -6,6 +6,7 @@ Helped to learn about flex a bit
 
 %top{ 
     /* This code goes at the "top" of the generated file. */
+#include <stdio.h>
 #include "global_variables.h"
 #include "print_keywords.h"
 #include "settings.h"
@@ -18,7 +19,6 @@ Helped to learn about flex a bit
 
 //#define YY_USER_ACTION printf("\n rule (%d) - ",yy_act);
 #define DMATCH(name) printf("%20s is rule (%d) : ", name , yy_act);
-
 
 %}
 
@@ -153,9 +153,10 @@ STRING (['][^']*['])+
             return 0 ;
         }
 
-
-
 %%
+
+
+
 
 
 #include "debuging.h"
@@ -167,10 +168,21 @@ int     yywrap (void)
 	return 1;
 }
 
-int     main (int argc, char * argv[])
-{
-	while (yylex () != 0) ;
 
-	return 0;
+int main(int argc, char **argv)
+{
+
+    yyin =  (argc < 2)? stdin : fopen(argv[1],"r") ;
+    //yyout = fopen("output.txt","w+"); // for this to work printf should not be used. Instead try fprintf(yyout,,)
+    yyout = stdout;
+
+    if( yyin == NULL || yyout == NULL ){
+	fprintf(stderr,"%s: unable to open %s or output\n", argv[0] , argv[1]);
+	yyterminate();
+    }
+
+    while (yylex () != 0) ;
+    //yylex();
+    return 0;
 }
 
