@@ -1,11 +1,9 @@
 
 
 #for linux building
-CC=gcc
 LINEXEC=bin/fsqlf
 
 #for windows building
-WINCC=i586-mingw32msvc-gcc
 WINEXEC:=$(LINEXEC).exe
 
 GUI_EXEC=bin/gui_wx_basic
@@ -32,28 +30,31 @@ TMP_BACKUPS=$(wildcard *~)
 
 
 
-
+#executables
 $(WINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
-	$(WINCC)   $<   -o $@
+	i586-mingw32msvc-gcc   $<   -o $@
 	strip $@
 
 $(LINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
-	$(CC)   $<   -o $@
+	gcc  $<   -o $@
 	strip $@
 
+$(GUI_EXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER)
+	g++   $<   -o $@   `wx-config --cxxflags`   `wx-config --libs`
+
+
+#some prerequisites
 $(LEX_OUTPUT): $(SRC) $(HEADERS)
 	flex   -o $@   $<
 
 $(BIN_FOLDER):
 	mkdir -p $(BIN_FOLDER)
 
+
+#archive for publishing
 $(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
 	git archive master --prefix='$(PROJECTFOLDER)/source/' --format=zip -o $@
-	cd .. && zip -q $(PROJECTFOLDER)/$@ $(PROJECTFOLDER)/$(LINEXEC) $(PROJECTFOLDER)/$(WINEXEC) $(PROJECTFOLDER)/LICENSE $(PROJECTFOLDER)/README
-
-
-$(GUI_EXEC):   gui/gui_wx_basic.cpp
-	g++   $<   -o $@   `wx-config --cxxflags`   `wx-config --libs`
+	cd .. && zip -q $(PROJECTFOLDER)/$@ $(PROJECTFOLDER)/$(LINEXEC) $(PROJECTFOLDER)/$(WINEXEC)  $(PROJECTFOLDER)/LICENSE $(PROJECTFOLDER)/README $(PROJECTFOLDER)/$(GUI_EXEC)
 
 
 
