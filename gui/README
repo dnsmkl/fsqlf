@@ -1,0 +1,10 @@
+
+
+wx widgets needs to be installed
+http://wiki.wxwidgets.org/Installing_and_configuring_under_Ubuntu
+
+
+# apt-get install wx2.8-headers libwxgtk2.8-0 libwxgtk2.8-dev
+# cd /usr/include
+# ls | grep wx
+# ln -sv wx-2.8/wx wx

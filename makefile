@@ -2,14 +2,15 @@
 
 #for linux building
 CC=gcc
-LINEXEC=core/fsqlf
+LINEXEC=bin/fsqlf
 
 #for windows building
 WINCC=i586-mingw32msvc-gcc
 WINEXEC:=$(LINEXEC).exe
 
+GUI_EXEC=bin/gui_wx_basic
 
-EXECUTABLES=$(WINEXEC) $(LINEXEC)
+EXECUTABLES=$(WINEXEC) $(LINEXEC) $(GUI_EXEC)
 
 
 PROJECTFOLDER=fsqlf
@@ -31,6 +32,7 @@ TMP_BACKUPS=$(wildcard *~)
 
 
 
+
 $(WINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
 	$(WINCC)   $<   -o $@
 	strip $@
@@ -48,6 +50,10 @@ $(BIN_FOLDER):
 $(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
 	git archive master --prefix='$(PROJECTFOLDER)/source/' --format=zip -o $@
 	cd .. && zip -q $(PROJECTFOLDER)/$@ $(PROJECTFOLDER)/$(LINEXEC) $(PROJECTFOLDER)/$(WINEXEC) $(PROJECTFOLDER)/LICENSE $(PROJECTFOLDER)/README
+
+
+$(GUI_EXEC):   gui/gui_wx_basic.cpp
+	g++   $<   -o $@   `wx-config --cxxflags`   `wx-config --libs`
 
 
 
