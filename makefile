@@ -11,7 +11,7 @@ LINEXEC=fsqlf
 EXECUTABLES=$(WINEXEC) $(LINEXEC)
 
 PROJECTFOLDER=fsqlf
-SRC=fsqlf.l
+SRC=fsqlf.lex
 HEADERS=$(wildcard *.h)
 
 
