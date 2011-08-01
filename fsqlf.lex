@@ -171,18 +171,35 @@ int     yywrap (void)
 
 int main(int argc, char **argv)
 {
-
-    yyin =  (argc < 2)? stdin : fopen(argv[1],"r") ;
-    //yyout = fopen("output.txt","w+"); // for this to work printf should not be used. Instead try fprintf(yyout,,)
-    yyout = stdout;
+    switch(argc) // set yyin and yyout based on command line options
+    {
+    case 1:
+	yyin  = stdin;
+	yyout = stdout;
+	break;
+    case 2:
+	yyin  = fopen(argv[1],"r");
+	yyout = stdout;
+	break;
+    case 3:
+	yyin  = fopen(argv[1],"r");
+	yyout = fopen(argv[2],"w+");
+	break;
+    default:
+	fprintf(stderr,"Usage:\n", argv[0] );
+	fprintf(stderr,"\t%s \t\t\t# input from stding , output to stdout\n", argv[0] );
+	fprintf(stderr,"\t%s input_file\t\t# input from a file, output to stdout\n", argv[0] );
+	fprintf(stderr,"\t%s input_file output_file\t# input and output from files\n", argv[0] );
+	return 2;
+    }
 
     if( yyin == NULL || yyout == NULL ){
 	fprintf(stderr,"%s: unable to open %s or output\n", argv[0] , argv[1]);
-	yyterminate();
+	return 3;
     }
 
     while (yylex () != 0) ;
-    //yylex();
+
     return 0;
 }
 
