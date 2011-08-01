@@ -61,8 +61,9 @@ void kw_set(t_kw_settings* kw_set
 
 void kw_set_funct_before(t_kw_settings* kw_set, int nr, int (*f)() )
 {
+    extern FILE * yyout;
     if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
-        printf("\n -- error: kw_set_funct_before - bounds.   n = %d\n", nr);
+        fprintf(yyout,"\n -- error: kw_set_funct_before - bounds.   n = %d\n", nr);
         return;
     }
 
@@ -71,8 +72,9 @@ void kw_set_funct_before(t_kw_settings* kw_set, int nr, int (*f)() )
 
 void kw_set_funct_after(t_kw_settings* kw_set, int nr, int (*f)() )
 {
+    extern FILE * yyout;
     if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
-        printf("\n -- error: kw_set_funct_after - bounds.   n = %d\n", nr);
+        fprintf(yyout,"\n -- error: kw_set_funct_after - bounds.   n = %d\n", nr);
         return;
     }
 
@@ -82,7 +84,8 @@ void kw_set_funct_after(t_kw_settings* kw_set, int nr, int (*f)() )
 
 
 void debug_kw_settings(t_kw_settings s){
-    printf("\nspace_before %d , tab_before %d , nl_before %d , space_after %d , tab_after %d , nl_after %d\n , text %s "
+    extern FILE * yyout;
+    fprintf(yyout,"\nspace_before %d , tab_before %d , nl_before %d , space_after %d , tab_after %d , nl_after %d\n , text %s "
            ,s.space_before,s.tab_before,s.nl_before,s.space_after,s.tab_after,s.nl_after, s.text);
     //printf("after %X %X %X\n", s.funct_after[0],s.funct_after[1],s.funct_after[2]);//debug string
     //printf("before %X %X %X\n", s.funct_before[0],s.funct_before[1],s.funct_before[2]);//debug string
@@ -102,29 +105,31 @@ int debug_p();// TODO : make separate .c and .h files
 
 
 int new_line() {
+    extern FILE * yyout;
     int i=0;
-    printf("\n");
+    fprintf(yyout,"\n");
     for(i=0;i<currindent;i++)
-        printf("%s",tab_string);
+        fprintf(yyout,"%s",tab_string);
 }
 
 
 
 int sp_b(t_kw_settings s){
 // sp_b - spacing before
+    extern FILE * yyout;
     int i=0;
 
     for(i=0;i<s.nl_before;i++)
-        printf("\n");
+        fprintf(yyout,"\n");
 
     if(s.nl_before>0)
         for(i=0;i<currindent;i++)
-            printf("%s",tab_string);
+            fprintf(yyout,"%s",tab_string);
 
     for(i=0;i<s.tab_before;i++)
-        printf("%s",tab_string);
+        fprintf(yyout,"%s",tab_string);
     for(i=0;i<s.space_before;i++)
-        printf(" ");
+        fprintf(yyout," ");
 
 }
 
@@ -132,35 +137,37 @@ int sp_b(t_kw_settings s){
 
 int sp_a(t_kw_settings s){
 // sp_a - spacing after
+    extern FILE * yyout;
     int i=0;
 
     for(i=0;i<s.nl_after;i++)
-        printf("\n");
+        fprintf(yyout,"\n");
 
     if(s.nl_after>0)
         for(i=0;i<currindent;i++)
-            printf("%s",tab_string);
+            fprintf(yyout,"%s",tab_string);
 
     for(i=0;i<s.tab_after;i++)
-        printf("%s",tab_string);
+        fprintf(yyout,"%s",tab_string);
     for(i=0;i<s.space_after;i++)
-        printf(" ");
+        fprintf(yyout," ");
 
     white_space_cnt=s.nl_after+s.tab_after+s.space_after;
 }
 
 void kw_print(t_kw_settings s){
+    extern FILE * yyout;
     int i=0;
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
-    //if (s.text[0] == '(') printf("\t\t ** for - before :  i is %d", i);//debug line
+    //if (s.text[0] == '(') fprintf(yyout,"\t\t ** for - before :  i is %d", i);//debug line
 
     sp_b(s);
-    printf("%s",s.text);
+    fprintf(yyout,"%s",s.text);
     sp_a(s);
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
-    //if (s.text[0] == '(') printf("\t\t ** for - after :  i is %d", i);//debug line
+    //if (s.text[0] == '(') fprintf(yyout,"\t\t ** for - after :  i is %d", i);//debug line
 }
 
 

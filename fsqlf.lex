@@ -17,8 +17,8 @@ Helped to learn about flex a bit
 
 //redefinition of macros will probably go here if needed
 
-//#define YY_USER_ACTION printf("\n rule (%d) - ",yy_act);
-#define DMATCH(name) printf("%20s is rule (%d) : ", name , yy_act);
+//#define YY_USER_ACTION fprintf(yyout,"\n rule (%d) - ",yy_act);
+#define DMATCH(name) fprintf(yyout,"%20s is rule (%d) : ", name , yy_act);
 
 %}
 
@@ -131,11 +131,11 @@ STRING (['][^']*['])+
             };
 	
 {SPACE}+     if(white_space_cnt==0){
-                printf(" ");
+                fprintf(yyout," ");
                 white_space_cnt=1;
               }
 
-";"          printf("\n;");
+";"          fprintf(yyout,"\n;");
 {DBOBJECT}   {ECHO;white_space_cnt=0;}
 {NUMBER}     {ECHO;white_space_cnt=0;}
 
@@ -144,10 +144,10 @@ STRING (['][^']*['])+
 
 
 <<EOF>> {
-            printf("\n");
+            fprintf(yyout,"\n");
             switch(YY_START){
-                case stCOMMENTML: printf("--unterminated comment \n"); break;
-                case stSTRING: printf("--unterminated  string\n"); break;
+                case stCOMMENTML: fprintf(yyout,"--unterminated comment \n"); break;
+                case stSTRING: fprintf(yyout,"--unterminated  string\n"); break;
                 default: ;
             }
             return 0 ;
