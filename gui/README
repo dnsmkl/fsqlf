@@ -1,10 +1,47 @@
+I use debian, so I describe what I did. Your system probably is different, but at maybe this will at least give you an idea in which direction to go.
 
 
-wx widgets needs to be installed
-http://wiki.wxwidgets.org/Installing_and_configuring_under_Ubuntu
+####
+## System preparation
 
 
-# apt-get install wx2.8-headers libwxgtk2.8-0 libwxgtk2.8-dev
-# cd /usr/include
-# ls | grep wx
-# ln -sv wx-2.8/wx wx
+
+Install WxWidgets needs to be installed
+(http://wiki.wxwidgets.org/Installing_and_configuring_under_Ubuntu)
+
+  # apt-get install wx2.8-headers libwxgtk2.8-0 libwxgtk2.8-dev
+  # cd /usr/include
+  # ls | grep wx
+  # ln -sv wx-2.8/wx wx
+
+
+
+####
+## System preparation for compiling windows binaries
+
+
+
+
+Install mingw (cross) compiler
+  # apt-get install mingw32
+
+Download WxWidgets source from http://www.wxwidgets.org/
+(some forums mention that sources provided by ubuntu/debian are not good)
+
+Build WxWidgets with mingw
+  # ./configure --prefix=/usr/i586-mingw32msvc --host=i586-mingw32msvc --build=`./config.guess` --enable-unicode --disable-shared
+  # make
+  # make install
+  # cd /usr/i586-mingw32msvc/include
+  # ln -sv wx-2.8/wx wx
+
+
+
+####
+## References
+Basicaly this was done by following instructions found in
+http://wiki.wxwidgets.org/Cross-Compiling_Under_Linux
+with little adjustment by after reading
+http://forums.codeblocks.org/index.php?topic=7988.msg%msg_id%
+and
+http://old.nabble.com/mingwm10.dll-ts8920679.html
