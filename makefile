@@ -25,9 +25,6 @@ ZIP_NAME:=$(PROJECTFOLDER).$(NAME).zip
 
 LEX_OUTPUT=core/lex.yy.c
 
-# For cleaning up. These are produced by some editors.
-TMP_BACKUPS=$(wildcard *~)
-
 
 
 
@@ -42,9 +39,13 @@ $(LINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
 
 $(GUI_EXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER)
 	g++   $<   -o $@   `wx-config --cxxflags`   `wx-config --libs`
+	strip $@
 
 $(GUI_WINEXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER)
-	i586-mingw32msvc-g++  $<  -o $(GUI_WINEXEC)  `/usr/i586-mingw32msvc/bin/wx-config --libs | sed 's/-mthreads//'`    `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+	i586-mingw32msvc-g++  $<  -o $(GUI_WINEXEC) \
+		`/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'` \
+		`/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+	strip $@
 # -mthreads needs to be removed , so mingwm10.dll would not be needed
 # http://old.nabble.com/mingwm10.dll-ts8920679.html
 
@@ -68,8 +69,11 @@ $(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
 
 #ponies!
 .PHONY: test clean zip
+
+TMP_BAKUPS=$(wildcard *~) $(wildcard core/*~) $(wildcard gui/*~)
+
 clean:
-	rm -f lex.yy.c $(EXECUTABLES) $(TMP_BACKUPS) $(PROJECTFOLDER)*.zip
+	rm -f $(EXECUTABLES)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip)
 
 test:$(EXECUTABLES)
 	cat test_text.sql | ./$(LINEXEC)
