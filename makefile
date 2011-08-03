@@ -63,7 +63,12 @@ $(BIN_FOLDER):
 #archive for publishing
 $(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
 	git archive master --prefix='$(PROJECTFOLDER)/source/' --format=zip -o $@
-	cd .. && zip -q $(PROJECTFOLDER)/$@ $(PROJECTFOLDER)/$(LINEXEC) $(PROJECTFOLDER)/$(WINEXEC)  $(PROJECTFOLDER)/LICENSE $(PROJECTFOLDER)/README $(PROJECTFOLDER)/$(GUI_EXEC)
+	cd .. && zip -q $(PROJECTFOLDER)/$@  	\
+		$(PROJECTFOLDER)/LICENSE	\
+		$(PROJECTFOLDER)/README 	\
+		$(foreach  exec,$(EXECUTABLES),$(PROJECTFOLDER)/$(exec))
+
+
 
 
 
