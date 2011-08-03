@@ -80,6 +80,7 @@ TMP_BAKUPS=$(wildcard *~) $(wildcard core/*~) $(wildcard gui/*~)
 clean:
 	rm -f $(EXECUTABLES)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip)
 
+
 test:$(EXECUTABLES)
 	cat test_text.sql | ./$(LINEXEC)
 
