@@ -1,4 +1,5 @@
 #include <wx/wx.h>
+#include <wx/dir.h>
 
 class Notepad : public wxFrame {
 	public:
@@ -64,12 +65,32 @@ void Notepad::OnUnformat(wxCommandEvent &event){
 	this->text_area->SetValue(this->original_text);
 }
 
+
 void Notepad::OnFormat(wxCommandEvent &event){
-    const char * tmp_UNFORMATED = ".tmp_UNFORMATED.txt";
-    const char * tmp_FORMATED   = ".tmp_FORMATED.txt";
-    this->text_area->SaveFile(wxT(".tmp_UNFORMATED.txt"));
-    system("./fsqlf .tmp_UNFORMATED.txt .tmp_FORMATED.txt");//need error handling here
-    this->text_area->LoadFile(wxT(".tmp_FORMATED.txt"));
+    wxDir dir(wxGetCwd());
+
+#ifdef _WIN32    
+    wxString exec_file_name(wxString::FromAscii("fsqlf.exe"));
+    const char * cmd = "fsqlf.exe tmp_fsqlf_in.txt tmp_fsqlf_out.txt";
+#else    
+    wxString exec_file_name(wxString::FromAscii("fsqlf"));
+    const char * cmd = "./fsqlf   tmp_fsqlf_in.txt tmp_fsqlf_out.txt"; // wxString::FromAscii()
+#endif
+
+
+    
+    if(  !dir.HasFiles(exec_file_name)  )
+    {
+	wxMessageBox(wxT("fsqlf executable is not found"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+	return;
+    }
+
+
+    this->text_area->SaveFile(wxT("tmp_fsqlf_in.txt"));
+    system(cmd);
+    this->text_area->LoadFile(wxT("tmp_fsqlf_out.txt"));
+
+
 }
 
 void Notepad::OnSave(wxCommandEvent &event) {
