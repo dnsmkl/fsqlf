@@ -63,7 +63,7 @@ COMMENT_ML_END   [*]+[/]
 STRING (['][^']*['])+
 
 
-
+%option noyywrap
 
 %s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST
 %x stCOMMENTML stSTRING
@@ -162,11 +162,6 @@ STRING (['][^']*['])+
 #include "debuging.h"
 
 
-
-int     yywrap (void)
-{
-	return 1;
-}
 
 
 int main(int argc, char **argv)
