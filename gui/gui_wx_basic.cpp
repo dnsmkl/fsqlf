@@ -2,7 +2,7 @@
 #include <wx/dir.h>
 #include <wx/dnd.h>
 
-class Notepad : public wxFrame   {
+class Notepad : public wxFrame , public wxFileDropTarget {
 	public:
 		Notepad(); // our default constructor
 	private:
@@ -19,6 +19,7 @@ class Notepad : public wxFrame   {
 		void OnOpen(wxCommandEvent &event);
 		void OnExit(wxCommandEvent &event)	{	this->Destroy();	};
 
+		bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
 
 		enum MenuControls{	idSave = 1000, idOpen, idExit, idFormat, idUnformat	};
 
@@ -33,22 +34,13 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
 	EVT_BUTTON(idOpen, Notepad::OnOpen)
 	EVT_BUTTON(idFormat, Notepad::OnFormat)
 	EVT_BUTTON(idUnformat, Notepad::OnUnformat)
-//	EVT_ EVT_DROP_FILES
 END_EVENT_TABLE()
 
 
-class DropFiles: public wxFileDropTarget{
-public:
-    DropFiles(wxTextCtrl *text): m_Text(text){}
-    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
 
-private:
-    wxTextCtrl *m_Text;
-};
-
-bool DropFiles::OnDropFiles (wxCoord WXUNUSED(x), wxCoord WXUNUSED(y), const wxArrayString &filenames){
-    m_Text->LoadFile(filenames[0]);
-    //m_Text->SetValue(filenames.Item(0));
+bool Notepad::OnDropFiles (wxCoord WXUNUSED(x), wxCoord WXUNUSED(y), const wxArrayString &filenames){
+    this->text_area->LoadFile(filenames[0]);
+    //this->text_area->SetValue(filenames.Item(0));
 }
 
 Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wxNotepad"), wxDefaultPosition, wxSize(650,500)) {
@@ -74,7 +66,7 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wxNotepad"), wxDefaultPosition
 		this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
 		sizerh->Add(this->text_area,1,wxEXPAND,0);
 		this->SetSizer(sizerh);
-		this->text_area->SetDropTarget(new DropFiles(this->text_area));
+		this->text_area->SetDropTarget(this);
 
 }
 
