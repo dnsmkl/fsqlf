@@ -97,7 +97,7 @@ void debug_kw_settings(t_kw_settings s){
 
 t_kw_settings kw_comma, kw_select, kw_inner_join, kw_left_join, kw_right_join, kw_full_join, kw_cross_join, kw_from, kw_on, kw_where, kw_and, kw_exists, kw_in, kw_from_2, kw_as;
 
-t_kw_settings kw_left_p, kw_right_p, kw_left_p_sub, kw_right_p_sub;
+t_kw_settings kw_left_p, kw_right_p, kw_left_p_sub, kw_right_p_sub, kw_or;
 
 int debug_p();// TODO : make separate .c and .h files
 
@@ -185,6 +185,7 @@ void init_all_settings(){
    kw_set(&kw_on         ,1,0,1,0,0,1,"ON");
    kw_set(&kw_where      ,1,0,0,0,0,1,"WHERE");
    kw_set(&kw_and        ,1,0,0,0,0,1,"AND");
+   kw_set(&kw_or         ,1,0,0,0,0,1,"OR");
    kw_set(&kw_exists     ,0,0,0,0,0,1,"exists");
    kw_set(&kw_in         ,0,0,0,0,0,1,"in");
    kw_set(&kw_from_2     ,0,0,1,0,0,1,"from");

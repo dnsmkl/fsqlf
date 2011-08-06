@@ -49,6 +49,7 @@ ON      (?i:on)
 WHERE   (?i:where)
 SAMPLE  (?i:sample)
 AND     (?i:and)
+OR     (?i:or)
 EXISTS  (?i:exists)
 IN      (?i:in)
 
@@ -98,15 +99,20 @@ STRING (['][^']*['])+
 <stFROM_LEFTP>{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p); ECHO; white_space_cnt=0; }
 
 <stJOIN>{ON}    {BEGIN_STATE(stON);   kw_print(kw_on); };
-<stON>{AND}     {debug_match("{AND}");kw_print(kw_and);};
 
+
+
+                /* WHERE ... (also join conditions) */
 <stFROM,stJOIN,stON>{WHERE} {BEGIN_STATE(stWHERE ); kw_print(kw_where); };
 
-<stWHERE>{AND}      {debug_match("{AND}"); kw_print(kw_and);};
+<stWHERE,stON>{AND}      {debug_match("{AND}"); kw_print(kw_and);};
+<stWHERE,stON>{IN}    { PUSH_STATE(stIN); kw_print(kw_in);};
+<stWHERE,stON>{OR}    { debug_match("{OR}"); kw_print(kw_or);};
+
 <stWHERE>{EXISTS}   {PUSH_STATE(stEXISTS); kw_print(kw_exists); };
 <stEXISTS>{LEFTP}   {BEGIN_STATE(INITIAL ); kw_print(kw_left_p_sub); };
 
-<stWHERE>{IN}    { PUSH_STATE(stIN); kw_print(kw_in);};
+
 
 <stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or constant list expression, '(' will be printed later
 <stIN>{SELECT}   { kw_print(kw_left_p_sub); BEGIN_STATE(stSELECT); kw_print(kw_select); };
