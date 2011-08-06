@@ -3,37 +3,38 @@
 #include <wx/dnd.h>
 
 class Notepad : public wxFrame , public wxFileDropTarget {
-	public:
-		Notepad(); // our default constructor
-	private:
-		wxMenuBar* menu;
-		wxMenu* file;//menu
-		wxTextCtrl* text_area;
-		wxTextCtrl* textRight;
-		wxString original_text;
-		wxButton* b_unformat;
-		
-		void OnUnformat(wxCommandEvent &event);
-		void OnFormat(wxCommandEvent &event);
-		void OnSave(wxCommandEvent &event);
-		void OnOpen(wxCommandEvent &event);
-		void OnExit(wxCommandEvent &event)	{	this->Destroy();	};
+    public:
+    Notepad(); // our default constructor
 
-		bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
 
-		enum MenuControls{	idSave = 1000, idOpen, idExit, idFormat, idUnformat	};
+    private:
+    wxMenuBar* menu;
+    wxMenu* file;//menu
+    wxTextCtrl* text_area;
+    wxTextCtrl* textRight;
+    wxString original_text;
+    wxButton* b_unformat;
 
-		DECLARE_EVENT_TABLE()
+    void OnUnformat(wxCommandEvent &event);
+    void OnFormat(wxCommandEvent &event);
+    void OnSave(wxCommandEvent &event);
+    void OnOpen(wxCommandEvent &event);
+    void OnExit(wxCommandEvent &event)    {    this->Destroy();    };
+    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
+
+    enum MenuControls{    idSave = 1000, idOpen, idExit, idFormat, idUnformat    };
+
+    DECLARE_EVENT_TABLE()
 };
 
 BEGIN_EVENT_TABLE(Notepad, wxFrame)
-	EVT_MENU(idSave, Notepad::OnSave)
-	EVT_MENU(idOpen, Notepad::OnOpen)
-	EVT_MENU(idExit, Notepad::OnExit)
-	EVT_BUTTON(idSave, Notepad::OnSave)
-	EVT_BUTTON(idOpen, Notepad::OnOpen)
-	EVT_BUTTON(idFormat, Notepad::OnFormat)
-	EVT_BUTTON(idUnformat, Notepad::OnUnformat)
+    EVT_MENU(idSave, Notepad::OnSave)
+    EVT_MENU(idOpen, Notepad::OnOpen)
+    EVT_MENU(idExit, Notepad::OnExit)
+    EVT_BUTTON(idSave, Notepad::OnSave)
+    EVT_BUTTON(idOpen, Notepad::OnOpen)
+    EVT_BUTTON(idFormat, Notepad::OnFormat)
+    EVT_BUTTON(idUnformat, Notepad::OnUnformat)
 END_EVENT_TABLE()
 
 
@@ -54,42 +55,42 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wxNotepad"), wxDefaultPosition
     this->SetMenuBar(menu); // set our menu bar to be visible on the application
 
 
-	wxBoxSizer *sizerv = new wxBoxSizer(wxVERTICAL); // buttons on the left
-		sizerv->Add(new wxButton(this, idSave, wxT("Save")), 0, 0, 0);
-		sizerv->Add(new wxButton(this, idOpen, wxT("Open")), 0, 0, 0);
-		sizerv->Add(new wxButton(this, idFormat, wxT("Format")), 0, 0, 0);
-		this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
-		sizerv->Add(this->b_unformat, 0, 0, 0);
+    wxBoxSizer *sizerv = new wxBoxSizer(wxVERTICAL); // buttons on the left
+        sizerv->Add(new wxButton(this, idSave, wxT("Save")), 0, 0, 0);
+        sizerv->Add(new wxButton(this, idOpen, wxT("Open")), 0, 0, 0);
+        sizerv->Add(new wxButton(this, idFormat, wxT("Format")), 0, 0, 0);
+        this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
+        sizerv->Add(this->b_unformat, 0, 0, 0);
 
-	wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
-		sizerh->Add(sizerv,0,0,0);
-		this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
-		sizerh->Add(this->text_area,1,wxEXPAND,0);
-		this->SetSizer(sizerh);
-		this->text_area->SetDropTarget(this);
+    wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
+        sizerh->Add(sizerv,0,0,0);
+        this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
+        sizerh->Add(this->text_area,1,wxEXPAND,0);
+        this->SetSizer(sizerh);
+        this->text_area->SetDropTarget(this);
 
 }
 
 void Notepad::OnUnformat(wxCommandEvent &event){
-	this->text_area->Clear();
-	this->text_area->SetValue(this->original_text);
+    this->text_area->Clear();
+    this->text_area->SetValue(this->original_text);
 }
 
 
 
 void Notepad::OnFormat(wxCommandEvent &event){
     #ifdef _WIN32
-	#define EXECUTABLE_FILE "fsqlf.exe"
-	#define EXECUTION_PREFIX
+        #define EXECUTABLE_FILE "fsqlf.exe"
+        #define EXECUTION_PREFIX
     #else
-	#define EXECUTABLE_FILE "fsqlf"
-	#define EXECUTION_PREFIX "./"
+        #define EXECUTABLE_FILE "fsqlf"
+        #define EXECUTION_PREFIX "./"
     #endif
 
     wxDir dir(wxGetCwd());
     if( !dir.HasFiles(wxT(EXECUTABLE_FILE)) ){
-	wxMessageBox(wxT("Formater executable file not found: " EXECUTABLE_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
-	return;
+        wxMessageBox(wxT("Formater executable file not found: " EXECUTABLE_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+        return;
     }
 
     #define TMP_INPUT_FILE  "tmp_fsqlf_in.txt"
@@ -98,26 +99,25 @@ void Notepad::OnFormat(wxCommandEvent &event){
 
     this->text_area->SaveFile(wxT(TMP_INPUT_FILE));
     if( system( CMD ) != 0 ){
-	wxMessageBox(wxT("Command '" CMD "' returned non zero code"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+        wxMessageBox(wxT("Command '" CMD "' returned non zero code"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+        return;
     }
     this->text_area->LoadFile(wxT(TMP_OUTPUT_FILE));
-    
+
 }
 
 void Notepad::OnSave(wxCommandEvent &event) {
-	wxFileDialog *saveDialog
-	 = new wxFileDialog(this, wxT("Save File~"), wxT(""), wxT(""), wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxSAVE);
+    wxFileDialog *saveDialog = new wxFileDialog(this, wxT("Save File~"), wxT(""), wxT("")
+                                                , wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxSAVE);
 
-	if( wxID_OK == saveDialog->ShowModal() )
-		this->text_area->SaveFile(saveDialog->GetPath());
+    if( wxID_OK == saveDialog->ShowModal() ) this->text_area->SaveFile(saveDialog->GetPath());
 }
-	
+
 void Notepad::OnOpen(wxCommandEvent &event) {
-	wxFileDialog *openDialog
-	 = new wxFileDialog(this, wxT("Open File~"), wxT(""), wxT(""), wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxOPEN);
-	
-	if( wxID_OK == openDialog->ShowModal() )
-		this->text_area->LoadFile(openDialog->GetPath());
+    wxFileDialog *openDialog = new wxFileDialog(this, wxT("Open File~"), wxT(""), wxT("")
+                                                , wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxOPEN);
+
+    if( wxID_OK == openDialog->ShowModal() ) this->text_area->LoadFile(openDialog->GetPath());
 }
 
 
@@ -126,13 +126,13 @@ void Notepad::OnOpen(wxCommandEvent &event) {
 
 
 class MainApp : public wxApp {
-	public:
-	virtual bool OnInit(){
-		Notepad *main = new Notepad();
-		main->Show(true);
+    public:
+    virtual bool OnInit(){
+        Notepad *main = new Notepad();
+        main->Show(true);
 
-		return true;
-	}
+        return true;
+    }
 };
 
 IMPLEMENT_APP(MainApp)
