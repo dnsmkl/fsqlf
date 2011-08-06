@@ -66,31 +66,32 @@ void Notepad::OnUnformat(wxCommandEvent &event){
 }
 
 
+
 void Notepad::OnFormat(wxCommandEvent &event){
+    #ifdef _WIN32
+	#define EXECUTABLE_FILE "fsqlf.exe"
+	#define EXECUTION_PREFIX
+    #else
+	#define EXECUTABLE_FILE "fsqlf"
+	#define EXECUTION_PREFIX "./"
+    #endif
+
     wxDir dir(wxGetCwd());
-
-#ifdef _WIN32
-    wxString exec_file_name(wxString::FromAscii("fsqlf.exe"));
-    const char * cmd = "fsqlf.exe tmp_fsqlf_in.txt tmp_fsqlf_out.txt";
-#else
-    wxString exec_file_name(wxString::FromAscii("fsqlf"));
-    const char * cmd = "./fsqlf   tmp_fsqlf_in.txt tmp_fsqlf_out.txt"; // wxString::FromAscii()
-#endif
-
-
-
-    if(  !dir.HasFiles(exec_file_name)  )
-    {
-	wxMessageBox(wxT("fsqlf executable is not found"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+    if( !dir.HasFiles(wxT(EXECUTABLE_FILE)) ){
+	wxMessageBox(wxT("Formater executable file not found: " EXECUTABLE_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
 	return;
     }
 
+    #define TMP_INPUT_FILE  "tmp_fsqlf_in.txt"
+    #define TMP_OUTPUT_FILE "tmp_fsqlf_out.txt"
+    #define CMD   EXECUTION_PREFIX EXECUTABLE_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE
 
-    this->text_area->SaveFile(wxT("tmp_fsqlf_in.txt"));
-    system(cmd);
-    this->text_area->LoadFile(wxT("tmp_fsqlf_out.txt"));
-
-
+    this->text_area->SaveFile(wxT(TMP_INPUT_FILE));
+    if( system( CMD ) != 0 ){
+	wxMessageBox(wxT("Command '" CMD "' returned non zero code"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+    }
+    this->text_area->LoadFile(wxT(TMP_OUTPUT_FILE));
+    
 }
 
 void Notepad::OnSave(wxCommandEvent &event) {
