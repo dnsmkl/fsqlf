@@ -49,7 +49,7 @@ ON      (?i:on)
 WHERE   (?i:where)
 SAMPLE  (?i:sample)
 AND     (?i:and)
-OR     (?i:or)
+OR      (?i:or)
 EXISTS  (?i:exists)
 IN      (?i:in)
 
