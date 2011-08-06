@@ -35,8 +35,9 @@ char* state_to_char(int state){
         case stJOIN:   	state_str="stJOIN"    ; break;
         case stCOMMA:  	state_str="stCOMMA"   ; break;
         case stIN:     	state_str="stIN"      ; break;
-        case stCOMMENTML: state_str="stCOMMENTML"      ; break;
-        case stSTRING:    state_str="stSTRING"      ; break;
+        case stCOMMENTML:  state_str="stCOMMENTML"  ; break;
+        case stSTRING:     state_str="stSTRING"     ; break;
+        case stFROM_LEFTP: state_str="stFROM_LEFTP" ; break;
         default:        state_str="STATE NOT AVAILABLE";
     }
     return state_str;

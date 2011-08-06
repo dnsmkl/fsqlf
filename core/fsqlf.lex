@@ -65,7 +65,7 @@ STRING (['][^']*['])+
 
 %option noyywrap
 
-%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST
+%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP
 %x stCOMMENTML stSTRING
 
 %%
@@ -86,6 +86,16 @@ STRING (['][^']*['])+
 <stON,stFROM>{RJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_right_join); };
 <stON,stFROM>{FJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_full_join); };
 <stON,stFROM>{CJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_cross_join); };
+
+                /* parantheses in FROM clause: posible subselect , grouped joins */
+<stFROM,stJOIN>{LEFTP} { PUSH_STATE(stFROM_LEFTP); };
+<stFROM_LEFTP>{SELECT} { BEGIN_STATE(stSELECT); kw_print(kw_left_p_sub); kw_print(kw_select);};
+<stFROM_LEFTP>{IJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_inner_join); };
+<stFROM_LEFTP>{LJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_left_join); };
+<stFROM_LEFTP>{RJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_right_join); };
+<stFROM_LEFTP>{FJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_full_join); };
+<stFROM_LEFTP>{CJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_cross_join); };
+<stFROM_LEFTP>{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p); ECHO; white_space_cnt=0; }
 
 <stJOIN>{ON}    {BEGIN_STATE(stON);   kw_print(kw_on); };
 <stON>{AND}     {debug_match("{AND}");kw_print(kw_and);};
