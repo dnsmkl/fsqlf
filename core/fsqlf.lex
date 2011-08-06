@@ -4,7 +4,7 @@ Vattekkat Satheesh Babu, on Dec 30, 1998
 Helped to learn about flex a bit
 */
 
-%top{ 
+%top{
     /* This code goes at the "top" of the generated file. */
 #include <stdio.h>
 #include "global_variables.h"
@@ -119,7 +119,7 @@ STRING (['][^']*['])+
 
 
 {LEFTP}     { kw_print(kw_left_p); };
-{RIGHTP}    { 
+{RIGHTP}    {
                 POP_STATE();
                 if(subselect_level && p_level()-1 <= 0){
                     kw_print(kw_right_p_sub);

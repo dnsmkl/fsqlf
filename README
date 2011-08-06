@@ -50,7 +50,7 @@ Full license is available in file `LICENCE' which you should have received with 
 
 3. Current TODO lists:
     basic - to have working version 1
-    - `in' statements [done] 
+    - `in' statements [done]
     - comments one line [done]
     - comments multiline [done]
     - strings [done]

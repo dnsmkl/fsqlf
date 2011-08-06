@@ -4,7 +4,7 @@
 #include "settings.h"
 
 
-// TODO : 
+// TODO :
 // int ctr[YY_NUM_RULES];
 // #define YY_USER_ACTION ++ctr[yy_act]
 // yy_act gives the number of the matched rule (rules are numbered starting with 1)
@@ -47,10 +47,10 @@ int debug_stchange(int newstate_int)
 {
     char* currentstate;
     char* newstate;
-    
+
     currentstate=state_to_char(YY_START);
     newstate=state_to_char(newstate_int);
-    
+
     if(debug_level & DEBUGSTATES)printf("\n\t*   %s->%s   *\n", currentstate,newstate);
 }
 

@@ -50,7 +50,7 @@ $(GUI_WINEXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER)
 # http://old.nabble.com/mingwm10.dll-ts8920679.html
 
 
-  
+
 
 #some prerequisites
 $(LEX_OUTPUT): $(SRC) $(HEADERS)

@@ -28,7 +28,7 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
 	EVT_MENU(idOpen, Notepad::OnOpen)
 	EVT_MENU(idExit, Notepad::OnExit)
 	EVT_BUTTON(idSave, Notepad::OnSave)
-	EVT_BUTTON(idOpen, Notepad::OnOpen) 
+	EVT_BUTTON(idOpen, Notepad::OnOpen)
 	EVT_BUTTON(idFormat, Notepad::OnFormat)
 	EVT_BUTTON(idUnformat, Notepad::OnUnformat)
 END_EVENT_TABLE()
@@ -69,16 +69,16 @@ void Notepad::OnUnformat(wxCommandEvent &event){
 void Notepad::OnFormat(wxCommandEvent &event){
     wxDir dir(wxGetCwd());
 
-#ifdef _WIN32    
+#ifdef _WIN32
     wxString exec_file_name(wxString::FromAscii("fsqlf.exe"));
     const char * cmd = "fsqlf.exe tmp_fsqlf_in.txt tmp_fsqlf_out.txt";
-#else    
+#else
     wxString exec_file_name(wxString::FromAscii("fsqlf"));
     const char * cmd = "./fsqlf   tmp_fsqlf_in.txt tmp_fsqlf_out.txt"; // wxString::FromAscii()
 #endif
 
 
-    
+
     if(  !dir.HasFiles(exec_file_name)  )
     {
 	wxMessageBox(wxT("fsqlf executable is not found"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
