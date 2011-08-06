@@ -37,11 +37,11 @@ $(LINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
 	gcc  $<   -o $@
 	strip $@
 
-$(GUI_EXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER)
+$(GUI_EXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER) $(LINEXEC)
 	g++   $<   -o $@   `wx-config --cxxflags`   `wx-config --libs`
 	strip $@
 
-$(GUI_WINEXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER)
+$(GUI_WINEXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER) $(WINEXEC)
 	i586-mingw32msvc-g++  $<  -o $(GUI_WINEXEC) \
 		`/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'` \
 		`/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
