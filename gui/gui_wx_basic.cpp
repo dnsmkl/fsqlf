@@ -104,6 +104,8 @@ void Notepad::OnFormat(wxCommandEvent &event){
     }
     this->text_area->LoadFile(wxT(TMP_OUTPUT_FILE));
 
+    if( !wxRemoveFile(wxT(TMP_INPUT_FILE))  ) wxMessageBox(wxT("Failed to remove temporary file " TMP_INPUT_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+    if( !wxRemoveFile(wxT(TMP_OUTPUT_FILE)) ) wxMessageBox(wxT("Failed to remove temporary file " TMP_OUTPUT_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
 }
 
 void Notepad::OnSave(wxCommandEvent &event) {
