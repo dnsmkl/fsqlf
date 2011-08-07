@@ -41,7 +41,10 @@ typedef struct t_kw_settings {
 void kw_set(t_kw_settings* kw_set
     , int nl_before, int tab_before, int space_before
     , int nl_after , int tab_after , int space_after
-    , char * text )
+    , char * text
+    , int (*fb1)()  , int (*fb2)()  , int (*fb3)() 
+    , int (*fa1)()  , int (*fa2)()  , int (*fa3)() 
+    )
 {
     kw_set->nl_before    = nl_before;
     kw_set->tab_before   = tab_before;
@@ -52,34 +55,18 @@ void kw_set(t_kw_settings* kw_set
     kw_set->space_after  = space_after;
     kw_set->text         = text;
 
-    kw_set->funct_before[0] = NULL;
-    kw_set->funct_after[0]  = NULL;
-
+    kw_set->funct_before[0] = fb1;
+    kw_set->funct_after [0] = fa1;
+    
+    kw_set->funct_before[1] = fb2;
+    kw_set->funct_after [1] = fa2;
+    
+    kw_set->funct_before[2] = fb3;
+    kw_set->funct_after [2] = fa3;
 }
 
 
 
-void kw_set_funct_before(t_kw_settings* kw_set, int nr, int (*f)() )
-{
-    extern FILE * yyout;
-    if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
-        fprintf(yyout,"\n -- error: kw_set_funct_before - bounds.   n = %d\n", nr);
-        return;
-    }
-
-    kw_set->funct_before[nr] = f;
-}
-
-void kw_set_funct_after(t_kw_settings* kw_set, int nr, int (*f)() )
-{
-    extern FILE * yyout;
-    if( nr<0 || nr>=KW_FUNCT_ARRAY_SIZE) {
-        fprintf(yyout,"\n -- error: kw_set_funct_after - bounds.   n = %d\n", nr);
-        return;
-    }
-
-    kw_set->funct_after[nr] = f;
-}
 
 
 
@@ -175,24 +162,12 @@ void kw_print(t_kw_settings s){
 
 
 void init_all_settings(){
-    #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,STRING ) \
-        kw_set( &NAME,nlb,tb,sb,nla,ta,sa,STRING) ;
+    #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,STRING , fb1,fb2,fb3,fa1,fa2,fa3) \
+        kw_set( &NAME,nlb,tb,sb,nla,ta,sa,STRING , fb1,fb2,fb3,fa1,fa2,fa3) ;
     #include "t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
 
-   kw_set_funct_before( &kw_left_p     ,0, &debug_p   );
-   kw_set_funct_before( &kw_left_p     ,1, &inc_LEFTP );
 
-   kw_set_funct_before( &kw_right_p    ,0, &debug_p   );
-   kw_set_funct_before( &kw_right_p    ,1, &inc_RIGHTP);
-
-   kw_set_funct_before( &kw_left_p_sub ,0, &debug_p  );
-   kw_set_funct_before( &kw_left_p_sub ,1, &inc_LEFTP);
-   kw_set_funct_after( &kw_left_p_sub ,0, &begin_SUB  );
-
-   kw_set_funct_before( &kw_right_p_sub,0, &debug_p   );
-   kw_set_funct_before( &kw_right_p_sub,1, &inc_RIGHTP);
-   kw_set_funct_before( &kw_right_p_sub,2, &end_SUB   );
 }
 
 
