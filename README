@@ -5,64 +5,82 @@ Full license is available in file `LICENCE' which you should have received with 
 
 
 
-1. Compilation
-2. Current state of development
-3. TODO list
+
+1. Current state of development
+2. Compilation
+2.1 Requirements
+2.2 Compilation process
+3. TODO lists
 4. Usage
+4.1 Usage commandline
+4.2 Usage graphical user interface
 5. Project site
+APPENDIX.1 - wxWidgets installation
 
 
 
 
-1. Compilation
-1.1 Requirements
-    Basicaly you just need:
-    - flex (http://flex.sourceforge.net/)
-    - C compiler
-
-1.2 Compilation process
-    Basicaly you just need to use flex on `fsqlf.l' and then compile the result of it.
-    In my case (flex produces `lex.yy.c', and I use `gcc' compiler on linux):
-    > flex fsqlf.l  # produce C file `lex.yy.c'
-    > gcc lex.yy.c  # produce executable a.out
-
-    If you use linux and have installed needed programs (flex, gcc, make, mingw32, zip) then you can use makefile to compile
-    > make all      # Compile source for LINUX and WINDOWS into excutables named `fsqlf' and `fsqlf.exe' respectivly
-    > make test     # Compile and run program on test file `test.sql' and print output to console
-    > make zip      # Create zip archive with executables and source code binaries (for publishing)
-    > make clean    # Leave only source code files. Intended to remove all files created with other make commands
-
-
-
-
-2. Current state of development
-    `fsqlf' can allready be used to some level. My use case is formating generated SQL code (making something readable out of one long long line of SQL code)
+1. Current state of development
+    My use case is formating generated SQL code - make something readable out of one long line of SQL code
 
     Current list of implemented capabilities:
     - indent subqueries
-    - new line for some needed cases (items in SELECT list. Keywords FROM, JOIN, ON, AND)
-    - capitalisation of some recognised keywords
+    - new line in cases where it seems appropriate (items in SELECT list. Keywords FROM, JOIN, ON, WHERE, AND, OR )
+    - capitalisation of recognised keywords (not all - I like some keywrods lowercase, but this should be configurable eventualy)
 
-    Though as I have mentioned it is allready a bit usable, there is still much to do.
-
-
+    Though it is allready a bit usable, there is still much to do.
 
 
-3. Current TODO lists:
+
+2. Compilation
+2.1 Requirements
+    The following list actualy should be suficient. Look into `makefile' for compilation instructions
+    - flex         # http://flex.sourceforge.net/
+    - C compiler   #
+    - wxWidgets    # needed for Graphical User Interface (GUI)
+    - C++ compiler # for compiling GUI
+
+    Stuff that I got installed:
+    - flex      # http://flex.sourceforge.net/
+    - gcc
+    - wxWidgets # needed for Graphical User Interface (GUI). If you want to build Windows executables on Linux machine see ``APPENDIX.1 - wxWidgets installation''
+    - g++       # for compiling GUI
+    - make      # This makes all compiling automated
+    - mingw32   # cross compiler which is used to produce Windows executables under Linux
+    - zip       # used only for creating zip archive with source code and executable files
+
+
+
+2.2 Compilation process
+    General instructions
+    - Use `flex' on core/fsqlf.lex
+    - Compile its output with C compiler and name the executable `fsqlf.exe' if you on Windows and `fsqlf' in other cases
+    - Compile `gui/gui_wx_basic.cpp' with C++ compiler
+    - Put both executables `fsqlf' and `gui_wx_basic' into one directory.
+
+    If you use Linux and have installed same programs as I do (see section 2.1), then you can use the make file
+    > make all      # Compile source for LINUX and WINDOWS. Excutables can be found in `bin/' directory:  `fsqlf', `fsqlf.exe', `gui_wx_basic', `gui_wx_basic.exe'
+    > make test     # Compile and run program on test file `test.sql' and print output to console
+    > make zip      # Create zip archive with executables and source code binaries (for publishing)
+    > make clean    # Remove all files created with other make commands
+
+
+
+3. TODO lists:
     basic - to have working version 1
     - `in' statements [done]
     - comments one line [done]
     - comments multiline [done]
     - strings [done]
-    - subqueries in FROM/JOIN parts
-    - OR
+    - subqueries in FROM/JOIN parts [done]
+    - OR [done]
     - paranthesis in restrictions (e.g.   AND (a=1 OR b=1)   )
-    - paranthesis in FROM/JOIN parts (e.g.   FROM X LEFT JOIN (Y JOIN Z)   )
+    - paranthesis in FROM/JOIN parts (e.g.   FROM X LEFT JOIN (Y JOIN Z)   ) [sort of done: program does not crash if it encounters this, but I can not think of any good way to actualy format it]
 
     extention #1 - more comfortable usage (next level)
     - formating configurations
-    - reading command line arguments
-    - GUI
+    - reading command line arguments [in progress: now only input/output arguments]
+    - GUI [in progress: need to polish some stuff, but usable, has drag'n'drop functionality]
 
     extension #2 - better formating
     - `case' statements (redo stack functions; add handling)
@@ -74,21 +92,80 @@ Full license is available in file `LICENCE' which you should have received with 
 
 
 
+4.1 Usage commandline
+    Windows
+        bin/fsqlf.exe                         # read from stdin, write to stdout
+        bin/fsqlf.exe input_file              # read from file, write to stdout
+        bin/fsqlf.exe input_file output_file  # use files for reading and writing
+    Usage in Linux is equivalent, just without the extention `.exe'
 
-4. Usage
-    Currently program uses STDIN for input and STDOUT for output.
-    That means only usage possible is from command line (`command prompt' `cmd.exe' in windows) by redirecting input/output if needed
-    Example:
-    Lets say you have file "input_file.sql" which contains SQL code you want to format and you want the output to go into file "output_file.sql" then you do:
-    window
-        fsqlf.exe < input_file.sql > output_file.sql
 
-    linux
-        ./fsqlf < input_file.sql > output_file.sql
 
+4.2 Usage graphical user interface
+    Go to directory `bin/' (this is needed so `gui_wx_basic.exe' would be in the same folder as `fsqlf.exe')
+    In Windows execute `gui_wx_basic.exe'
+    In Linux execute `gui_wx_basic'
+
+    When it starts, just fill your code into the formater window and press `Format'
 
 
 
 5. Project site
-    Most recent source code can be found in sourceforge.
+    Most recent source code can be found at sourceforge.
     Project site address http://sourceforge.net/projects/fsqlf/
+
+
+
+
+
+
+
+
+
+
+
+
+##################################################
+##################################################
+##################################################
+APPENDIX.1 - wxWidgets installation
+
+I use debian, so I describe what I did. Your system probably is different, but maybe this will at least give you an idea in which direction to go.
+
+
+##
+## System preparation
+##
+Install WxWidgets needs to be installed
+(http://wiki.wxwidgets.org/Installing_and_configuring_under_Ubuntu)
+
+  # apt-get install wx2.8-headers libwxgtk2.8-0 libwxgtk2.8-dev
+  # cd /usr/include
+  # ls | grep wx
+  # ln -sv wx-2.8/wx wx
+
+
+##
+## System preparation for compiling windows binaries
+##
+Install mingw (cross) compiler
+  # apt-get install mingw32
+
+Download wxWidgets source from http://www.wxwidgets.org/
+(some forums mention that sources provided by ubuntu/debian are not good)
+
+Build wxWidgets with mingw
+  # ./configure --prefix=/usr/i586-mingw32msvc --host=i586-mingw32msvc --build=`./config.guess` --enable-unicode --disable-shared
+  # make
+  # make install
+  # cd /usr/i586-mingw32msvc/include
+  # ln -sv wx-2.8/wx wx
+
+
+
+##
+## References
+##
+This was done by following instructions found in   http://wiki.wxwidgets.org/Cross-Compiling_Under_Linux
+with little adjustment by after reading   http://forums.codeblocks.org/index.php?topic=7988.msg%msg_id%
+and   http://old.nabble.com/mingwm10.dll-ts8920679.html
