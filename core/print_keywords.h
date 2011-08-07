@@ -38,37 +38,6 @@ typedef struct t_kw_settings {
 
 
 
-void kw_set(t_kw_settings* kw_set
-    , int nl_before, int tab_before, int space_before
-    , int nl_after , int tab_after , int space_after
-    , char * text
-    , int (*fb1)()  , int (*fb2)()  , int (*fb3)() 
-    , int (*fa1)()  , int (*fa2)()  , int (*fa3)() 
-    )
-{
-    kw_set->nl_before    = nl_before;
-    kw_set->tab_before   = tab_before;
-    kw_set->space_before = space_before;
-
-    kw_set->nl_after     = nl_after;
-    kw_set->tab_after    = tab_after;
-    kw_set->space_after  = space_after;
-    kw_set->text         = text;
-
-    kw_set->funct_before[0] = fb1;
-    kw_set->funct_after [0] = fa1;
-    
-    kw_set->funct_before[1] = fb2;
-    kw_set->funct_after [1] = fa2;
-    
-    kw_set->funct_before[2] = fb3;
-    kw_set->funct_after [2] = fa3;
-}
-
-
-
-
-
 
 void debug_kw_settings(t_kw_settings s){
     extern FILE * yyout;
@@ -162,12 +131,24 @@ void kw_print(t_kw_settings s){
 
 
 void init_all_settings(){
-    #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,STRING , fb1,fb2,fb3,fa1,fa2,fa3) \
-        kw_set( &NAME,nlb,tb,sb,nla,ta,sa,STRING , fb1,fb2,fb3,fa1,fa2,fa3) ;
+    #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,TEXT , fb1,fb2,fb3,fa1,fa2,fa3) \
+        NAME.nl_before    = nlb;    \
+        NAME.tab_before   = tb;     \
+        NAME.space_before = sb;     \
+                                     \
+        NAME.nl_after     = nla;    \
+        NAME.tab_after    = ta;     \
+        NAME.space_after  = sa;     \
+        NAME.text         = TEXT;   \
+                                     \
+        NAME.funct_before[0] = fb1; \
+        NAME.funct_before[1] = fb2; \
+        NAME.funct_before[2] = fb3; \
+        NAME.funct_after [0] = fa1; \
+        NAME.funct_after [1] = fa2; \
+        NAME.funct_after [2] = fa3;
     #include "t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
-
-
 }
 
 
