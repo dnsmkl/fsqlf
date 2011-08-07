@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 	break;
     default:
 	fprintf(stderr,"Usage:\n", argv[0] );
-	fprintf(stderr,"\t%s \t\t\t# input from stding , output to stdout\n", argv[0] );
+	fprintf(stderr,"\t%s \t\t\t# input from stdin, output to stdout\n", argv[0] );
 	fprintf(stderr,"\t%s input_file\t\t# input from a file, output to stdout\n", argv[0] );
 	fprintf(stderr,"\t%s input_file output_file\t# input and output from files\n", argv[0] );
 	return 2;
