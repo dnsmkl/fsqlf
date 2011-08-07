@@ -5,16 +5,13 @@
 #include "global_variables.h"
 #include <stdio.h>
 
-#define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
-#define PUSH_STATE(NEWSTATE)  push_stack(YY_START); /*printf("\nPUSH");*/ BEGIN_STATE(NEWSTATE);
-#define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
+
 
 // tab_string is needed to be able switch between spaces "    " and tabs '\t'
 char * tab_string = "    ";
 
 
-// YY_USER_INIT is lex macro executed before initialising parser
-#define YY_USER_INIT init_all_settings();
+
 
 
 #define KW_FUNCT_ARRAY_SIZE (3)
@@ -38,7 +35,6 @@ typedef struct t_kw_settings {
 
 
 
-
 void debug_kw_settings(t_kw_settings s){
     extern FILE * yyout;
     fprintf(yyout,"\nspace_before %d , tab_before %d , nl_before %d , space_after %d , tab_after %d , nl_after %d\n , text %s "
@@ -49,15 +45,7 @@ void debug_kw_settings(t_kw_settings s){
 
 
 
-
-#define T_KW_SETTINGS_MACRO( NAME , ... ) \
-    t_kw_settings NAME ;
-#include "t_kw_settings_list.def"
-#undef T_KW_SETTINGS_MACRO
-
-
 int debug_p();// TODO : make separate .c and .h files
-
 
 
 
@@ -112,6 +100,8 @@ int sp_a(t_kw_settings s){
     white_space_cnt=s.nl_after+s.tab_after+s.space_after;
 }
 
+
+
 void kw_print(t_kw_settings s){
     extern FILE * yyout;
     int i=0;
@@ -129,18 +119,24 @@ void kw_print(t_kw_settings s){
 
 
 
+#define T_KW_SETTINGS_MACRO( NAME , ... ) \
+    t_kw_settings NAME ;
+#include "t_kw_settings_list.def"
+#undef T_KW_SETTINGS_MACRO
+
+
 
 void init_all_settings(){
     #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,TEXT , fb1,fb2,fb3,fa1,fa2,fa3) \
         NAME.nl_before    = nlb;    \
         NAME.tab_before   = tb;     \
         NAME.space_before = sb;     \
-                                     \
+                                    \
         NAME.nl_after     = nla;    \
         NAME.tab_after    = ta;     \
         NAME.space_after  = sa;     \
         NAME.text         = TEXT;   \
-                                     \
+                                    \
         NAME.funct_before[0] = fb1; \
         NAME.funct_before[1] = fb2; \
         NAME.funct_before[2] = fb3; \
@@ -153,4 +149,3 @@ void init_all_settings(){
 
 
 #endif
-

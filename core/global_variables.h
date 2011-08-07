@@ -7,23 +7,22 @@ int currindent=0;
 int left_p  = 0;
 int right_p = 0;
 int subselect_level = 0;
+int white_space_cnt = 0;
 
-int white_space_cnt;
-
-int inc_LEFTP() {left_p++ ;}
-int inc_RIGHTP(){right_p++;}
-
-int p_level(){
-    return left_p - right_p - subselect_level;
-}
-
+int inc_LEFTP() { left_p++  ; }
+int inc_RIGHTP(){ right_p++ ; }
+int p_level()  { return left_p - right_p - subselect_level ; }
 int begin_SUB(){ subselect_level++; currindent++; }
 int end_SUB()  { subselect_level--; currindent--; }
+
+
+
 
 
 #define STATE_STACK_SIZE (100)
 int state_stack[STATE_STACK_SIZE];
 int state_stack_index;
+
 
 void init_stack()
 {
@@ -46,9 +45,6 @@ int peek_stack()
 {   if(state_stack_index <= 0 || state_stack_index >= STATE_STACK_SIZE) printf("\n --ERORR: peek_stack() - bounds\n");
     return state_stack[state_stack_index-1];
 }
-
-
-
 
 
 #endif

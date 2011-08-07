@@ -14,11 +14,15 @@ Helped to learn about flex a bit
 
 
 %{
-
-//redefinition of macros will probably go here if needed
-
 //#define YY_USER_ACTION fprintf(yyout,"\n rule (%d) - ",yy_act);
 #define DMATCH(name) fprintf(yyout,"%20s is rule (%d) : ", name , yy_act);
+
+#define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
+#define PUSH_STATE(NEWSTATE)  push_stack(YY_START); /*printf("\nPUSH");*/ BEGIN_STATE(NEWSTATE);
+#define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
+
+// YY_USER_INIT is lex macro executed before initialising parser
+#define YY_USER_INIT init_all_settings();
 
 %}
 
