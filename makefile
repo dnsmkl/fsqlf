@@ -14,7 +14,7 @@ EXECUTABLES=$(WINEXEC) $(LINEXEC) $(GUI_EXEC) $(GUI_WINEXEC)
 
 PROJECTFOLDER=fsqlf
 SRC=core/fsqlf.lex
-HEADERS=$(wildcard core/*.h)
+HEADERS=$(wildcard core/*.h core/*.def)
 
 # where all executables will be put
 BIN_FOLDER=bin/

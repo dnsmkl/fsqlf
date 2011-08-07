@@ -94,10 +94,11 @@ void debug_kw_settings(t_kw_settings s){
 
 
 
+#define T_KW_SETTINGS_MACRO( NAME , ... ) \
+    t_kw_settings NAME ;
+#include "t_kw_settings_list.def"
+#undef T_KW_SETTINGS_MACRO
 
-t_kw_settings kw_comma, kw_select, kw_inner_join, kw_left_join, kw_right_join, kw_full_join, kw_cross_join, kw_from, kw_on, kw_where, kw_and, kw_exists, kw_in, kw_from_2, kw_as;
-
-t_kw_settings kw_left_p, kw_right_p, kw_left_p_sub, kw_right_p_sub, kw_or;
 
 int debug_p();// TODO : make separate .c and .h files
 
@@ -174,26 +175,10 @@ void kw_print(t_kw_settings s){
 
 
 void init_all_settings(){
-   kw_set(&kw_comma      ,1,0,0,0,0,1,",");
-   kw_set(&kw_select     ,1,0,0,1,0,2,"SELECT");
-   kw_set(&kw_inner_join ,1,0,0,0,0,1,"JOIN");
-   kw_set(&kw_left_join  ,1,0,0,0,0,1,"LEFT JOIN");
-   kw_set(&kw_right_join ,1,0,0,0,0,1,"RIGHT JOIN");
-   kw_set(&kw_full_join  ,1,0,0,0,0,1,"FULL JOIN");
-   kw_set(&kw_cross_join ,1,0,0,0,0,1,"CROSS JOIN");
-   kw_set(&kw_from       ,1,0,0,0,0,1,"FROM");
-   kw_set(&kw_on         ,1,0,1,0,0,1,"ON");
-   kw_set(&kw_where      ,1,0,0,0,0,1,"WHERE");
-   kw_set(&kw_and        ,1,0,0,0,0,1,"AND");
-   kw_set(&kw_or         ,1,0,0,0,0,1,"OR");
-   kw_set(&kw_exists     ,0,0,0,0,0,1,"exists");
-   kw_set(&kw_in         ,0,0,0,0,0,1,"in");
-   kw_set(&kw_from_2     ,0,0,1,0,0,1,"from");
-   kw_set(&kw_as         ,0,0,1,0,0,1,"as");
-   kw_set(&kw_left_p     ,0,0,0,0,0,0,"(");
-   kw_set(&kw_right_p    ,0,0,0,0,0,0,")");
-   kw_set(&kw_left_p_sub ,1,0,0,0,0,0,"(");
-   kw_set(&kw_right_p_sub,1,0,0,1,0,0,")");
+    #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,STRING ) \
+        kw_set( &NAME,nlb,tb,sb,nla,ta,sa,STRING) ;
+    #include "t_kw_settings_list.def"
+    #undef T_KW_SETTINGS_MACRO
 
    kw_set_funct_before( &kw_left_p     ,0, &debug_p   );
    kw_set_funct_before( &kw_left_p     ,1, &inc_LEFTP );
