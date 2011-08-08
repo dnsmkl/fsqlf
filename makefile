@@ -81,7 +81,7 @@ clean:
 	rm -f $(EXECUTABLES)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip)
 
 
-test:$$(LINEXEC)
+test:$(LINEXEC)
 	cat test_text.sql | ./$(LINEXEC)
 
 zip:$(ZIP_NAME)
