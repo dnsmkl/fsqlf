@@ -76,13 +76,13 @@ $(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
 .PHONY: test clean zip
 
 TMP_BAKUPS=$(wildcard *~) $(wildcard core/*~) $(wildcard gui/*~)
-
 clean:
 	rm -f $(EXECUTABLES)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip)
 
-
+TESTFILE=test_text.sql
 test:$(LINEXEC)
-	cat test_text.sql | ./$(LINEXEC)
+	./$(LINEXEC) $(TESTFILE)
+#tr '\n' ' ' < test_text.sql | sed 's/ +/ /g' | diff test_text.sql - 
 
 zip:$(ZIP_NAME)
 
