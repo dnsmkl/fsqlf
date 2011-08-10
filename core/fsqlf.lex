@@ -14,8 +14,11 @@ Helped to learn about flex a bit
 
 
 %{
-//#define YY_USER_ACTION fprintf(yyout,"\n rule (%d) - ",yy_act);
+char * state_to_char(int);
+//#define YY_USER_ACTION fprintf(yyout,"\n %10s - rule (%d) - line(%d) " ,state_to_char(YY_START),yy_act, __LINE__);
 #define DMATCH(name) fprintf(yyout,"%20s is rule (%d) : ", name , yy_act);
+
+
 
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
 #define PUSH_STATE(NEWSTATE)  push_stack(YY_START); /*printf("\nPUSH");*/ BEGIN_STATE(NEWSTATE);
@@ -56,6 +59,7 @@ AND     (?i:and)
 OR      (?i:or)
 EXISTS  (?i:exists)
 IN      (?i:in)
+COMPARISON (=|<>|<=|>=|<|>)
 
 COMMA [,]
 
@@ -70,7 +74,7 @@ STRING (['][^']*['])+
 
 %option noyywrap
 
-%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP
+%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB
 %x stCOMMENTML stSTRING
 
 %%
@@ -93,8 +97,6 @@ STRING (['][^']*['])+
 <stON,stFROM>{CJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_cross_join); };
 
                 /* parantheses in FROM clause: posible subselect , grouped joins */
-<stFROM,stJOIN>{LEFTP} { PUSH_STATE(stFROM_LEFTP); };
-<stFROM_LEFTP>{SELECT} { BEGIN_STATE(stSELECT); kw_print(kw_left_p_sub); kw_print(kw_select);};
 <stFROM_LEFTP>{IJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_inner_join); };
 <stFROM_LEFTP>{LJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_left_join); };
 <stFROM_LEFTP>{RJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_right_join); };
@@ -108,17 +110,15 @@ STRING (['][^']*['])+
 
                 /* WHERE ... (also join conditions) */
 <stFROM,stJOIN,stON>{WHERE} {BEGIN_STATE(stWHERE ); kw_print(kw_where); };
+<stWHERE,stON,stJOIN>{AND}   { debug_match("{AND}"); kw_print(kw_and);};
+<stWHERE,stON,stJOIN>{OR}    { debug_match("{OR}"); kw_print(kw_or);};
 
-<stWHERE,stON>{AND}      {debug_match("{AND}"); kw_print(kw_and);};
-<stWHERE,stON>{IN}    { PUSH_STATE(stIN); kw_print(kw_in);};
-<stWHERE,stON>{OR}    { debug_match("{OR}"); kw_print(kw_or);};
-
-<stWHERE>{EXISTS}   {PUSH_STATE(stEXISTS); kw_print(kw_exists); };
-<stEXISTS>{LEFTP}   {BEGIN_STATE(INITIAL ); kw_print(kw_left_p_sub); };
+<stWHERE>{EXISTS}   {kw_print(kw_exists); };
 
 
 
-<stIN>{LEFTP}    { ; }; // at this point its not clear if its subquery or constant list expression, '(' will be printed later
+
+<stWHERE,stON>{IN}  { kw_print(kw_in);};
 <stIN>{SELECT}   { kw_print(kw_left_p_sub); BEGIN_STATE(stSELECT); kw_print(kw_select); };
 <stIN>{NONSPACE} { BEGIN_STATE(stINLIST);kw_print(kw_left_p); ECHO;};
 
@@ -138,7 +138,10 @@ STRING (['][^']*['])+
 {STRING}               {ECHO;white_space_cnt=0;};
 
 
-{LEFTP}     { kw_print(kw_left_p); };
+{LEFTP}     { PUSH_STATE(stP_SUB); };
+<stP_SUB>{SELECT}   { BEGIN_STATE(stSELECT); kw_print(kw_left_p_sub); kw_print(kw_select);};
+<stP_SUB>{NONSPACE} { BEGIN_STATE(peek_stack());     kw_print(kw_left_p); ECHO; white_space_cnt=0; } 
+
 {RIGHTP}    {
                 POP_STATE();
                 if(subselect_level && p_level()-1 <= 0){
