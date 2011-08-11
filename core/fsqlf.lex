@@ -40,6 +40,8 @@ DBOBJECT    ({ID}[.]){0,2}{ID}
 LEFTP   [(]
 RIGHTP  [)]
 
+UNION   (?i:UNION)
+UNION_ALL (?i:UNION[ ]ALL)
 SELECT  (?i:select|sel)
 AS      (?i:as)
 FROM    (?i:from)
@@ -77,6 +79,9 @@ STRING (['][^']*['])+
 %x stCOMMENTML stSTRING
 
 %%
+
+{UNION}      {BEGIN_STATE(INITIAL);kw_print(kw_union)    ;};
+{UNION_ALL}  {BEGIN_STATE(INITIAL);kw_print(kw_union_all);};
                 /* SELECT ... FROM */
 <INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); kw_print(kw_select); };
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
@@ -129,7 +134,7 @@ STRING (['][^']*['])+
 
 {LEFTP}     { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}   { BEGIN_STATE(stSELECT); kw_print(kw_left_p_sub); kw_print(kw_select);};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack());     kw_print(kw_left_p); ECHO; white_space_cnt=0; } 
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack());     kw_print(kw_left_p); ECHO; white_space_cnt=0; }
 
 {RIGHTP}    {
                 POP_STATE();
@@ -142,11 +147,14 @@ STRING (['][^']*['])+
 
             };
 
+
+
 {STRING}     {ECHO;white_space_cnt=0;};
-{SPACE}+     if(white_space_cnt==0){
-                fprintf(yyout," ");
+{SPACE}+     {
+                if(white_space_cnt==0) fprintf(yyout," ");
                 white_space_cnt=1;
-              }
+             }
+
 
 ";"          fprintf(yyout,"\n;");
 {DBOBJECT}   {ECHO;white_space_cnt=0;}

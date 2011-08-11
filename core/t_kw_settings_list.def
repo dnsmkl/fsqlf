@@ -18,3 +18,5 @@ T_KW_SETTINGS_MACRO( kw_left_p     ,0,0,0,0,0,0,"("          ,&debug_p,&inc_LEFT
 T_KW_SETTINGS_MACRO( kw_right_p    ,0,0,0,0,0,0,")"          ,&debug_p,&inc_RIGHTP,NULL    ,NULL      ,NULL,NULL )
 T_KW_SETTINGS_MACRO( kw_left_p_sub ,1,0,0,0,0,0,"("          ,&debug_p,&inc_LEFTP ,NULL    ,&begin_SUB,NULL,NULL )
 T_KW_SETTINGS_MACRO( kw_right_p_sub,1,0,0,1,0,0,")"          ,&debug_p,&inc_RIGHTP,&end_SUB,NULL      ,NULL,NULL )
+T_KW_SETTINGS_MACRO( kw_union      ,2,1,0,1,0,0,"UNION"      ,NULL,NULL,NULL,NULL,NULL,NULL )
+T_KW_SETTINGS_MACRO( kw_union_all  ,2,1,0,1,0,0,"UNION ALL"  ,NULL,NULL,NULL,NULL,NULL,NULL )
