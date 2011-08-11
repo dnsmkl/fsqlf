@@ -34,7 +34,6 @@ DIGIT   [0-9]
 NUMBER  {DIGIT}+([.]{DIGIT}+)?
 ID      [A-Za-z_][A-Za-z0-9_]*
 SPACE   [ \t\n]
-NONSPACE {NUMBER}|{STRING}|{DBOBJECT}
 DBOBJECT    ({ID}[.]){0,2}{ID}
 
 
@@ -118,16 +117,6 @@ STRING (['][^']*['])+
 
 
 
-<stWHERE,stON>{IN}  { kw_print(kw_in);};
-<stIN>{SELECT}   { kw_print(kw_left_p_sub); BEGIN_STATE(stSELECT); kw_print(kw_select); };
-<stIN>{NONSPACE} { BEGIN_STATE(stINLIST);kw_print(kw_left_p); ECHO;};
-
-
-
-
-
-
-
 {COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
@@ -140,7 +129,7 @@ STRING (['][^']*['])+
 
 {LEFTP}     { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}   { BEGIN_STATE(stSELECT); kw_print(kw_left_p_sub); kw_print(kw_select);};
-<stP_SUB>{NONSPACE} { BEGIN_STATE(peek_stack());     kw_print(kw_left_p); ECHO; white_space_cnt=0; } 
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack());     kw_print(kw_left_p); ECHO; white_space_cnt=0; } 
 
 {RIGHTP}    {
                 POP_STATE();
