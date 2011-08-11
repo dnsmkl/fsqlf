@@ -120,21 +120,11 @@ STRING (['][^']*['])+
 <stWHERE>{EXISTS}   {kw_print(kw_exists); };
 
 
-
-
-{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
-<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
-<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
-<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n");};
-
-{COMMENT_ONE_LINE}     {ECHO;};
-
-
-
-
-{LEFTP}     { PUSH_STATE(stP_SUB); };
-<stP_SUB>{SELECT}   { BEGIN_STATE(stSELECT); kw_print(kw_left_p_sub); kw_print(kw_select);};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack());     kw_print(kw_left_p); ECHO; white_space_cnt=0; }
+{LEFTP}                               { PUSH_STATE(stP_SUB); };
+<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(kw_left_p_sub); kw_print(kw_select);};
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p);     ECHO; white_space_cnt=0; }
+<stP_SUB>{COMMENT_ML_START}           {BEGIN_STATE(stCOMMENTML ); printf("\n"); ECHO;};
+<stP_SUB>{COMMENT_ONE_LINE}           {BEGIN_STATE(peek_stack()); ECHO;};
 
 {RIGHTP}    {
                 POP_STATE();
@@ -149,19 +139,24 @@ STRING (['][^']*['])+
 
 
 
+
+{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
+<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
+<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
+<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n");};
+
+{COMMENT_ONE_LINE}     {ECHO;};
+
+
 {STRING}     {ECHO;white_space_cnt=0;};
 {SPACE}+     {
                 if(white_space_cnt==0) fprintf(yyout," ");
                 white_space_cnt=1;
              }
-
-
-";"          fprintf(yyout,"\n;");
 {DBOBJECT}   {ECHO;white_space_cnt=0;}
 {NUMBER}     {ECHO;white_space_cnt=0;}
-
 <*>.         {debug_match("<*>.");ECHO;white_space_cnt=0;};
-
+";"          fprintf(yyout,"\n;");
 
 
 <<EOF>> {
