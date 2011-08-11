@@ -5,7 +5,8 @@ Full license is available in file `LICENCE' which you should have received with 
 
 
 
-
+Table of content:
+-----------------------------------
 1. Current state of development
 2. Compilation
 2.1 Requirements
@@ -15,8 +16,9 @@ Full license is available in file `LICENCE' which you should have received with 
 4.1 Usage commandline
 4.2 Usage graphical user interface
 5. Project site
-APPENDIX.1 - wxWidgets installation
 
+APPENDIX.1 - wxWidgets installation
+-----------------------------------
 
 
 
