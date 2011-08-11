@@ -135,7 +135,7 @@ STRING (['][^']*['])+
 
 {COMMENT_ONE_LINE}     {ECHO;};
 
-{STRING}               {ECHO;white_space_cnt=0;};
+
 
 
 {LEFTP}     { PUSH_STATE(stP_SUB); };
@@ -152,7 +152,8 @@ STRING (['][^']*['])+
                 }
 
             };
-	
+
+{STRING}     {ECHO;white_space_cnt=0;};
 {SPACE}+     if(white_space_cnt==0){
                 fprintf(yyout," ");
                 white_space_cnt=1;
