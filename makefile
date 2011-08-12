@@ -86,7 +86,7 @@ TEST_TMP_FORMATED=tmp_test_formated.txt
 test:$(LINEXEC)
 	# Print formated output
 	#-------------------- Start of formated SQL --------------------#
-	./$(LINEXEC) $(TESTFILE) | sed 's/^/#  /g'
+	./$(LINEXEC) $(TESTFILE) |  awk -F, '{ printf("%4d # ", NR) ; print}'
 	#
 	#--------------------- End of formated SQL ---------------------#
 	# Test if the output is equivalent to the input (except for spaces, tabs and new lines)
