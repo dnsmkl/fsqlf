@@ -50,6 +50,7 @@ APPENDIX.1 - wxWidgets installation
     - make      # This makes all compiling automated
     - mingw32   # cross compiler which is used to produce Windows executables under Linux
     - zip       # used only for creating zip archive with source code and executable files
+    - git       # used for version control and craeting zip archive with source code and executable files
 
 
 
