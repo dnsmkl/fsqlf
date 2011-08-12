@@ -20,3 +20,4 @@ core/lex.yy.c
 bin/*
 
 
+tmp*

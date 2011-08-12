@@ -75,14 +75,27 @@ $(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
 #ponies!
 .PHONY: test clean zip
 
-TMP_BAKUPS=$(wildcard *~) $(wildcard core/*~) $(wildcard gui/*~)
+TMP_BAKUPS=$(wildcard *~) $(wildcard core/*~) $(wildcard gui/*~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 clean:
 	rm -f $(EXECUTABLES)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip)
 
+
 TESTFILE=test_text.sql
+TEST_TMP_ORIGINAL=tmp_test_original.txt
+TEST_TMP_FORMATED=tmp_test_formated.txt
 test:$(LINEXEC)
-	./$(LINEXEC) $(TESTFILE)
-#tr '\n' ' ' < test_text.sql | sed 's/ +/ /g' | diff test_text.sql - 
+	# Print formated output
+	#-------------------- Start of formated SQL --------------------#
+	./$(LINEXEC) $(TESTFILE) | sed 's/^/#  /g'
+	#
+	#--------------------- End of formated SQL ---------------------#
+	# Test if the output is equivalent to the input (except for spaces, tabs and new lines)
+	cat        $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]+//g' > $(TEST_TMP_ORIGINAL);
+	$(LINEXEC) $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]+//g' > $(TEST_TMP_FORMATED)
+	diff -i -E -b -w -B -q $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
+
+
+
 
 zip:$(ZIP_NAME)
 
