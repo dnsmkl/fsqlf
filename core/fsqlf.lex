@@ -120,6 +120,8 @@ STRING (['][^']*['])+
 <stWHERE>{EXISTS}   {kw_print(kw_exists); };
 
 
+
+<stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); PUSH_STATE(stP_SUB); kw_print(kw_left_p); };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(kw_left_p_sub); kw_print(kw_select);};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p);     ECHO; white_space_cnt=0; }
