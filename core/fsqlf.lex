@@ -121,12 +121,12 @@ STRING (['][^']*['])+
 
 
 
-<stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); PUSH_STATE(stP_SUB); kw_print(kw_left_p); };
+<stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(kw_left_p_sub); kw_print(kw_select);};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p);     ECHO; white_space_cnt=0; }
-<stP_SUB>{COMMENT_ML_START}           {BEGIN_STATE(stCOMMENTML ); printf("\n"); ECHO;};
-<stP_SUB>{COMMENT_ONE_LINE}           {BEGIN_STATE(peek_stack()); ECHO;};
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO; white_space_cnt=0; }
+<stP_SUB>{COMMENT_ML_START}           { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); PUSH_STATE(stCOMMENTML); printf("\n"); ECHO; white_space_cnt=0;};
+<stP_SUB>{COMMENT_ONE_LINE}           { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO;};
 
 {RIGHTP}    {
                 POP_STATE();
