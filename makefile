@@ -90,8 +90,8 @@ test:$(LINEXEC)
 	#
 	#--------------------- End of formated SQL ---------------------#
 	# Test if the output is equivalent to the input (except for spaces, tabs and new lines)
-	cat        $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]+//g' > $(TEST_TMP_ORIGINAL);
-	$(LINEXEC) $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]+//g' > $(TEST_TMP_FORMATED)
+	cat        $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL);
+	$(LINEXEC) $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
 	diff -i -E -b -w -B -q $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 
 
