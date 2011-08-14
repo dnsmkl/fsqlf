@@ -40,8 +40,11 @@ DBOBJECT    ({ID}[.]){0,2}{ID}
 LEFTP   [(]
 RIGHTP  [)]
 
-UNION   (?i:UNION)
+UNION     (?i:UNION)
 UNION_ALL (?i:UNION[ ]ALL)
+INTERSECT (?i:intersect)
+EXCEPT    (?i:except)
+
 SELECT  (?i:select|sel)
 AS      (?i:as)
 FROM    (?i:from)
@@ -80,8 +83,12 @@ STRING (['][^']*['])+
 
 %%
 
+                /* SET operations */
 {UNION}      {BEGIN_STATE(INITIAL);kw_print(kw_union)    ;};
 {UNION_ALL}  {BEGIN_STATE(INITIAL);kw_print(kw_union_all);};
+{INTERSECT}  {BEGIN_STATE(INITIAL);kw_print(kw_intersect);};
+{EXCEPT}     {BEGIN_STATE(INITIAL);kw_print(kw_except);};
+
                 /* SELECT ... FROM */
 <INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); kw_print(kw_select); };
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
