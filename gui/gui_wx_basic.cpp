@@ -2,7 +2,27 @@
 #include <wx/dir.h>
 #include <wx/dnd.h>
 
-class Notepad : public wxFrame , public wxFileDropTarget {
+
+class dnd_target : public wxFileDropTarget{
+    private:
+    wxTextCtrl* text_area;
+    
+    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames)
+    {
+        this->text_area->LoadFile(filenames[0]);
+    };
+    
+    
+    public:
+    dnd_target(wxTextCtrl* text_area)
+    {
+        this->text_area = text_area;
+    };
+};
+
+
+
+class Notepad : public wxFrame {
     public:
     Notepad(); // our default constructor
 
@@ -39,11 +59,6 @@ END_EVENT_TABLE()
 
 
 
-bool Notepad::OnDropFiles (wxCoord WXUNUSED(x), wxCoord WXUNUSED(y), const wxArrayString &filenames){
-    this->text_area->LoadFile(filenames[0]);
-    //this->text_area->SetValue(filenames.Item(0));
-}
-
 Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wxNotepad"), wxDefaultPosition, wxSize(650,500)) {
     this->menu = new wxMenuBar(); // instantiate our menu bar
     this->file = new wxMenu(); // instantiate our file menu for our menu bar
@@ -67,7 +82,9 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wxNotepad"), wxDefaultPosition
         this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
         sizerh->Add(this->text_area,1,wxEXPAND,0);
         this->SetSizer(sizerh);
-        this->text_area->SetDropTarget(this);
+
+    dnd_target* drop_target = new dnd_target(this->text_area);
+        this->text_area->SetDropTarget(drop_target);
 
 }
 
