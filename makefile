@@ -6,7 +6,8 @@ LINEXEC=bin/fsqlf
 #for windows building
 WINEXEC:=$(LINEXEC).exe
 
-GUI_EXEC=bin/gui_wx_basic
+GUI_SRC=gui/wx_fsqlf.cpp
+GUI_EXEC=bin/wx_fsqlf
 GUI_WINEXEC=$(GUI_EXEC).exe
 
 EXECUTABLES=$(WINEXEC) $(LINEXEC) $(GUI_EXEC) $(GUI_WINEXEC)
@@ -37,11 +38,11 @@ $(LINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
 	gcc  $<   -o $@
 	strip $@
 
-$(GUI_EXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER) $(LINEXEC)
+$(GUI_EXEC):    $(GUI_SRC) | $(BIN_FOLDER) $(LINEXEC)
 	g++   $<   -o $@   `wx-config --cxxflags`   `wx-config --libs`
 	strip $@
 
-$(GUI_WINEXEC):   gui/gui_wx_basic.cpp | $(BIN_FOLDER) $(WINEXEC)
+$(GUI_WINEXEC): $(GUI_SRC) | $(BIN_FOLDER) $(WINEXEC)
 	i586-mingw32msvc-g++  $<  -o $(GUI_WINEXEC) \
 		`/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'` \
 		`/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
