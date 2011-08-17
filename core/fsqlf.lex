@@ -134,6 +134,7 @@ STRING (['][^']*['])+
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO; white_space_cnt=0; }
 <stP_SUB>{COMMENT_ML_START}           { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); PUSH_STATE(stCOMMENTML); printf("\n"); ECHO; white_space_cnt=0;};
 <stP_SUB>{COMMENT_ONE_LINE}           { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO;};
+<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO;};
 
 {RIGHTP}    {
                 POP_STATE();
