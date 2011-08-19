@@ -123,11 +123,11 @@ STRING (['][^']*['])+
 <stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(kw_left_p_sub); kw_print(kw_select);};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO; white_space_cnt=0; }
-<stP_SUB>{COMMENT_ML_START}           { kw_print(kw_left_p    ); PUSH_STATE(stCOMMENTML); printf("\n"); ECHO; white_space_cnt=0;};
-<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(kw_left_p    ); ECHO;};
-<stP_SUB>{SPACE}                      { ;};
-<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO;};
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO; white_space_cnt=0; new_line_cnt=0; };
+<stP_SUB>{COMMENT_ML_START}           { kw_print(kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; ECHO; white_space_cnt=0; new_line_cnt=0; };
+<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(kw_left_p    ); ECHO; white_space_cnt=0; new_line_cnt=0; };
+<stP_SUB>{SPACE}                      { ; white_space_cnt=0; new_line_cnt=0; };
+<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO; white_space_cnt=0; new_line_cnt=0; };
 
 {RIGHTP}    {
                 POP_STATE();
@@ -146,9 +146,9 @@ STRING (['][^']*['])+
 {COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
 <stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
-<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n");};
+<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n"); new_line_cnt=1; };
 
-{COMMENT_ONE_LINE}     {ECHO;};
+{COMMENT_ONE_LINE}     {ECHO; new_line_cnt=1; };
 
 
 {STRING}     {ECHO;white_space_cnt=0;};
@@ -156,10 +156,10 @@ STRING (['][^']*['])+
                 if(white_space_cnt==0) fprintf(yyout," ");
                 white_space_cnt=1;
              }
-{DBOBJECT}   {ECHO;white_space_cnt=0;}
-{NUMBER}     {ECHO;white_space_cnt=0;}
-<*>.         {debug_match("<*>.");ECHO;white_space_cnt=0;};
-";"          fprintf(yyout,"\n;");
+{DBOBJECT}   {ECHO;white_space_cnt=0;new_line_cnt=0;}
+{NUMBER}     {ECHO;white_space_cnt=0;new_line_cnt=0;}
+<*>.         {debug_match("<*>.");ECHO;white_space_cnt=0;new_line_cnt=0;};
+";"          {fprintf(yyout,"\n;");new_line_cnt=0;};
 
 
 <<EOF>> {

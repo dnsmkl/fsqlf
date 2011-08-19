@@ -64,7 +64,7 @@ int sp_b(t_kw_settings s){
     extern FILE * yyout;
     int i=0;
 
-    for(i=0;i<s.nl_before;i++)
+    for(i=0;i<s.nl_before - new_line_cnt;i++)
         fprintf(yyout,"\n");
 
     if(s.nl_before>0)
@@ -98,6 +98,7 @@ int sp_a(t_kw_settings s){
         fprintf(yyout," ");
 
     white_space_cnt=s.nl_after+s.tab_after+s.space_after;
+    new_line_cnt = s.nl_after;
 }
 
 

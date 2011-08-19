@@ -8,6 +8,7 @@ int left_p  = 0;
 int right_p = 0;
 int subselect_level = 0;
 int white_space_cnt = 0;
+int new_line_cnt = 0;
 
 int inc_LEFTP() { left_p++  ; }
 int inc_RIGHTP(){ right_p++ ; }
