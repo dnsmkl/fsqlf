@@ -107,14 +107,6 @@ STRING (['][^']*['])+
 <stON,stFROM>{FJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_full_join); };
 <stON,stFROM>{CJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_cross_join); };
 
-                /* parantheses in FROM clause: posible subselect , grouped joins */
-<stFROM_LEFTP>{IJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_inner_join); };
-<stFROM_LEFTP>{LJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_left_join); };
-<stFROM_LEFTP>{RJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_right_join); };
-<stFROM_LEFTP>{FJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_full_join); };
-<stFROM_LEFTP>{CJOIN}  { BEGIN_STATE(stJOIN)  ; kw_print(kw_left_p); kw_print(kw_cross_join); };
-<stFROM_LEFTP>{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p); ECHO; white_space_cnt=0; }
-
 <stJOIN>{ON}    {BEGIN_STATE(stON);   kw_print(kw_on); };
 
 
