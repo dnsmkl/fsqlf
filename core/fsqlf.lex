@@ -65,6 +65,7 @@ EXISTS  (?i:exists)
 IN      (?i:in)
 COMPARISON (=|<>|<=|>=|<|>)
 
+GROUPBY (?i:group{SPACE}+by)
 COMMA [,]
 
 COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
@@ -119,6 +120,7 @@ STRING (['][^']*['])+
 <stWHERE>{EXISTS}   {kw_print(kw_exists); };
 
 
+{GROUPBY}    {kw_print(kw_groupby); };
 
 <stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
