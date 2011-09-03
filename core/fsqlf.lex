@@ -75,6 +75,7 @@ COMMENT_ML_PART2 [*]+[^/]
 COMMENT_ML_END   [*]+[/]
 
 STRING (['][^']*['])+
+SEMICOLON ;
 
 
 %option noyywrap
@@ -160,8 +161,8 @@ STRING (['][^']*['])+
              }
 {DBOBJECT}   {echo_print(yytext);};
 {NUMBER}     {echo_print(yytext);};
+{SEMICOLON}  {kw_print(kw_semicolon);};
 <*>.         {debug_match("<*>."); echo_print(yytext); };
-";"          {fprintf(yyout,"\n;");new_line_cnt=0;};
 
 
 <<EOF>> {
