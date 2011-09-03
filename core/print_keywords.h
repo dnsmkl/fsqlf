@@ -68,18 +68,23 @@ int sp_b(t_kw_settings s){
     int i=0;
     static int prev_nl=0, prev_tab=0, prev_space=0; // settings saved from previously printed keyword for spacing after it
 
-    // new lines before
-    for(i=0; i < max(s.nl_before, prev_nl) - new_line_cnt; i++)        fprintf(yyout,"\n");
+    // spacing from last (key)word
+    if(prev_nl) white_space_cnt = 0;
+    for(i=0; i < prev_nl - new_line_cnt      ; i++) fprintf(yyout,"\n");
+    if(!s.nl_before){
+        if( prev_nl > 0 ) for(i=0; i<currindent; i++)   fprintf(yyout,"%s",tab_string);// tabs - for indentation
+        for(i=0; i < prev_tab                    ; i++) fprintf(yyout,"%s",tab_string);
+        for(i=0; i < prev_space - white_space_cnt; i++) fprintf(yyout," ");
+    }
 
-    // tabs before - for indentation, which applies to everything (like in subselect)
-    if( max(s.nl_before, prev_nl) > 0 )
-        for(i=0; i<currindent; i++)            fprintf(yyout,"%s",tab_string);
+    // spacing before (key)word
+    if(s.nl_before) prev_tab = prev_space = white_space_cnt = 0;
+    for(i=0; i < s.nl_before - prev_nl - new_line_cnt; i++)           fprintf(yyout,"\n"); // new lines
+    if(s.nl_before > 0 ) for(i=0; i<currindent; i++)                  fprintf(yyout,"%s",tab_string); // tabs - for general indentation
+    for(i=0; i < s.tab_before - prev_tab; i++)                        fprintf(yyout,"%s",tab_string); // tabs
+    for(i=0; i < s.space_before - prev_space - white_space_cnt; i++)  fprintf(yyout," "); // spaces
 
-    // tabs before
-    for(i=0; i < max(s.tab_before, prev_tab); i++)        fprintf(yyout,"%s",tab_string);
-
-    for(i=0; i < max(s.space_before, prev_space); i++)        fprintf(yyout," ");
-    
+    // save settings for next call
     prev_nl=s.nl_after;
     prev_tab=s.tab_after;
     prev_space=s.space_after; 
@@ -112,9 +117,9 @@ void echo_print(char * txt){
     s.nl_before=s.tab_before=s.space_before=s.nl_after=s.tab_after=s.space_after=0;
    
     //count spaces and new lines at the end of the string
-    for(i=strlen(txt)-1; txt[i]==' '; i--) white_space_cnt--;
-    for(               ; txt[i]=='\n'; i--) new_line_cnt--; // 'i=..' omited to continue from where last loop has finished
- 
+    for(i=strlen(txt)-1; txt[i]==' '; i--) white_space_cnt++;
+    for(               ; txt[i]=='\n'; i--) new_line_cnt++; // 'i=..' omited to continue from where last loop has finished
+
     sp_b(s);
     fprintf(yyout,"%s",txt);
 
