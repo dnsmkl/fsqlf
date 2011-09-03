@@ -94,6 +94,7 @@ test:$(LINEXEC)
 	cat        $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL);
 	$(LINEXEC) $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
 	diff -i -E -b -w -B -q $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
+	rm $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 
 
 
