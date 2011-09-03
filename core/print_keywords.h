@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "global_variables.h"
 #include <stdio.h>
+#include <string.h>
 
 
 
@@ -12,7 +13,9 @@ char * tab_string = "    ";
 
 
 
-
+inline int max(int a, int b){
+    return a > b ? a : b;
+}
 
 #define KW_FUNCT_ARRAY_SIZE (3)
 
@@ -63,42 +66,23 @@ int sp_b(t_kw_settings s){
 // sp_b - spacing before
     extern FILE * yyout;
     int i=0;
+    static int prev_nl=0, prev_tab=0, prev_space=0; // settings saved from previously printed keyword for spacing after it
 
-    for(i=0;i<s.nl_before - new_line_cnt;i++)
-        fprintf(yyout,"\n");
+    // new lines before
+    for(i=0; i < max(s.nl_before, prev_nl) - new_line_cnt; i++)        fprintf(yyout,"\n");
 
-    if(s.nl_before>0)
-        for(i=0;i<currindent;i++)
-            fprintf(yyout,"%s",tab_string);
+    // tabs before - for indentation, which applies to everything (like in subselect)
+    if( max(s.nl_before, prev_nl) > 0 )
+        for(i=0; i<currindent; i++)            fprintf(yyout,"%s",tab_string);
 
-    for(i=0;i<s.tab_before;i++)
-        fprintf(yyout,"%s",tab_string);
-    for(i=0;i<s.space_before;i++)
-        fprintf(yyout," ");
+    // tabs before
+    for(i=0; i < max(s.tab_before, prev_tab); i++)        fprintf(yyout,"%s",tab_string);
 
-}
-
-
-
-int sp_a(t_kw_settings s){
-// sp_a - spacing after
-    extern FILE * yyout;
-    int i=0;
-
-    for(i=0;i<s.nl_after;i++)
-        fprintf(yyout,"\n");
-
-    if(s.nl_after>0)
-        for(i=0;i<currindent;i++)
-            fprintf(yyout,"%s",tab_string);
-
-    for(i=0;i<s.tab_after;i++)
-        fprintf(yyout,"%s",tab_string);
-    for(i=0;i<s.space_after;i++)
-        fprintf(yyout," ");
-
-    white_space_cnt=s.nl_after+s.tab_after+s.space_after;
-    new_line_cnt = s.nl_after;
+    for(i=0; i < max(s.space_before, prev_space); i++)        fprintf(yyout," ");
+    
+    prev_nl=s.nl_after;
+    prev_tab=s.tab_after;
+    prev_space=s.space_after; 
 }
 
 
@@ -108,14 +92,34 @@ void kw_print(t_kw_settings s){
     int i=0;
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
-    //if (s.text[0] == '(') fprintf(yyout,"\t\t ** for - before :  i is %d", i);//debug line
 
     sp_b(s);
     fprintf(yyout,"%s",s.text);
-    sp_a(s);
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
-    //if (s.text[0] == '(') fprintf(yyout,"\t\t ** for - after :  i is %d", i);//debug line
+
+    white_space_cnt = 0;
+    new_line_cnt = 0;
+}
+
+
+
+void echo_print(char * txt){
+    extern FILE * yyout;
+    int i=0;
+    
+    t_kw_settings s;
+    s.nl_before=s.tab_before=s.space_before=s.nl_after=s.tab_after=s.space_after=0;
+   
+    //count spaces and new lines at the end of the string
+    for(i=strlen(txt)-1; txt[i]==' '; i--) white_space_cnt--;
+    for(               ; txt[i]=='\n'; i--) new_line_cnt--; // 'i=..' omited to continue from where last loop has finished
+ 
+    sp_b(s);
+    fprintf(yyout,"%s",txt);
+
+    white_space_cnt = 0;
+    new_line_cnt = 0;
 }
 
 

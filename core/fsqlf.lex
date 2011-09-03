@@ -95,7 +95,7 @@ STRING (['][^']*['])+
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); kw_print(kw_left_p);  };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");kw_print(kw_left_p);  };
-<stLEFTP>{COMMA}            {ECHO; };
+<stLEFTP>{COMMA}            {echo_print(yytext); };
 <stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(kw_from_2);};
 <stLEFTP>{RIGHTP}           {POP_STATE(); kw_print(kw_right_p); };
 <stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  );  kw_print(kw_from); };
@@ -125,11 +125,11 @@ STRING (['][^']*['])+
 <stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(kw_left_p_sub); kw_print(kw_select);};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO; white_space_cnt=0; new_line_cnt=0; };
-<stP_SUB>{COMMENT_ML_START}           { kw_print(kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; ECHO; white_space_cnt=0; new_line_cnt=0; };
-<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(kw_left_p    ); ECHO; white_space_cnt=0; new_line_cnt=0; };
-<stP_SUB>{SPACE}                      { ; white_space_cnt=0; new_line_cnt=0; };
-<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); ECHO; white_space_cnt=0; new_line_cnt=0; };
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); echo_print(yytext);};
+<stP_SUB>{COMMENT_ML_START}           { kw_print(kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; echo_print(yytext);};
+<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(kw_left_p    ); echo_print(yytext);};
+<stP_SUB>{SPACE}                      { echo_print(""); };
+<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); echo_print(yytext); };
 
 {RIGHTP}    {
                 POP_STATE();
@@ -145,22 +145,22 @@ STRING (['][^']*['])+
 
 
 
-{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML);printf("\n");ECHO;};
-<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; ECHO;};
-<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; ECHO;};
-<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE();ECHO;printf("\n"); new_line_cnt=1; };
+{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); echo_print(yytext);};
+<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; echo_print(yytext);};
+<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; echo_print(yytext);};
+<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); echo_print(yytext);};
 
-{COMMENT_ONE_LINE}     {ECHO; new_line_cnt=1; };
+{COMMENT_ONE_LINE}     {echo_print(yytext);};
 
 
-{STRING}     {ECHO;white_space_cnt=0;};
+{STRING}     {echo_print(yytext);};
 {SPACE}+     {
                 if(white_space_cnt==0) fprintf(yyout," ");
                 white_space_cnt=1;
              }
-{DBOBJECT}   {ECHO;white_space_cnt=0;new_line_cnt=0;}
-{NUMBER}     {ECHO;white_space_cnt=0;new_line_cnt=0;}
-<*>.         {debug_match("<*>.");ECHO;white_space_cnt=0;new_line_cnt=0;};
+{DBOBJECT}   {echo_print(yytext);};
+{NUMBER}     {echo_print(yytext);};
+<*>.         {debug_match("<*>."); echo_print(yytext); };
 ";"          {fprintf(yyout,"\n;");new_line_cnt=0;};
 
 
