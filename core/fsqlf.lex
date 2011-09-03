@@ -103,11 +103,11 @@ SEMICOLON ;
 <stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );kw_print(kw_as);};
 
                 /* FROM ... JOIN ... ON ... WHERE */
-<stON,stFROM>{IJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_inner_join); };
-<stON,stFROM>{LJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_left_join); };
-<stON,stFROM>{RJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_right_join); };
-<stON,stFROM>{FJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_full_join); };
-<stON,stFROM>{CJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_cross_join); };
+<stON,stFROM,stJOIN>{IJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_inner_join); };
+<stON,stFROM,stJOIN>{LJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_left_join); };
+<stON,stFROM,stJOIN>{RJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_right_join); };
+<stON,stFROM,stJOIN>{FJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_full_join); };
+<stON,stFROM,stJOIN>{CJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_cross_join); };
 
 <stJOIN>{ON}    {BEGIN_STATE(stON);   kw_print(kw_on); };
 
