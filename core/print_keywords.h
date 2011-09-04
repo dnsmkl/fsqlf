@@ -62,27 +62,27 @@ int new_line() {
 
 
 
-int sp_b(t_kw_settings s){
+int sp_b(t_kw_settings s, int no_nl, int no_space ){
 // sp_b - spacing before
     extern FILE * yyout;
     int i=0;
     static int prev_nl=0, prev_tab=0, prev_space=0; // settings saved from previously printed keyword for spacing after it
 
     // spacing from last (key)word
-    if(prev_nl) white_space_cnt = 0;
+    if(prev_nl) no_space = 0;
     for(i=0; i < prev_nl - new_line_cnt      ; i++) fprintf(yyout,"\n");
     if(!s.nl_before){
         if( prev_nl > 0 ) for(i=0; i<currindent; i++)   fprintf(yyout,"%s",tab_string);// tabs - for indentation
         for(i=0; i < prev_tab                    ; i++) fprintf(yyout,"%s",tab_string);
-        for(i=0; i < prev_space - white_space_cnt; i++) fprintf(yyout," ");
+        for(i=0; i < prev_space - no_space; i++) fprintf(yyout," ");
     }
 
     // spacing before (key)word
-    if(s.nl_before) prev_tab = prev_space = white_space_cnt = 0;
-    for(i=0; i < s.nl_before - prev_nl - new_line_cnt; i++)           fprintf(yyout,"\n"); // new lines
+    if(s.nl_before) prev_tab = prev_space = no_space = 0;
+    for(i=0; i < s.nl_before - prev_nl - no_nl; i++)           fprintf(yyout,"\n"); // new lines
     if(s.nl_before > 0 ) for(i=0; i<currindent; i++)                  fprintf(yyout,"%s",tab_string); // tabs - for general indentation
     for(i=0; i < s.tab_before - prev_tab; i++)                        fprintf(yyout,"%s",tab_string); // tabs
-    for(i=0; i < s.space_before - prev_space - white_space_cnt; i++)  fprintf(yyout," "); // spaces
+    for(i=0; i < s.space_before - prev_space - no_space; i++)  fprintf(yyout," "); // spaces
 
     // save settings for next call
     prev_nl=s.nl_after;
@@ -98,7 +98,8 @@ void kw_print(t_kw_settings s){
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
 
-    sp_b(s);
+    sp_b(s, new_line_cnt, white_space_cnt);
+
     fprintf(yyout,"%s",s.text);
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
@@ -120,7 +121,7 @@ void echo_print(char * txt){
     for(i=strlen(txt)-1; txt[i]==' '; i--) white_space_cnt++;
     for(               ; txt[i]=='\n'; i--) new_line_cnt++; // 'i=..' omited to continue from where last loop has finished
 
-    sp_b(s);
+    sp_b(s, new_line_cnt, white_space_cnt);
     fprintf(yyout,"%s",txt);
 
     white_space_cnt = 0;
