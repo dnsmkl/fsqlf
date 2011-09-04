@@ -160,10 +160,7 @@ SEMICOLON ;
 
 
 {STRING}     {echo_print(yytext);};
-{SPACE}+     {
-                if(white_space_cnt==0) fprintf(yyout," ");
-                white_space_cnt=1;
-             }
+{SPACE}+     {echo_print(" ");};
 {DBOBJECT}   {echo_print(yytext);};
 {NUMBER}     {echo_print(yytext);};
 {SEMICOLON}  {kw_print(kw_semicolon);};
