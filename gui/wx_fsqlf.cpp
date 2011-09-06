@@ -1,6 +1,7 @@
 #include <wx/wx.h>
 #include <wx/dir.h>
 #include <wx/dnd.h>
+#include "fsqlf_right.xpm"
 
 
 
@@ -91,6 +92,9 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formater"), wxDefa
     // (with drag and drop support)
     dnd_target* drop_target = new dnd_target(this->text_area);
     this->text_area->SetDropTarget(drop_target);
+    
+    wxIcon icon(wxICON(fsqlf_right));
+    SetIcon(icon);
 }
 
 
