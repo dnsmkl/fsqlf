@@ -125,7 +125,7 @@ void echo_print(char * txt){
 
     t_kw_settings s;
     s.nl_before=s.tab_before=s.space_before=s.nl_after=s.tab_after=s.space_after=0;
-    
+
     //count blank characters at the end of the text
     length = strlen(txt);
     for(i=length-1; txt[i]==' '  && i>=0; i--) space_cnt++;
@@ -176,6 +176,65 @@ void init_all_settings(){
     #include "t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
 }
+
+
+
+
+#define BUFFER_SIZE (100)
+#define VALUE_NUMBER (6)
+
+int setting_value(char * setting_name, int * setting_values)
+{
+    #define T_KW_SETTINGS_MACRO( NAME, ... )    \
+    if( strcmp(#NAME,setting_name) == 0 ){      \
+        NAME.nl_before    = setting_values[0];  \
+        NAME.tab_before   = setting_values[1];  \
+        NAME.space_before = setting_values[2];  \
+        NAME.nl_after     = setting_values[3];  \
+        NAME.tab_after    = setting_values[4];  \
+        NAME.space_after  = setting_values[5];  \
+    }
+    #include "t_kw_settings_list.def"
+    #undef T_KW_SETTINGS_MACRO
+}
+
+
+int read_configs()
+{
+    FILE * config_file;
+    char line[BUFFER_SIZE+1] , setting_name[BUFFER_SIZE+1];
+    int setting_values[VALUE_NUMBER];
+    char * chr_ptr1,chr_ptr2;
+    int i;
+
+
+    if( ! (config_file=fopen("formatting.conf","r")) ){
+        printf("failed to open config file");
+        exit(1);
+    }
+
+    while( fgets( line, BUFFER_SIZE, config_file ) )
+    {
+        if(line[0]=='#') continue; // lines starting with '#' are commnets
+        // find and mark with '\0' where first stace is (end c string)
+        if( !(chr_ptr1=strchr(line,' ')) ) continue;
+        chr_ptr1[0]='\0';
+
+        // store into variables
+        strncpy( setting_name, line, BUFFER_SIZE );
+        for(i = 0; i < VALUE_NUMBER; i++){
+            setting_values[i] = strtol( chr_ptr1+1, &chr_ptr1, 10 );
+        }
+
+        // debug        printf("\nsetting_name='%s'; v0='%d'; v1='%d'; v2='%d'; v3='%d'; v4='%d'; v5='%d';",setting_name, setting_values[0], setting_values[1], setting_values[2], setting_values[3], setting_values[4], setting_values[5]);
+        setting_value(setting_name,setting_values);
+    }
+
+    fclose(config_file);
+    return 0;
+}
+
+
 
 
 #endif

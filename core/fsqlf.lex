@@ -25,7 +25,7 @@ char * state_to_char(int);
 #define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
 
 // YY_USER_INIT is lex macro executed before initialising parser
-#define YY_USER_INIT init_all_settings();
+#define YY_USER_INIT init_all_settings(); read_configs();
 
 %}
 
