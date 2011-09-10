@@ -7,7 +7,7 @@ LINEXEC=bin/fsqlf
 WINEXEC:=$(LINEXEC).exe
 
 GUI_SRC=gui/wx_fsqlf.cpp
-GUI_EXEC=bin/wx_fsqlf
+GUI_EXEC=wx_fsqlf
 GUI_WINEXEC=$(GUI_EXEC).exe
 
 EXECUTABLES=$(WINEXEC) $(LINEXEC) $(GUI_EXEC) $(GUI_WINEXEC)
@@ -83,18 +83,18 @@ clean:
 	rm -f $(EXECUTABLES)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip)
 
 
-TESTFILE=test_text.sql
-TEST_TMP_ORIGINAL=tmp_test_original.txt
-TEST_TMP_FORMATED=tmp_test_formated.txt
+TEST_SAMPLE=testing/sample.sql
+TEST_TMP_ORIGINAL=testing/tmp_test_original.txt
+TEST_TMP_FORMATED=testing/tmp_test_formated.txt
 test:$(LINEXEC)
 	# Print formated output
 	#-------------------- Start of formated SQL --------------------#
-	./$(LINEXEC) $(TESTFILE) |  awk -F, '{ printf("%4d # ", NR) ; print}'
+	./$(LINEXEC) $(TEST_SAMPLE) |  awk -F, '{ printf("%4d # ", NR) ; print}'
 	#
 	#--------------------- End of formated SQL ---------------------#
 	# Test if the output is equivalent to the input (except for spaces, tabs and new lines)
-	cat        $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL);
-	$(LINEXEC) $(TESTFILE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
+	cat        $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL);
+	$(LINEXEC) $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
 	diff -i -E -b -w -B -q $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 	rm $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 
