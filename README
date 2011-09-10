@@ -29,8 +29,10 @@ APPENDIX.1 - wxWidgets installation
     - indent subqueries
     - new line in cases where it seems appropriate (items in SELECT list. Keywords FROM, JOIN, ON, WHERE, AND, OR )
     - capitalisation of recognised keywords (not all - I like some keywrods lowercase, but this should be configurable eventualy)
+    - gui
+    - configurations read from file
 
-    Though it is allready a bit usable, there is still much to do.
+    (see TODO list what is planed for future)
 
 
 
@@ -81,7 +83,7 @@ APPENDIX.1 - wxWidgets installation
     - paranthesis in FROM/JOIN parts (e.g.   FROM X LEFT JOIN (Y JOIN Z)   ) [sort of done: program does not crash if it encounters this, but I can not think of any good way to actualy format it]
 
     extention #1 - more comfortable usage (next level)
-    - formating configurations
+    - formating configurations [done: default formatting can be overriden in file `formatting.conf']
     - reading command line arguments [in progress: now only input/output arguments]
     - GUI [in progress: need to polish some stuff, but usable, has drag'n'drop functionality]
 
@@ -101,6 +103,7 @@ APPENDIX.1 - wxWidgets installation
         bin/fsqlf.exe input_file              # read from file, write to stdout
         bin/fsqlf.exe input_file output_file  # use files for reading and writing
     Usage in Linux is equivalent, just without the extention `.exe'
+    Forrmating configurations can be changed in `formatting.conf'
 
 
 
@@ -110,12 +113,14 @@ APPENDIX.1 - wxWidgets installation
     In Linux execute `gui_wx_basic'
 
     When it starts, just fill your code into the formater window and press `Format'
+    Forrmating configurations can be changed in `formatting.conf'
 
 
 
 5. Project site
     Most recent source code can be found at sourceforge.
     Project site address http://sourceforge.net/projects/fsqlf/
+    Source can also be forked at github https://github.com/dnsmkl/fsqlf
 
 
 
