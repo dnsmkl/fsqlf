@@ -83,7 +83,7 @@ END_EVENT_TABLE()
 
 
 
-Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formater"), wxDefaultPosition, wxSize(650,500))
+Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDefaultPosition, wxSize(650,500))
 {
     // Menu
     this->menu = new wxMenuBar();
@@ -155,7 +155,7 @@ void Notepad::OnFormat(wxCommandEvent &event)
     wxDir dir(wxGetCwd());
     if(  !dir.HasFiles(wxT(EXECUTABLE_FILE))  )
     {
-        wxMessageBox(wxT("Formater executable file not found: " EXECUTABLE_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+        wxMessageBox(wxT("Formatter executable file not found: " EXECUTABLE_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
         return;
     }
 
@@ -218,9 +218,9 @@ Report bugs at: https://sourceforge.net/tracker/?group_id=533096&atid=2165220"
     wxMessageBox( about_message, _("About..."), wxOK | wxICON_INFORMATION, this );
     */
     wxAboutDialogInfo info;
-    info.SetName(_("Free SQL Formater"));
+    info.SetName(_("Free SQL Formatter"));
     info.SetVersion(_(VERSION));
-    info.SetDescription(_T("Free SQL Formater beautifies SQL code. It is particularly useful in case one has to deal with machine generated SQL code"));
+    info.SetDescription(_T("Free SQL Formatter beautifies SQL code. It is particularly useful in case one has to deal with machine generated SQL code"));
     info.SetCopyright(_T("(C) 2011 Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
     info.SetLicence(_( LICENSE_TEXT ));
     wxAboutBox(info);
