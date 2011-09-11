@@ -88,7 +88,6 @@ VERSION:=$(shell git describe master)
 ZIP_NAME:=$(PROJECTFOLDER).$(VERSION).zip
 zip: tmp_folder
 	rm -f $(ZIP_NAME)
-	make $(ZIP_NAME)
 	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PROJECTFOLDER)/source/'
 	cd tmp/ &&   zip -r ../$(ZIP_NAME)  $(PROJECTFOLDER)
 
