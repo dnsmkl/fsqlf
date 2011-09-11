@@ -1,8 +1,9 @@
 #include <wx/wx.h>
 #include <wx/dir.h>
 #include <wx/dnd.h>
+#include <wx/aboutdlg.h>
 #include "fsqlf_right.xpm"
-
+#include "license_text.h"
 
 
 
@@ -34,6 +35,9 @@ class Notepad : public wxFrame {
     private:
     wxMenuBar* menu;
     wxMenu* file;
+    wxMenu* edit;
+    wxMenu* help;
+
     wxTextCtrl* text_area;
     wxTextCtrl* textRight;
     wxString original_text;
@@ -44,9 +48,15 @@ class Notepad : public wxFrame {
     void OnSave(wxCommandEvent &event);
     void OnOpen(wxCommandEvent &event);
     void OnExit(wxCommandEvent &event)    {    this->Destroy();    };
+    void OnCopy(wxCommandEvent &event);
+    void OnCut(wxCommandEvent &event);
+    void OnPaste(wxCommandEvent &event);
+    void OnSelectAll(wxCommandEvent &event);
+    void OnAbout(wxCommandEvent &event);
+
     bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
 
-    enum MenuControls{    idSave = 1000, idOpen, idExit, idFormat, idUnformat    };
+    enum MenuControls{ idSave = 1000, idOpen, idExit, idFormat, idUnformat, idCut, idCopy, idPaste, idSelectAll, idAbout  };
 
     DECLARE_EVENT_TABLE()
 };
@@ -55,6 +65,16 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
     EVT_MENU(idSave, Notepad::OnSave)
     EVT_MENU(idOpen, Notepad::OnOpen)
     EVT_MENU(idExit, Notepad::OnExit)
+
+    EVT_MENU(idCut       , Notepad::OnCut)
+    EVT_MENU(idCopy      , Notepad::OnCopy)
+    EVT_MENU(idPaste     , Notepad::OnPaste)
+    EVT_MENU(idSelectAll , Notepad::OnSelectAll)
+    EVT_MENU(idFormat    , Notepad::OnFormat)
+    EVT_MENU(idUnformat  , Notepad::OnUnformat)
+
+    EVT_MENU(idAbout, Notepad::OnAbout)
+
     EVT_BUTTON(idSave, Notepad::OnSave)
     EVT_BUTTON(idOpen, Notepad::OnOpen)
     EVT_BUTTON(idFormat, Notepad::OnFormat)
@@ -68,11 +88,29 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formater"), wxDefa
     // Menu
     this->menu = new wxMenuBar();
     this->file = new wxMenu();
+    this->edit = new wxMenu();
+    this->help = new wxMenu();
+
+    this->menu->Append(this->file, wxT("&File"));
+    this->menu->Append(this->edit, wxT("&Edit"));
+    this->menu->Append(this->help, wxT("&Help"));
+
     this->file->Append(idSave, wxT("&Save File\tCtrl-S"));
     this->file->Append(idOpen, wxT("&Open File\tCtrl-O"));
     this->file->AppendSeparator();
-    this->file->Append(idExit, wxT("E&xit\tCtrl-F4"));
-    this->menu->Append(file, wxT("&File"));
+    this->file->Append(idExit, wxT("E&xit\tAlt-F4"));
+
+    this->edit->Append(idCut   , wxT("Cu&t\tCtrl-X"));
+    this->edit->Append(idCopy  , wxT("&Copy\tCtrl-C"));
+    this->edit->Append(idPaste , wxT("&Paste\tCtrl-V"));
+    this->edit->AppendSeparator();
+    this->edit->Append(idSelectAll, wxT("Select &All\tCtrl-A"));
+    this->edit->AppendSeparator();
+    this->edit->Append(idFormat, wxT("&Format\tCtrl-F"));
+    this->edit->Append(idUnformat, wxT("&Unformat\tCtrl-U"));
+
+    this->help->Append(idAbout, wxT("&About...\tAlt-F1"));
+
     this->SetMenuBar(menu);
 
     // Buttons on the left
@@ -83,7 +121,7 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formater"), wxDefa
     this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
     sizerv->Add(this->b_unformat, 0, 0, 0);
 
-    // Text area on the right 
+    // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
     sizerh->Add(sizerv,0,0,0);
     this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
@@ -92,7 +130,7 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formater"), wxDefa
     // (with drag and drop support)
     dnd_target* drop_target = new dnd_target(this->text_area);
     this->text_area->SetDropTarget(drop_target);
-    
+
     wxIcon icon(wxICON(fsqlf_right));
     SetIcon(icon);
 }
@@ -150,6 +188,42 @@ void Notepad::OnOpen( wxCommandEvent &event ){
 void Notepad::OnUnformat(wxCommandEvent &event){
     this->text_area->Clear();
     this->text_area->SetValue(this->original_text);
+}
+
+void Notepad::OnCut(wxCommandEvent &event){
+    this->text_area->Cut();
+}
+
+void Notepad::OnCopy(wxCommandEvent &event){
+    this->text_area->Copy();
+}
+
+void Notepad::OnPaste(wxCommandEvent &event){
+    this->text_area->Paste();
+}
+
+void Notepad::OnSelectAll(wxCommandEvent &event){
+    this->text_area->SetSelection(-1, -1);
+}
+
+
+
+void Notepad::OnAbout(wxCommandEvent &event){
+ /*   wxString about_message(_("\
+\n\
+Build version: "  "\n\
+Website: http://fsqlf.sourceforge.net/\n\
+Report bugs at: https://sourceforge.net/tracker/?group_id=533096&atid=2165220"
+    ));
+    wxMessageBox( about_message, _("About..."), wxOK | wxICON_INFORMATION, this );
+    */
+    wxAboutDialogInfo info;
+    info.SetName(_("Free SQL Formater"));
+    info.SetVersion(_(VERSION));
+    info.SetDescription(_T("Free SQL Formater beautifies SQL code. It is particularly useful in case one has to deal with machine generated SQL code"));
+    info.SetCopyright(_T("(C) 2011 Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
+    info.SetLicence(_( LICENSE_TEXT ));
+    wxAboutBox(info);
 }
 
 

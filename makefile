@@ -3,12 +3,11 @@ SRC=core/fsqlf.lex
 HEADERS=$(wildcard core/*.h core/*.def)
 
 # where all executables will be put
-BIN_FOLDER=bin/
-
-
 LEX_OUTPUT=core/lex.yy.c
 
 
+CFLAGS+=-DVERSION=\"$(VERSION)\"
+CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 
 ifdef WIN
 OS_TARGET=windows
@@ -16,7 +15,7 @@ EXEC_CLI=fsqlf.exe
 EXEC_GUI=wx_fsqlf.exe
 CC=i586-mingw32msvc-gcc
 CXX=i586-mingw32msvc-g++
-CXXFLAGS=`/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`          `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`          `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
 # -mthreads needs to be removed , so mingwm10.dll would not be needed (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else
 OS_TARGET=linux
@@ -24,7 +23,7 @@ EXEC_CLI=fsqlf
 EXEC_GUI=wx_fsqlf
 CC=gcc
 CXX=g++
-CXXFLAGS=`wx-config --cxxflags`   `wx-config --libs`
+CXXFLAGS+= `wx-config --cxxflags`   `wx-config --libs`
 endif
 
 
@@ -39,18 +38,23 @@ endif
 $(LEX_OUTPUT): $(SRC) $(HEADERS)
 	flex   -o $@   $<
 
-$(BIN_FOLDER):
-	mkdir -p $(BIN_FOLDER)
-
 #  BUILD
 all:$(EXEC_CLI) $(EXEC_GUI)
 $(EXEC_CLI):$(LEX_OUTPUT)
 	$(CC)   $<   -o $@
 	strip $@
 
-$(EXEC_GUI):   gui/wx_fsqlf.cpp   |   $(EXEC_CLI)
+$(EXEC_GUI):   gui/wx_fsqlf.cpp  gui/license_text.h   | $(EXEC_CLI)
 	$(CXX)   $<   -o $@   $(CXXFLAGS)
 	strip $@
+
+gui/license_text.h: LICENSE
+	echo "#ifndef LICENSE_TEXT_h"               > $@
+	echo "#define LICENSE_TEXT_h"               >> $@
+	echo "#define LICENSE_TEXT \"\\"            >> $@
+	sed -e 's/$$/\\n\\/g' -e 's/"/\\"/g'   $<   >> $@
+	echo "\"\n"                                 >> $@
+	echo "#endif\n"                             >> $@
 
 
 
