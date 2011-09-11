@@ -1,18 +1,3 @@
-
-
-#for linux building
-LINEXEC=bin/fsqlf
-
-#for windows building
-WINEXEC:=$(LINEXEC).exe
-
-GUI_SRC=gui/wx_fsqlf.cpp
-GUI_EXEC=wx_fsqlf
-GUI_WINEXEC=$(GUI_EXEC).exe
-
-EXECUTABLES=$(WINEXEC) $(LINEXEC) $(GUI_EXEC) $(GUI_WINEXEC)
-
-
 PROJECTFOLDER=fsqlf
 SRC=core/fsqlf.lex
 HEADERS=$(wildcard core/*.h core/*.def)
@@ -20,37 +5,34 @@ HEADERS=$(wildcard core/*.h core/*.def)
 # where all executables will be put
 BIN_FOLDER=bin/
 
-# needed for building archive
-NAME:=$(shell git describe master)
-ZIP_NAME:=$(PROJECTFOLDER).$(NAME).zip
 
 LEX_OUTPUT=core/lex.yy.c
 
 
 
-
-#executables
-$(WINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
-	i586-mingw32msvc-gcc   $<   -o $@
-	strip $@
-
-$(LINEXEC):$(LEX_OUTPUT) | $(BIN_FOLDER)
-	gcc  $<   -o $@
-	strip $@
-
-$(GUI_EXEC):    $(GUI_SRC) | $(BIN_FOLDER) $(LINEXEC)
-	g++   $<   -o $@   `wx-config --cxxflags`   `wx-config --libs`
-	strip $@
-
-$(GUI_WINEXEC): $(GUI_SRC) | $(BIN_FOLDER) $(WINEXEC)
-	i586-mingw32msvc-g++  $<  -o $(GUI_WINEXEC) \
-		`/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'` \
-		`/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
-	strip $@
-# -mthreads needs to be removed , so mingwm10.dll would not be needed
-# http://old.nabble.com/mingwm10.dll-ts8920679.html
+ifdef WIN
+OS_TARGET=windows
+EXEC_CLI=fsqlf.exe
+EXEC_GUI=wx_fsqlf.exe
+CC=i586-mingw32msvc-gcc
+CXX=i586-mingw32msvc-g++
+CXXFLAGS=`/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`          `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+# -mthreads needs to be removed , so mingwm10.dll would not be needed (http://old.nabble.com/mingwm10.dll-ts8920679.html)
+else
+OS_TARGET=linux
+EXEC_CLI=fsqlf
+EXEC_GUI=wx_fsqlf
+CC=gcc
+CXX=g++
+CXXFLAGS=`wx-config --cxxflags`   `wx-config --libs`
+endif
 
 
+
+
+
+
+.PHONY: all clean zip test test-print test-compare
 
 
 #some prerequisites
@@ -60,47 +42,62 @@ $(LEX_OUTPUT): $(SRC) $(HEADERS)
 $(BIN_FOLDER):
 	mkdir -p $(BIN_FOLDER)
 
+#  BUILD
+all:$(EXEC_CLI) $(EXEC_GUI)
+$(EXEC_CLI):$(LEX_OUTPUT)
+	$(CC)   $<   -o $@
+	strip $@
 
-#archive for publishing
-$(ZIP_NAME): $(SRC) $(HEADERS) $(EXECUTABLES) LICENSE README
-	git archive master --prefix='$(PROJECTFOLDER)/source/' --format=zip -o $@
-	cp  formatting.conf bin/
-	cd .. && zip -q $(PROJECTFOLDER)/$@  	\
-		fsqlf/bin/formatting.conf
-		$(PROJECTFOLDER)/LICENSE	\
-		$(PROJECTFOLDER)/README 	\
-		$(foreach  exec,$(EXECUTABLES),$(PROJECTFOLDER)/$(exec))
-
+$(EXEC_GUI):   gui/wx_fsqlf.cpp   |   $(EXEC_CLI)
+	$(CXX)   $<   -o $@   $(CXXFLAGS)
+	strip $@
 
 
 
-
-#ponies!
-.PHONY: test clean zip
-
-TMP_BAKUPS=$(wildcard *~) $(wildcard core/*~) $(wildcard gui/*~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
-clean:
-	rm -f $(EXECUTABLES)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip)
-
-
+#  TESTING
 TEST_SAMPLE=testing/sample.sql
 TEST_TMP_ORIGINAL=testing/tmp_test_original.txt
 TEST_TMP_FORMATED=testing/tmp_test_formated.txt
-test:$(LINEXEC)
-	# Print formated output
-	#-------------------- Start of formated SQL --------------------#
-	./$(LINEXEC) $(TEST_SAMPLE) |  awk -F, '{ printf("%4d # ", NR) ; print}'
-	#
-	#--------------------- End of formated SQL ---------------------#
-	# Test if the output is equivalent to the input (except for spaces, tabs and new lines)
-	cat        $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL);
-	$(LINEXEC) $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
+test: test-print test-compare
+
+test-print:$(EXEC_CLI)
+	./$(EXEC_CLI) $(TEST_SAMPLE) |  awk -F, '{ printf("%4d # ", NR) ; print}'
+
+test-compare:$(EXEC_CLI) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 	diff -i -E -b -w -B -q $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
-	rm $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
+$(TEST_TMP_ORIGINAL):
+	cat        $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL)
+$(TEST_TMP_FORMATED):
+	$(EXEC_CLI) $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
 
 
 
+#  CLEANUP
+TMP_BAKUPS=$(wildcard */*~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
+clean:   clean_local   clean_win
+clean_local:
+	rm -R -f $(EXEC_GUI) $(EXEC)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp
+clean_win:
+	make clean_local WIN=1
 
-zip:$(ZIP_NAME)
 
-all:$(EXECUTABLES)
+
+#  BUILD ARCHIVE  (source and binaries for publishing)
+CONF_FILE=formatting.conf
+VERSION:=$(shell git describe master)
+ZIP_NAME:=$(PROJECTFOLDER).$(VERSION).zip
+zip: tmp_folder
+	rm -f $(ZIP_NAME)
+	make $(ZIP_NAME)
+	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PROJECTFOLDER)/source/'
+	cd tmp/ &&   zip -r ../$(ZIP_NAME)  $(PROJECTFOLDER)
+
+tmp_folder: LICENSE README
+	make prep_bin
+	make prep_bin WIN=1
+	cp    -t tmp/$(PROJECTFOLDER)   $^
+
+
+prep_bin:   $(EXEC_CLI) $(EXEC_GUI) $(CONF_FILE)
+	mkdir -p tmp/$(PROJECTFOLDER)/$(OS_TARGET)
+	cp    -t tmp/$(PROJECTFOLDER)/$(OS_TARGET)    $^
