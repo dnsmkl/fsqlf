@@ -101,6 +101,7 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formater"), wxDefa
 
 void Notepad::OnFormat(wxCommandEvent &event)
 {
+    this->original_text = this->text_area->GetValue();
     #ifdef _WIN32
         #define EXECUTABLE_FILE "fsqlf.exe"
         #define EXECUTION_PREFIX
