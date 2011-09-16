@@ -14,29 +14,37 @@ int p_level()  { return left_p - right_p - subselect_level ; }
 
 
 #define SUB_STACK_SIZE (100)
+typedef struct para_st {
+    int left;
+    int right;
+} para_st ;
+
 int sub_opening_leftps[SUB_STACK_SIZE];
+para_st sub_openings[SUB_STACK_SIZE];
 
 
-void push_sub_stack(int left_p)
+void push_sub_stack(int left_p, int right_p)
 {   if(subselect_level < 0 || subselect_level >= SUB_STACK_SIZE) printf("\n --ERORR: push_sub_stack() - bounds\n");
-    sub_opening_leftps[subselect_level] = left_p;
+    para_st tmp;
+    tmp.left=left_p;
+    tmp.right=right_p;
+    sub_openings[subselect_level] = tmp;
     subselect_level++;
 }
 
-int pop_sub_stack()
+para_st pop_sub_stack()
 {   if(subselect_level <= 0 || subselect_level >= SUB_STACK_SIZE) printf("\n --ERORR: pop_sub_stack() - bounds\n");
     --subselect_level;
-    return sub_opening_leftps[subselect_level];
+    return sub_openings[subselect_level];
 }
 
-int peek_sub_stack()
+para_st peek_sub_stack()
 {   if(subselect_level < 0 || subselect_level >= SUB_STACK_SIZE) printf("\n --ERORR: peek_sub_stack() - bounds\n");
-    if(subselect_level == 0) return 0;
-    else return sub_opening_leftps[subselect_level-1];
+    return sub_openings[subselect_level-1];
 }
 
 
-int begin_SUB(){ push_sub_stack(left_p); currindent++; }
+int begin_SUB(){ push_sub_stack(left_p,right_p); currindent++; }
 int end_SUB()  { pop_sub_stack(); currindent--; }
 
 
