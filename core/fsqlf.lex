@@ -139,7 +139,7 @@ SEMICOLON ;
 
 {RIGHTP}    {
                 POP_STATE();
-                if(subselect_level && p_level()-1 <= 0){
+                if(subselect_level>0 && left_p - peek_sub_stack() + 1 == right_p+1 ){
                     kw_print(kw_right_p_sub);
                 } else {
                     debug_match("<wtf-leftp>");
