@@ -186,6 +186,7 @@ void Notepad::OnOpen( wxCommandEvent &event ){
 
 
 void Notepad::OnUnformat(wxCommandEvent &event){
+    if(this->original_text.IsEmpty()) return; // prevent deletion of everything
     this->text_area->Clear();
     this->text_area->SetValue(this->original_text);
 }
