@@ -48,13 +48,10 @@ $(EXEC_GUI):   gui/wx_fsqlf.cpp  gui/license_text.h   | $(EXEC_CLI)
 	$(CXX)   $<   -o $@   $(CXXFLAGS)
 	strip $@
 
-gui/license_text.h: LICENSE
-	echo "#ifndef LICENSE_TEXT_h"               > $@
-	echo "#define LICENSE_TEXT_h"               >> $@
-	echo "#define LICENSE_TEXT \"\\"            >> $@
-	sed -e 's/$$/\\n\\/g' -e 's/"/\\"/g'   $<   >> $@
-	echo "\"\n"                                 >> $@
-	echo "#endif\n"                             >> $@
+LICENSE_TEXT=gui/license_text.h
+$(LICENSE_TEXT): LICENSE
+	tools/text_to_header.sh   $<   $@
+
 
 
 
@@ -77,10 +74,10 @@ $(TEST_TMP_FORMATED):
 
 
 #  CLEANUP
-TMP_BAKUPS=$(wildcard */*~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
+TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 clean:   clean_local   clean_win
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp
+	rm -R -f $(EXEC_GUI) $(EXEC)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp $(LICENSE_TEXT)
 clean_win:
 	make clean_local WIN=1
 
