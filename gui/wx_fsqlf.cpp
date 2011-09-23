@@ -24,6 +24,7 @@ class dnd_target : public wxFileDropTarget{
 
 bool dnd_target::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames){
     this->text_area->LoadFile(filenames[0]);
+    MONOSPACE_FONT;
 };
 
 dnd_target::dnd_target(wxTextCtrl* text_area){
@@ -59,8 +60,6 @@ class Notepad : public wxFrame {
     void OnPaste(wxCommandEvent &event);
     void OnSelectAll(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
-
-    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
 
     enum MenuControls{ idSave = 1000, idOpen, idExit, idFormat, idUnformat, idCut, idCopy, idPaste, idSelectAll, idAbout  };
 
@@ -219,14 +218,6 @@ void Notepad::OnSelectAll(wxCommandEvent &event){
 
 
 void Notepad::OnAbout(wxCommandEvent &event){
- /*   wxString about_message(_("\
-\n\
-Build version: "  "\n\
-Website: http://fsqlf.sourceforge.net/\n\
-Report bugs at: https://sourceforge.net/tracker/?group_id=533096&atid=2165220"
-    ));
-    wxMessageBox( about_message, _("About..."), wxOK | wxICON_INFORMATION, this );
-    */
     wxAboutDialogInfo info;
     info.SetName(_("Free SQL Formatter"));
     info.SetVersion(_(VERSION));
