@@ -2,9 +2,15 @@
 #include <wx/dir.h>
 #include <wx/dnd.h>
 #include <wx/aboutdlg.h>
+#include <wx/font.h>
 #include "fsqlf_right.xpm"
 #include "license_text.h"
 
+// set monospace font for all content of this->text_area
+#define MONOSPACE_FONT                                                                                  \
+    wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize(), wxFONTFAMILY_TELETYPE, wxNORMAL, wxNORMAL);                     \
+    wxTextAttr text_style(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour, font);    \
+    this->text_area->SetStyle(0,this->text_area->GetLastPosition(),text_style)
 
 
 class dnd_target : public wxFileDropTarget{
@@ -166,6 +172,7 @@ void Notepad::OnFormat(wxCommandEvent &event)
         return;
     }
     this->text_area->LoadFile(wxT(TMP_OUTPUT_FILE));
+    MONOSPACE_FONT;
 
     if( !wxRemoveFile(wxT(TMP_INPUT_FILE))  ) wxMessageBox(wxT("Failed to remove temporary file " TMP_INPUT_FILE),wxT("Error") , wxOK | wxICON_INFORMATION, this);
     if( !wxRemoveFile(wxT(TMP_OUTPUT_FILE)) ) wxMessageBox(wxT("Failed to remove temporary file " TMP_OUTPUT_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
@@ -182,6 +189,7 @@ void Notepad::OnSave( wxCommandEvent &event ){
 void Notepad::OnOpen( wxCommandEvent &event ){
     wxFileDialog *openDialog = new wxFileDialog(this, wxT("Open File~"), wxT(""), wxT(""), wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxOPEN);
     if( wxID_OK == openDialog->ShowModal() ) this->text_area->LoadFile(openDialog->GetPath());
+    MONOSPACE_FONT;
 }
 
 
@@ -189,6 +197,7 @@ void Notepad::OnUnformat(wxCommandEvent &event){
     if(this->original_text.IsEmpty()) return; // prevent deletion of everything
     this->text_area->Clear();
     this->text_area->SetValue(this->original_text);
+    MONOSPACE_FONT;
 }
 
 void Notepad::OnCut(wxCommandEvent &event){
