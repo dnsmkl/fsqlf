@@ -248,12 +248,15 @@ int main(int argc, char **argv)
                 }
             } else if( strcmp(argv[i],"--help") == 0 || strcmp(argv[i],"-h") == 0)
             {
-                fprintf(stderr,"Usage:\n", argv[0] );
-                fprintf(stderr,"\t%s                         # read from stdin, write to stdout\n", argv[0] );
-                fprintf(stderr,"\t%s input_file              # read from file, write to stdout\n", argv[0] );
-                fprintf(stderr,"\t%s input_file output_file  # use files for reading and writing\n", argv[0] );
+                fprintf(stderr,"usage: %s [<input_file> [<output_file>]] [options]\n", argv[0] );
+                fprintf(stderr,"\t", argv[0] );
+                fprintf(stderr,"If <output_file> or also <input_file> is missing, then corresponding standart IO is used\n");
+                fprintf(stderr,"Options:\n");
+                fprintf(stderr,"\t--select-comma-newline (after|before|none)\n\t    New lines for each item in SELECT clause\n", argv[0] );
+                
+                fprintf(stderr,"\t--select-newline-after <num>\n\t    Put <num> new lines right after SELECT keyword\n", argv[0] );
                 exit(2);
-            }
+            } else FAIL_WITH_ERROR(1,"To get usage instructions use:\n%s --help\n", argv[0]);
             
         }
     }
