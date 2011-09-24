@@ -77,7 +77,7 @@ $(TEST_TMP_FORMATED):
 TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 clean:   clean_local   clean_win
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp $(LICENSE_TEXT)
+	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp $(LICENSE_TEXT)
 clean_win:
 	make clean_local WIN=1
 
