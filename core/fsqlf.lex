@@ -225,8 +225,7 @@ int main(int argc, char **argv)
         
             if( strcmp(argv[i],"--select-comma-newline") == 0 )
             {
-                if( i+1 < argc){
-                    i++;
+                if( ++i < argc){
                     if(strcmp(argv[i],"after") == 0) {
                         kw_comma.nl_before = 0;
                         kw_comma.nl_after  = 1;
@@ -238,14 +237,12 @@ int main(int argc, char **argv)
                         kw_comma.nl_after  = 0;
                     }
                 }
-                else FAIL_WITH_ERROR(1,"\nMissing value for option %s\n", argv[i]);
+                else FAIL_WITH_ERROR(1,"\nMissing value for option : %s\n", argv[i-1]);
             } else if( strcmp(argv[i],"--select-newline-after") == 0 )
             {
-                if( i+1 < argc){
-                    i++;
-                    if( argv[i][0] >= '0' && argv[i][0] <= '9' ) kw_select.nl_after = atoi(argv[i]);
-                    else FAIL_WITH_ERROR(1,"\nInvalid number for number of spaces after select: %s\n", argv[i]);
-                }
+                if( ++i < argc && argv[i][0] >= '0' && argv[i][0] <= '9')
+                    kw_select.nl_after = atoi(argv[i]);
+                else FAIL_WITH_ERROR(1,"\nMissing or invalid value for option : %s\n", argv[i-1]);
             } else if( strcmp(argv[i],"--help") == 0 || strcmp(argv[i],"-h") == 0)
             {
                 fprintf(stderr,"usage: %s [<input_file> [<output_file>]] [options]\n", argv[0] );
