@@ -49,6 +49,9 @@ class Notepad : public wxFrame {
     wxTextCtrl* textRight;
     wxString original_text;
     wxButton* b_unformat;
+    
+    wxRadioBox* sel_comma_nl;
+    wxCheckBox* nl_after_select;
 
     void OnUnformat(wxCommandEvent &event);
     void OnFormat(wxCommandEvent &event);
@@ -125,7 +128,19 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     sizerv->Add(new wxButton(this, idFormat, wxT("Format")), 0, 0, 0);
     this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
     sizerv->Add(this->b_unformat, 0, 0, 0);
+    
+    // Radio buttons
+    wxString sel_comma_nl_choices[3];
+    sel_comma_nl_choices[0] = _("None");
+    sel_comma_nl_choices[1] = _("Before comma");
+    sel_comma_nl_choices[2] = _("After comma");
 
+    sel_comma_nl = new wxRadioBox(this, -1, _("SELECT clause: \nnew lines"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices);
+    sizerv->Add(sel_comma_nl,0,0,0);
+    
+    nl_after_select = new wxCheckBox(this, -1 , _("New line after select") );
+    sizerv->Add(nl_after_select,0,0,0);
+    
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
     sizerh->Add(sizerv,0,0,0);
@@ -155,8 +170,20 @@ void Notepad::OnFormat(wxCommandEvent &event)
 
     #define TMP_INPUT_FILE  "tmp_fsqlf_in.txt"
     #define TMP_OUTPUT_FILE "tmp_fsqlf_out.txt"
-    #define CMD   EXECUTION_PREFIX EXECUTABLE_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE
 
+    wxString cmd;
+    cmd = wxT( EXECUTION_PREFIX EXECUTABLE_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE );
+    switch( this->sel_comma_nl->GetSelection() ){
+        case 0: cmd << wxT("  --select-comma-newline none")   ; break;
+        case 1: cmd << wxT("  --select-comma-newline before") ; break;
+        case 2: cmd << wxT("  --select-comma-newline after")  ; break;
+    }
+    
+    switch( this->nl_after_select->GetValue() ){
+        case 0: cmd << wxT("  --select-newline-after 0") ; break;
+        case 1: cmd << wxT("  --select-newline-after 1") ; break;
+    }
+    
     wxDir dir(wxGetCwd());
     if(  !dir.HasFiles(wxT(EXECUTABLE_FILE))  )
     {
@@ -165,9 +192,10 @@ void Notepad::OnFormat(wxCommandEvent &event)
     }
 
     this->text_area->SaveFile(wxT(TMP_INPUT_FILE));
-    if( system(CMD) != 0 )
-    {
-        wxMessageBox(wxT("Command '" CMD "' returned non zero code"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+    
+    if( system(cmd.mb_str()) ) 
+    {   // non zero status
+        wxMessageBox(cmd << wxT("\n returned non zero code"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
         return;
     }
     this->text_area->LoadFile(wxT(TMP_OUTPUT_FILE));

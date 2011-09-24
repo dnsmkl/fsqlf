@@ -25,7 +25,7 @@ char * state_to_char(int);
 #define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
 
 // YY_USER_INIT is lex macro executed before initialising parser
-#define YY_USER_INIT init_all_settings(); read_configs();
+#define YY_USER_INIT 
 
 %}
 
@@ -186,36 +186,78 @@ SEMICOLON ;
 #include "debuging.h"
 
 
+#define FAIL_WITH_ERROR( CODE , MESSAGE , ... ) \
+    {                                           \
+        fprintf(stderr, MESSAGE , __VA_ARGS__ );\
+        exit( CODE );                           \
+    } 
+
+
 
 
 int main(int argc, char **argv)
 {
-    switch(argc) // set yyin and yyout based on command line options
-    {
-    case 1:
-	yyin  = stdin;
-	yyout = stdout;
-	break;
-    case 2:
-	yyin  = fopen(argv[1],"r");
-	yyout = stdout;
-	break;
-    case 3:
-	yyin  = fopen(argv[1],"r");
-	yyout = fopen(argv[2],"w+");
-	break;
-    default:
-	fprintf(stderr,"Usage:\n", argv[0] );
-	fprintf(stderr,"\t%s                         # read from stdin, write to stdout\n", argv[0] );
-	fprintf(stderr,"\t%s input_file              # read from file, write to stdout\n", argv[0] );
-	fprintf(stderr,"\t%s input_file output_file  # use files for reading and writing\n", argv[0] );
-	return 2;
-    }
+    int i,in_set=0,out_set=0;
+    // initialise with STD I/O, later changed by command line options (if any)
+    yyin  = stdin;
+    yyout = stdout;
 
-    if( yyin == NULL || yyout == NULL ){
-	fprintf(stderr,"%s: unable to open %s or output\n", argv[0] , argv[1]);
-	return 3;
+    init_all_settings(); // init defaults
+    read_configs();      // read from file
+
+    for(i=1;i<argc;i++)
+    {
+        if( argv[i][0] != '-')
+        {
+            if(yyin == stdin)
+            {   //try to openinig INPUT file
+                if( yyin = fopen(argv[1],"r")  ) ;//printf("Input is set to: %s\n",argv[1]);
+                else FAIL_WITH_ERROR(1,"\nError opening input file: %s\n", argv[i]);
+            }
+            else if(yyout == stdout)
+            {   //try to openinig OUTPUT file
+                if( yyout=fopen(argv[2],"w+") ) ;//printf("Output is set to: %s\n",argv[1]);
+                else FAIL_WITH_ERROR(1,"\nError opening output file: %s\n", argv[i]);
+            }
+        }
+        else // firs character is '-'
+        {
+        
+            if( strcmp(argv[i],"--select-comma-newline") == 0 )
+            {
+                if( i+1 < argc){
+                    i++;
+                    if(strcmp(argv[i],"after") == 0) {
+                        kw_comma.nl_before = 0;
+                        kw_comma.nl_after  = 1;
+                    } else if(strcmp(argv[i],"before") == 0) {
+                        kw_comma.nl_before = 1;
+                        kw_comma.nl_after  = 0;
+                    } else if(strcmp(argv[i],"none") == 0) {
+                        kw_comma.nl_before = 0;
+                        kw_comma.nl_after  = 0;
+                    }
+                }
+                else FAIL_WITH_ERROR(1,"\nMissing value for option %s\n", argv[i]);
+            } else if( strcmp(argv[i],"--select-newline-after") == 0 )
+            {
+                if( i+1 < argc){
+                    i++;
+                    if( argv[i][0] >= '0' && argv[i][0] <= '9' ) kw_select.nl_after = atoi(argv[i]);
+                    else FAIL_WITH_ERROR(1,"\nInvalid number for number of spaces after select: %s\n", argv[i]);
+                }
+            } else if( strcmp(argv[i],"--help") == 0 || strcmp(argv[i],"-h") == 0)
+            {
+                fprintf(stderr,"Usage:\n", argv[0] );
+                fprintf(stderr,"\t%s                         # read from stdin, write to stdout\n", argv[0] );
+                fprintf(stderr,"\t%s input_file              # read from file, write to stdout\n", argv[0] );
+                fprintf(stderr,"\t%s input_file output_file  # use files for reading and writing\n", argv[0] );
+                exit(2);
+            }
+            
+        }
     }
+    
 
     while (yylex () != 0) ;
 
