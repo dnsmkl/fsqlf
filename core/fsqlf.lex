@@ -220,7 +220,7 @@ int main(int argc, char **argv)
                 else FAIL_WITH_ERROR(1,"\nError opening output file: %s\n", argv[i]);
             }
         }
-        else // firs character is '-'
+        else // first character is '-'
         {
         
             if( strcmp(argv[i],"--select-comma-newline") == 0 )
