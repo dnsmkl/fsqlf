@@ -184,16 +184,7 @@ SEMICOLON ;
 
 
 #include "debuging.h"
-
-
-#define FAIL_WITH_ERROR( CODE , MESSAGE , ... ) \
-    {                                           \
-        fprintf(stderr, MESSAGE , __VA_ARGS__ );\
-        exit( CODE );                           \
-    } 
-
-
-
+#include "cli.h"
 
 int main(int argc, char **argv)
 {
@@ -202,72 +193,9 @@ int main(int argc, char **argv)
     yyin  = stdin;
     yyout = stdout;
 
-    init_all_settings(); // init defaults
-    read_configs();      // read from file
-
-    for(i=1;i<argc;i++)
-    {
-        if( argv[i][0] != '-')
-        {
-            if(yyin == stdin)
-            {   //try to openinig INPUT file
-                if( yyin = fopen(argv[1],"r")  ) ;//printf("Input is set to: %s\n",argv[1]);
-                else FAIL_WITH_ERROR(1,"\nError opening input file: %s\n", argv[i]);
-            }
-            else if(yyout == stdout)
-            {   //try to openinig OUTPUT file
-                if( yyout=fopen(argv[2],"w+") ) ;//printf("Output is set to: %s\n",argv[1]);
-                else FAIL_WITH_ERROR(1,"\nError opening output file: %s\n", argv[i]);
-            }
-        }
-        else // first character is '-'
-        {
-        
-            if( strcmp(argv[i],"--select-comma-newline") == 0 )
-            {
-                if( ++i < argc){
-                    if(strcmp(argv[i],"after") == 0) {
-                        kw_comma.nl_before = 0;
-                        kw_comma.nl_after  = 1;
-                    } else if(strcmp(argv[i],"before") == 0) {
-                        kw_comma.nl_before = 1;
-                        kw_comma.nl_after  = 0;
-                    } else if(strcmp(argv[i],"none") == 0) {
-                        kw_comma.nl_before = 0;
-                        kw_comma.nl_after  = 0;
-                    }
-                }
-                else FAIL_WITH_ERROR(1,"\nMissing value for option : %s\n", argv[i-1]);
-            } else if( strcmp(argv[i],"--select-newline-after") == 0 )
-            {
-                if( ++i < argc && argv[i][0] >= '0' && argv[i][0] <= '9')
-                    kw_select.nl_after = atoi(argv[i]);
-                else FAIL_WITH_ERROR(1,"\nMissing or invalid value for option : %s\n", argv[i-1]);
-            } else if( strcmp(argv[i],"--debug") == 0 )
-            {
-                if( ++i < argc )
-                {
-                    if( strcmp(argv[i],"none") == 0 ) debug_level |= DEBUGNONE;
-                    else if ( strcmp(argv[i],"state") == 0 ) debug_level |= DEBUGSTATES;
-                    else if ( strcmp(argv[i],"match") == 0 ) debug_level |= DEBUGMATCHES;
-                    else if ( strcmp(argv[i],"paranthesis") == 0 ) debug_level |= DEBUGPARCOUNTS;
-                    else FAIL_WITH_ERROR(1,"\nMissing or invalid value for option : %s\n", argv[i-1]);
-                }
-                else FAIL_WITH_ERROR(1,"\nMissing or invalid value for option : %s\n", argv[i-1]);
-            } else if( strcmp(argv[i],"--help") == 0 || strcmp(argv[i],"-h") == 0)
-            {
-                fprintf(stderr,"usage: %s [<input_file> [<output_file>]] [options]\n", argv[0] );
-                fprintf(stderr,"\t", argv[0] );
-                fprintf(stderr,"If <output_file> or also <input_file> is missing, then corresponding standart IO is used\n");
-                fprintf(stderr,"Options:\n");
-                fprintf(stderr,"\t--select-comma-newline (after|before|none)\n\t    New lines for each item in SELECT clause\n", argv[0] );
-                fprintf(stderr,"\t--select-newline-after <num>\n\t    Put <num> new lines right after SELECT keyword\n", argv[0] );
-                fprintf(stderr,"\t--debug (none|state|match|paranthesis)\n\t    Output info for debugging.  This option be used more then once\n", argv[0] );
-                exit(2);
-            } else FAIL_WITH_ERROR(1,"To get usage instructions use:\n%s --help\n", argv[0]);
-        }
-    }
-    
+    init_all_settings();            // init default configs
+    read_configs();                 // read configs from file
+    read_cli_options(argc,argv);    // read configs from command line
 
     while (yylex () != 0) ;
 
