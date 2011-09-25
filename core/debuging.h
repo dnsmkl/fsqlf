@@ -9,7 +9,7 @@
 #define DEBUGPARCOUNTS (4)
 
 
-const int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
+int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 
 int d()
