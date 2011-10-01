@@ -129,16 +129,21 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
     sizerv->Add(this->b_unformat, 0, 0, 0);
     
+    
+    sizerv->Add( new wxStaticText(this, -1, _("SELECT section:")) );
+    
     // Radio buttons
     wxString sel_comma_nl_choices[3];
     sel_comma_nl_choices[0] = _("None");
     sel_comma_nl_choices[1] = _("Before comma");
     sel_comma_nl_choices[2] = _("After comma");
 
-    sel_comma_nl = new wxRadioBox(this, -1, _("SELECT clause: \nnew lines"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices);
+    sel_comma_nl = new wxRadioBox(this, -1, _("New lines"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
+    sel_comma_nl->SetSelection(1);
     sizerv->Add(sel_comma_nl,0,0,0);
     
     nl_after_select = new wxCheckBox(this, -1 , _("New line after select") );
+    nl_after_select->SetValue(true);
     sizerv->Add(nl_after_select,0,0,0);
     
     // Text area on the right
