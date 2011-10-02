@@ -49,7 +49,7 @@ class Notepad : public wxFrame {
     wxTextCtrl* textRight;
     wxString original_text;
     wxButton* b_unformat;
-    
+
     wxRadioBox* sel_comma_nl;
     wxCheckBox* nl_after_select;
 
@@ -128,11 +128,11 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     sizerv->Add(new wxButton(this, idFormat, wxT("Format")), 0, 0, 0);
     this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
     sizerv->Add(this->b_unformat, 0, 0, 0);
-    
-    
+
+
     sizerv->Add( new wxStaticText(this, -1, _("SELECT section:")) );
-    
-    // Radio buttons
+
+    // Radio buttons - new lines in SELECT clause
     wxString sel_comma_nl_choices[3];
     sel_comma_nl_choices[0] = _("None");
     sel_comma_nl_choices[1] = _("Before comma");
@@ -141,11 +141,12 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     sel_comma_nl = new wxRadioBox(this, -1, _("New lines"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
     sel_comma_nl->SetSelection(1);
     sizerv->Add(sel_comma_nl,0,0,0);
-    
+
+    // Check box - new line after SELECT
     nl_after_select = new wxCheckBox(this, -1 , _("New line after select") );
     nl_after_select->SetValue(true);
     sizerv->Add(nl_after_select,0,0,0);
-    
+
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
     sizerh->Add(sizerv,0,0,0);
@@ -156,8 +157,8 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     dnd_target* drop_target = new dnd_target(this->text_area);
     this->text_area->SetDropTarget(drop_target);
 
-    wxIcon icon(wxICON(fsqlf_right));
-    SetIcon(icon);
+
+    SetIcon(wxIcon(fsqlf_right));
 }
 
 
@@ -183,12 +184,12 @@ void Notepad::OnFormat(wxCommandEvent &event)
         case 1: cmd << wxT("  --select-comma-newline before") ; break;
         case 2: cmd << wxT("  --select-comma-newline after")  ; break;
     }
-    
+
     switch( this->nl_after_select->GetValue() ){
         case 0: cmd << wxT("  --select-newline-after 0") ; break;
         case 1: cmd << wxT("  --select-newline-after 1") ; break;
     }
-    
+
     wxDir dir(wxGetCwd());
     if(  !dir.HasFiles(wxT(EXECUTABLE_FILE))  )
     {
@@ -197,8 +198,8 @@ void Notepad::OnFormat(wxCommandEvent &event)
     }
 
     this->text_area->SaveFile(wxT(TMP_INPUT_FILE));
-    
-    if( system(cmd.mb_str()) ) 
+
+    if( system(cmd.mb_str()) )
     {   // non zero status
         wxMessageBox(cmd << wxT("\n returned non zero code"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
         return;
