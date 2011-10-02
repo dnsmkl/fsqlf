@@ -6,6 +6,12 @@
 #include "fsqlf_right.xpm"
 #include "license_text.h"
 
+// define version if it was not passed as an argument in compilation command
+#ifndef VERSION
+#define VERSION "custom-version"
+#endif
+
+
 // set monospace font for all content of this->text_area
 #define MONOSPACE_FONT                                                                                  \
     wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize(), wxFONTFAMILY_TELETYPE, wxNORMAL, wxNORMAL);                     \
