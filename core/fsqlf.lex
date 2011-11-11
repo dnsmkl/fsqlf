@@ -66,6 +66,7 @@ IN      (?i:in)
 COMPARISON (=|<>|<=|>=|<|>)
 
 GROUPBY (?i:group{SPACE}+by)
+ORDERBY (?i:order{SPACE}+by)
 HAVING  (?i:having)
 QUALIFY (?i:qualify)
 
@@ -83,7 +84,7 @@ SEMICOLON ;
 
 %option noyywrap
 
-%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB
+%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY
 %x stCOMMENTML stSTRING
 
 %%
@@ -124,7 +125,10 @@ SEMICOLON ;
 <stWHERE>{EXISTS}   {kw_print(kw_exists); };
 
 
-{GROUPBY}    {kw_print(kw_groupby); };
+{GROUPBY}    {BEGIN_STATE(stGROUPBY); kw_print(kw_groupby); };
+{ORDERBY}    {BEGIN_STATE(stORDERBY); kw_print(kw_orderby); };
+<stORDERBY,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
+<stGROUPBY,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
 {HAVING}     {BEGIN_STATE(stWHERE); kw_print(kw_having);  };
 {QUALIFY}    {BEGIN_STATE(stWHERE); kw_print(kw_qualify); };
 
