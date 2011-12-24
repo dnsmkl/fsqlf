@@ -91,8 +91,6 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
 
     EVT_MENU(idAbout, Notepad::OnAbout)
 
-    EVT_BUTTON(idSave, Notepad::OnSave)
-    EVT_BUTTON(idOpen, Notepad::OnOpen)
     EVT_BUTTON(idFormat, Notepad::OnFormat)
     EVT_BUTTON(idUnformat, Notepad::OnUnformat)
 END_EVENT_TABLE()
@@ -131,8 +129,6 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
 
     // Buttons on the left
     wxBoxSizer *sizerv = new wxBoxSizer(wxVERTICAL); // buttons on the left
-    sizerv->Add(new wxButton(this, idSave, wxT("Save")), 0, 0, 0);
-    sizerv->Add(new wxButton(this, idOpen, wxT("Open")), 0, 0, 0);
     sizerv->Add(new wxButton(this, idFormat, wxT("Format")), 0, 0, 0);
     this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
     sizerv->Add(this->b_unformat, 0, 0, 0);
