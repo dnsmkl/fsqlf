@@ -58,6 +58,7 @@ class Notepad : public wxFrame {
 
     wxRadioBox* sel_comma_nl;
     wxCheckBox* nl_after_select;
+    wxCheckBox *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
 
     void OnUnformat(wxCommandEvent &event);
     void OnFormat(wxCommandEvent &event);
@@ -152,6 +153,22 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     nl_after_select = new wxCheckBox(this, -1 , _("New line after select") );
     nl_after_select->SetValue(true);
     sizerv->Add(nl_after_select,0,0,0);
+    
+    nl_before_or = new wxCheckBox(this, -1 , _("New line before or") );
+    nl_before_or->SetValue(false);
+    sizerv->Add(nl_before_or,0,0,0);
+    
+    nl_after_or = new wxCheckBox(this, -1 , _("New line after or") );
+    nl_after_or->SetValue(false);
+    sizerv->Add(nl_after_or,0,0,0);
+    
+    nl_before_and = new wxCheckBox(this, -1 , _("New line before and") );
+    nl_before_and->SetValue(false);
+    sizerv->Add(nl_before_and,0,0,0);
+    
+    nl_after_and = new wxCheckBox(this, -1 , _("New line after and") );
+    nl_after_and->SetValue(false);
+    sizerv->Add(nl_after_and,0,0,0);
 
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
@@ -194,6 +211,26 @@ void Notepad::OnFormat(wxCommandEvent &event)
     switch( this->nl_after_select->GetValue() ){
         case 0: cmd << wxT("  --select-newline-after 0") ; break;
         case 1: cmd << wxT("  --select-newline-after 1") ; break;
+    }
+    
+    switch( this->nl_before_or->GetValue() ){
+        case 0: cmd << wxT("  --newline-or-before 0") ; break;
+        case 1: cmd << wxT("  --newline-or-before 1") ; break;
+    }
+    
+    switch( this->nl_after_or->GetValue() ){
+        case 0: cmd << wxT("  --newline-or-after 0") ; break;
+        case 1: cmd << wxT("  --newline-or-after 1") ; break;
+    }
+    
+    switch( this->nl_before_and->GetValue() ){
+        case 0: cmd << wxT("  --newline-and-before 0") ; break;
+        case 1: cmd << wxT("  --newline-and-before 1") ; break;
+    }
+    
+    switch( this->nl_after_and->GetValue() ){
+        case 0: cmd << wxT("  --newline-and-after 0") ; break;
+        case 1: cmd << wxT("  --newline-and-after 1") ; break;
     }
 
     wxDir dir(wxGetCwd());

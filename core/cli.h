@@ -24,7 +24,11 @@ void usage_info(int argc, char **argv)
     fprintf(stderr,"If <output_file> or <input_file> is missing, then corresponding standart IO is used\n");
     fprintf(stderr,"options:\n");
     PRINT_OPTION_INFO( "--select-comma-newline (after|before|none)" , "New lines for each item in SELECT clause");
-    PRINT_OPTION_INFO( "--select-newline-after <num>"               , "Put <num> new lines right after SELECT keyword");
+    PRINT_OPTION_INFO( "--select-newline-after <digit>"             , "Put <digit> new lines right after SELECT keyword");
+    PRINT_OPTION_INFO( "--newline-or-before <digit>"                , "Put <digit> new lines before OR keyword");
+    PRINT_OPTION_INFO( "--newline-or-after <digit>"                 , "Put <digit> new lines before OR keyword");
+    PRINT_OPTION_INFO( "--newline-and-before <digit>"               , "Put <digit> new lines before AND keyword");
+    PRINT_OPTION_INFO( "--newline-and-after <digit>"                , "Put <digit> new lines before AND keyword");
     PRINT_OPTION_INFO( "--debug (none|state|match|paranthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more then once");
 }
 
@@ -63,6 +67,22 @@ void read_cli_options(int argc, char **argv)
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
             kw_select.nl_after = atoi(argv[i]);
+        } else if( ARGV_MATCH(i,"--newline-or-before") )
+        {
+            if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
+            kw_or.nl_before = atoi(argv[i]);
+        } else if( ARGV_MATCH(i,"--newline-or-after") )
+        {
+            if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
+            kw_or.nl_after = atoi(argv[i]);
+        } else if( ARGV_MATCH(i,"--newline-and-before") )
+        {
+            if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
+            kw_and.nl_before = atoi(argv[i]);
+        } else if( ARGV_MATCH(i,"--newline-and-after") )
+        {
+            if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
+            kw_and.nl_after = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--debug") )
         {
             if( ++i >= argc ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
