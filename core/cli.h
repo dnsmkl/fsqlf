@@ -31,6 +31,11 @@ void usage_info(int argc, char **argv)
 void read_cli_options(int argc, char **argv)
 {
     int i;
+    if(argc == 1)
+    {
+      usage_info(argc, argv);
+      exit(0);
+    }
     for(i=1;i<argc;i++)
     {
         if( argv[i][0] != '-')
