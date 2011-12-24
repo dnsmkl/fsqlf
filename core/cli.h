@@ -19,9 +19,9 @@
 
 void usage_info(int argc, char **argv)
 {
-    fprintf(stderr,"usage: %s [<input_file> [<output_file>]] [options]\n", argv[0] );
+    fprintf(stderr,"usage: %s [<input_file>] [<output_file>] [options]\n", argv[0] );
     fprintf(stderr,"\t", argv[0] );
-    fprintf(stderr,"If <output_file> or also <input_file> is missing, then corresponding standart IO is used\n");
+    fprintf(stderr,"If <output_file> or <input_file> is missing, then corresponding standart IO is used\n");
     fprintf(stderr,"options:\n");
     PRINT_OPTION_INFO( "--select-comma-newline (after|before|none)" , "New lines for each item in SELECT clause");
     PRINT_OPTION_INFO( "--select-newline-after <num>"               , "Put <num> new lines right after SELECT keyword");
@@ -70,6 +70,7 @@ void read_cli_options(int argc, char **argv)
         } else if( strcmp(argv[i],"--help") == 0 || strcmp(argv[i],"-h") == 0)
         {
             usage_info(argc, argv);
+            exit(0);
         } else FAIL_WITH_ERROR(1,"Try `%s --help' for more information\n", argv[0]);
     }
 }
