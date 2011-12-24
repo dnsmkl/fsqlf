@@ -149,26 +149,33 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     sel_comma_nl->SetSelection(1);
     sizerv->Add(sel_comma_nl,0,0,0);
 
-    // Check box - new line after SELECT
-    nl_after_select = new wxCheckBox(this, -1 , _("New line after select") );
+    // Check boxes for : OR , AND , SELECT
+    wxStaticBoxSizer* nl_other_sizer = new wxStaticBoxSizer(
+                     new wxStaticBox(this, -1, _("New line:[other]"))
+                     , wxVERTICAL);
+    sizerv->Add(nl_other_sizer,0,0,0);
+    
+    nl_after_select = new wxCheckBox(this, -1 , _("[select] after ") );
     nl_after_select->SetValue(true);
-    sizerv->Add(nl_after_select,0,0,0);
+    nl_other_sizer->Add(nl_after_select,0,0,0);
     
-    nl_before_or = new wxCheckBox(this, -1 , _("New line before or") );
+    nl_before_or = new wxCheckBox(this, -1 , _("[or] before") );
     nl_before_or->SetValue(false);
-    sizerv->Add(nl_before_or,0,0,0);
+    nl_other_sizer->Add(nl_before_or,0,0,0);
     
-    nl_after_or = new wxCheckBox(this, -1 , _("New line after or") );
+    nl_after_or = new wxCheckBox(this, -1 , _("[or] after") );
     nl_after_or->SetValue(false);
-    sizerv->Add(nl_after_or,0,0,0);
+    nl_other_sizer->Add(nl_after_or,0,0,0);
     
-    nl_before_and = new wxCheckBox(this, -1 , _("New line before and") );
+    nl_before_and = new wxCheckBox(this, -1 , _("[and] before") );
     nl_before_and->SetValue(false);
-    sizerv->Add(nl_before_and,0,0,0);
+    nl_other_sizer->Add(nl_before_and,0,0,0);
     
-    nl_after_and = new wxCheckBox(this, -1 , _("New line after and") );
+    nl_after_and = new wxCheckBox(this, -1 , _("[and] after") );
     nl_after_and->SetValue(false);
-    sizerv->Add(nl_after_and,0,0,0);
+    nl_other_sizer->Add(nl_after_and,0,0,0);
+
+
 
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
