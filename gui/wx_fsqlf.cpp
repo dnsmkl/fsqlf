@@ -59,6 +59,7 @@ class Notepad : public wxFrame {
     wxRadioBox* sel_comma_nl;
     wxCheckBox* nl_after_select;
     wxCheckBox *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
+    wxCheckListBox* nl_group;
 
     void OnUnformat(wxCommandEvent &event);
     void OnFormat(wxCommandEvent &event);
@@ -136,39 +137,28 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
     sizerv->Add(this->b_unformat, 0, 0, 0);
 
-
-    sizerv->Add( new wxStaticText(this, -1, _("SELECT section:")) );
-
     // Radio buttons - new lines in SELECT clause
     wxString sel_comma_nl_choices[3];
     sel_comma_nl_choices[0] = _("None");
-    sel_comma_nl_choices[1] = _("Before comma");
-    sel_comma_nl_choices[2] = _("After comma");
+    sel_comma_nl_choices[1] = _("Before");
+    sel_comma_nl_choices[2] = _("After");
 
-    sel_comma_nl = new wxRadioBox(this, -1, _("New lines"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
+    sel_comma_nl = new wxRadioBox(this, -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
     sel_comma_nl->SetSelection(1);
     sizerv->Add(sel_comma_nl,0,0,0);
 
-    // Check box - new line after SELECT
-    nl_after_select = new wxCheckBox(this, -1 , _("New line after select") );
-    nl_after_select->SetValue(true);
-    sizerv->Add(nl_after_select,0,0,0);
-    
-    nl_before_or = new wxCheckBox(this, -1 , _("New line before or") );
-    nl_before_or->SetValue(false);
-    sizerv->Add(nl_before_or,0,0,0);
-    
-    nl_after_or = new wxCheckBox(this, -1 , _("New line after or") );
-    nl_after_or->SetValue(false);
-    sizerv->Add(nl_after_or,0,0,0);
-    
-    nl_before_and = new wxCheckBox(this, -1 , _("New line before and") );
-    nl_before_and->SetValue(false);
-    sizerv->Add(nl_before_and,0,0,0);
-    
-    nl_after_and = new wxCheckBox(this, -1 , _("New line after and") );
-    nl_after_and->SetValue(false);
-    sizerv->Add(nl_after_and,0,0,0);
+    sizerv->Add( new wxStaticText(this, -1, _("New line:[other]")) );
+    wxString nl_group_choices[5];
+    nl_group_choices[0] = _("[or] before");
+    nl_group_choices[1] = _("[or] after");
+    nl_group_choices[2] = _("[and] before");
+    nl_group_choices[3] = _("[and] after");
+    nl_group_choices[4] = _("[select] after");
+    //nl_group = new wxCheckListBox(this, -1, _("New line"), wxDefaultPosition, wxDefaultSize, 4, nl_group_choices);
+    nl_group = new wxCheckListBox(this, -1, wxDefaultPosition, wxDefaultSize, 5, nl_group_choices);
+    nl_group->Check(2);
+    nl_group->Check(4);
+    sizerv->Add(nl_group,0,0,0);
 
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
@@ -208,27 +198,27 @@ void Notepad::OnFormat(wxCommandEvent &event)
         case 2: cmd << wxT("  --select-comma-newline after")  ; break;
     }
 
-    switch( this->nl_after_select->GetValue() ){
+    switch( this->nl_group->IsChecked(4) ){
         case 0: cmd << wxT("  --select-newline-after 0") ; break;
         case 1: cmd << wxT("  --select-newline-after 1") ; break;
     }
     
-    switch( this->nl_before_or->GetValue() ){
+    switch( this->nl_group->IsChecked(0) ){
         case 0: cmd << wxT("  --newline-or-before 0") ; break;
         case 1: cmd << wxT("  --newline-or-before 1") ; break;
     }
     
-    switch( this->nl_after_or->GetValue() ){
+    switch( this->nl_group->IsChecked(1) ){
         case 0: cmd << wxT("  --newline-or-after 0") ; break;
         case 1: cmd << wxT("  --newline-or-after 1") ; break;
     }
     
-    switch( this->nl_before_and->GetValue() ){
+    switch( this->nl_group->IsChecked(2) ){
         case 0: cmd << wxT("  --newline-and-before 0") ; break;
         case 1: cmd << wxT("  --newline-and-before 1") ; break;
     }
     
-    switch( this->nl_after_and->GetValue() ){
+    switch( this->nl_group->IsChecked(3) ){
         case 0: cmd << wxT("  --newline-and-after 0") ; break;
         case 1: cmd << wxT("  --newline-and-after 1") ; break;
     }
