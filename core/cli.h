@@ -29,6 +29,7 @@ void usage_info(int argc, char **argv)
     PRINT_OPTION_INFO( "--newline-or-after <digit>"                 , "Put <digit> new lines before OR keyword");
     PRINT_OPTION_INFO( "--newline-and-before <digit>"               , "Put <digit> new lines before AND keyword");
     PRINT_OPTION_INFO( "--newline-and-after <digit>"                , "Put <digit> new lines before AND keyword");
+    PRINT_OPTION_INFO( "--newline-major-sections <digit>"           , "Put <digit> new lines before major sections (FROM, JOIN, WHERE)");
     PRINT_OPTION_INFO( "--debug (none|state|match|paranthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more then once");
 }
 
@@ -83,6 +84,16 @@ void read_cli_options(int argc, char **argv)
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
             kw_and.nl_after = atoi(argv[i]);
+        } else if( ARGV_MATCH(i,"--newline-major-sections") )
+        {
+            if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
+            kw_from.nl_before = atoi(argv[i]);
+            kw_where.nl_before = atoi(argv[i]);
+            kw_inner_join.nl_before = atoi(argv[i]);
+            kw_left_join.nl_before  = atoi(argv[i]);
+            kw_right_join.nl_before = atoi(argv[i]);
+            kw_full_join.nl_before  = atoi(argv[i]);
+            kw_cross_join.nl_before = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--debug") )
         {
             if( ++i >= argc ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);

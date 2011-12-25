@@ -59,6 +59,7 @@ class Notepad : public wxFrame {
     wxRadioBox* sel_comma_nl;
     wxCheckBox* nl_after_select;
     wxCheckBox *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
+    wxRadioBox* nl_major_sections;
 
     void OnUnformat(wxCommandEvent &event);
     void OnFormat(wxCommandEvent &event);
@@ -168,7 +169,13 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     nl_after_and->SetValue(false);
     nl_other_sizer->Add(nl_after_and,0,0,0);
 
-
+    wxString nl_major_sections_choices[3];
+    nl_major_sections_choices[0] = _("Use Config File");
+    nl_major_sections_choices[1] = _("1 New Line");
+    nl_major_sections_choices[2] = _("2 New Lines");
+    nl_major_sections = new wxRadioBox(this, -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, nl_major_sections_choices,1,wxRA_SPECIFY_COLS);
+    nl_major_sections->SetSelection(2);
+    sizerv->Add(nl_major_sections,0,0,0);
 
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
@@ -231,6 +238,12 @@ void Notepad::OnFormat(wxCommandEvent &event)
     switch( this->nl_after_and->GetValue() ){
         case 0: cmd << wxT("  --newline-and-after 0") ; break;
         case 1: cmd << wxT("  --newline-and-after 1") ; break;
+    }
+
+    switch( this->nl_major_sections->GetSelection() ){
+        case 0: break;
+        case 1: cmd << wxT("  --newline-major-sections 1") ; break;
+        case 2: cmd << wxT("  --newline-major-sections 2")  ; break;
     }
 
     wxDir dir(wxGetCwd());
