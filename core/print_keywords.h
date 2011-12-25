@@ -30,6 +30,7 @@ typedef struct t_kw_settings {
     int tab_after;
     int space_after;
 
+    int print_case;
     char * text;
 
     int (*funct_before[KW_FUNCT_ARRAY_SIZE])();
@@ -102,6 +103,29 @@ int sp_b(t_kw_settings s, int no_nl, int no_space ){
 }
 
 
+#define MAX_KEYWORD_SIZE (50)
+enum{CASE_none,CASE_lower,CASE_UPPER,CASE_Initcap};
+char* stocase(char* s_text, int s_case){
+    static char formatted_result[MAX_KEYWORD_SIZE];
+    int i;
+    
+    switch(s_case){
+        case CASE_lower:
+            for(i=0; i<strlen(s_text); i++) formatted_result[i] = tolower(s_text[i]);
+            break;
+        case CASE_UPPER:
+            for(i=0; i<strlen(s_text); i++) formatted_result[i] = toupper(s_text[i]);
+            break;
+        case CASE_Initcap:
+            formatted_result[0] = toupper(s_text[0]);
+            for(i=1; i<strlen(s_text); i++) formatted_result[i] = tolower(s_text[i]);
+            break;
+        case CASE_none:
+            return s_text;
+    }
+    formatted_result[strlen(s_text)]='\0';
+    return formatted_result;
+}
 
 void kw_print(t_kw_settings s){
     extern FILE * yyout;
@@ -111,7 +135,7 @@ void kw_print(t_kw_settings s){
 
     sp_b(s, 0, 0);
 
-    fprintf(yyout,"%s",s.text);
+    fprintf(yyout,"%s",stocase(s.text,s.print_case));
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
 }
@@ -156,6 +180,13 @@ void echo_print(char * txt){
 
 
 
+void set_case(int keyword_case){
+    #define T_KW_SETTINGS_MACRO( NAME , ... ) \
+        NAME.print_case = keyword_case;
+    #include "t_kw_settings_list.def"
+    #undef T_KW_SETTINGS_MACRO
+}
+
 void init_all_settings(){
     #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,TEXT , fb1,fb2,fb3,fa1,fa2,fa3) \
         NAME.nl_before    = nlb;    \
@@ -165,6 +196,8 @@ void init_all_settings(){
         NAME.nl_after     = nla;    \
         NAME.tab_after    = ta;     \
         NAME.space_after  = sa;     \
+        NAME.print_original_text = 0; \
+        NAME.print_case   = CASE_UPPER; \
         NAME.text         = TEXT;   \
                                     \
         NAME.funct_before[0] = fb1; \

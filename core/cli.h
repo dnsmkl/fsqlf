@@ -30,6 +30,7 @@ void usage_info(int argc, char **argv)
     PRINT_OPTION_INFO( "--newline-and-before <digit>"               , "Put <digit> new lines before AND keyword");
     PRINT_OPTION_INFO( "--newline-and-after <digit>"                , "Put <digit> new lines before AND keyword");
     PRINT_OPTION_INFO( "--newline-major-sections <digit>"           , "Put <digit> new lines before major sections (FROM, JOIN, WHERE)");
+    PRINT_OPTION_INFO( "--keyword-case (upper|lower|initcap|none)"  , "Convert all keywrods to UPPER, lower, or Initcap case, or not to convert case at all");
     PRINT_OPTION_INFO( "--debug (none|state|match|paranthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more then once");
 }
 
@@ -63,6 +64,18 @@ void read_cli_options(int argc, char **argv)
             } else if(strcmp(argv[i],"none") == 0) {
                 kw_comma.nl_before = 0;
                 kw_comma.nl_after  = 0;
+            }
+        } else if( ARGV_MATCH(i,"--keyword-case") )
+        {
+            if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
+            if(strcmp(argv[i],"none") == 0) {
+                set_case(CASE_none);
+            } else if(strcmp(argv[i],"upper") == 0) {
+                set_case(CASE_UPPER);
+            } else if(strcmp(argv[i],"lower") == 0) {
+                set_case(CASE_lower);
+            } else if(strcmp(argv[i],"initcap") == 0) {
+                set_case(CASE_Initcap);
             }
         } else if( ARGV_MATCH(i,"--select-newline-after") )
         {

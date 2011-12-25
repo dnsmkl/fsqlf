@@ -60,6 +60,7 @@ class Notepad : public wxFrame {
     wxCheckBox* nl_after_select;
     wxCheckBox *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
     wxRadioBox* nl_major_sections;
+    wxRadioBox* case_all_kw;
 
     void OnUnformat(wxCommandEvent &event);
     void OnFormat(wxCommandEvent &event);
@@ -167,6 +168,16 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     nl_major_sections->SetSelection(2);
     sizerv->Add(nl_major_sections,0,0,0);
 
+    // CASE settings
+    wxString case_all_kw_choices[4];
+    case_all_kw_choices[0] = _("None (aBc)");
+    case_all_kw_choices[1] = _("Upper (ABC)");
+    case_all_kw_choices[2] = _("Lower (abc)");
+    case_all_kw_choices[3] = _("Init (Abc)");
+    case_all_kw = new wxRadioBox(this, -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, case_all_kw_choices,1,wxRA_SPECIFY_COLS);
+    case_all_kw->SetSelection(1);
+    sizerv->Add(case_all_kw,0,0,0);
+
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
     sizerh->Add(sizerv,0,0,0);
@@ -234,6 +245,13 @@ void Notepad::OnFormat(wxCommandEvent &event)
         case 0: break;
         case 1: cmd << wxT("  --newline-major-sections 1") ; break;
         case 2: cmd << wxT("  --newline-major-sections 2")  ; break;
+    }
+
+    switch( this->case_all_kw->GetSelection() ){
+        case 0: cmd << wxT("  --keyword-case none")    ; break;
+        case 1: cmd << wxT("  --keyword-case upper")   ; break;
+        case 2: cmd << wxT("  --keyword-case lower")   ; break;
+        case 3: cmd << wxT("  --keyword-case initcap") ; break;
     }
 
     wxDir dir(wxGetCwd());
