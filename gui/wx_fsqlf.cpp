@@ -59,7 +59,6 @@ class Notepad : public wxFrame {
     wxRadioBox* sel_comma_nl;
     wxCheckBox* nl_after_select;
     wxCheckBox *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
-    wxCheckListBox* nl_group;
 
     void OnUnformat(wxCommandEvent &event);
     void OnFormat(wxCommandEvent &event);
