@@ -143,18 +143,33 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     sel_comma_nl->SetSelection(1);
     sizerv->Add(sel_comma_nl,0,0,0);
 
-    sizerv->Add( new wxStaticText(this, -1, _("New line:[other]")) );
-    wxString nl_group_choices[5];
-    nl_group_choices[0] = _("[or] before");
-    nl_group_choices[1] = _("[or] after");
-    nl_group_choices[2] = _("[and] before");
-    nl_group_choices[3] = _("[and] after");
-    nl_group_choices[4] = _("[select] after");
-    //nl_group = new wxCheckListBox(this, -1, _("New line"), wxDefaultPosition, wxDefaultSize, 4, nl_group_choices);
-    nl_group = new wxCheckListBox(this, -1, wxDefaultPosition, wxDefaultSize, 5, nl_group_choices);
-    nl_group->Check(2);
-    nl_group->Check(4);
-    sizerv->Add(nl_group,0,0,0);
+    // Check boxes for : OR , AND , SELECT
+    wxStaticBoxSizer* nl_other_sizer = new wxStaticBoxSizer(
+                     new wxStaticBox(this, -1, _("New line:[other]"))
+                     , wxVERTICAL);
+    sizerv->Add(nl_other_sizer,0,0,0);
+    
+    nl_after_select = new wxCheckBox(this, -1 , _("[select] after ") );
+    nl_after_select->SetValue(true);
+    nl_other_sizer->Add(nl_after_select,0,0,0);
+    
+    nl_before_or = new wxCheckBox(this, -1 , _("[or] before") );
+    nl_before_or->SetValue(false);
+    nl_other_sizer->Add(nl_before_or,0,0,0);
+    
+    nl_after_or = new wxCheckBox(this, -1 , _("[or] after") );
+    nl_after_or->SetValue(false);
+    nl_other_sizer->Add(nl_after_or,0,0,0);
+    
+    nl_before_and = new wxCheckBox(this, -1 , _("[and] before") );
+    nl_before_and->SetValue(true);
+    nl_other_sizer->Add(nl_before_and,0,0,0);
+    
+    nl_after_and = new wxCheckBox(this, -1 , _("[and] after") );
+    nl_after_and->SetValue(false);
+    nl_other_sizer->Add(nl_after_and,0,0,0);
+
+
 
     // Text area on the right
     wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
@@ -194,27 +209,27 @@ void Notepad::OnFormat(wxCommandEvent &event)
         case 2: cmd << wxT("  --select-comma-newline after")  ; break;
     }
 
-    switch( this->nl_group->IsChecked(4) ){
+    switch( this->nl_after_select->GetValue() ){
         case 0: cmd << wxT("  --select-newline-after 0") ; break;
         case 1: cmd << wxT("  --select-newline-after 1") ; break;
     }
     
-    switch( this->nl_group->IsChecked(0) ){
+    switch( this->nl_before_or->GetValue() ){
         case 0: cmd << wxT("  --newline-or-before 0") ; break;
         case 1: cmd << wxT("  --newline-or-before 1") ; break;
     }
     
-    switch( this->nl_group->IsChecked(1) ){
+    switch( this->nl_after_or->GetValue() ){
         case 0: cmd << wxT("  --newline-or-after 0") ; break;
         case 1: cmd << wxT("  --newline-or-after 1") ; break;
     }
     
-    switch( this->nl_group->IsChecked(2) ){
+    switch( this->nl_before_and->GetValue() ){
         case 0: cmd << wxT("  --newline-and-before 0") ; break;
         case 1: cmd << wxT("  --newline-and-before 1") ; break;
     }
     
-    switch( this->nl_group->IsChecked(3) ){
+    switch( this->nl_after_and->GetValue() ){
         case 0: cmd << wxT("  --newline-and-after 0") ; break;
         case 1: cmd << wxT("  --newline-and-after 1") ; break;
     }
