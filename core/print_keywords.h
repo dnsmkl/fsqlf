@@ -30,6 +30,7 @@ typedef struct t_kw_settings {
     int tab_after;
     int space_after;
 
+    int print_original_text;
     int print_case;
     char * text;
 
@@ -129,13 +130,14 @@ char* stocase(char* s_text, int s_case){
 
 void kw_print(t_kw_settings s){
     extern FILE * yyout;
+    extern char * yytext; // text scaned by the parser TODO: pass extern variables as parameters
     int i=0;
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
 
     sp_b(s, 0, 0);
 
-    fprintf(yyout,"%s",stocase(s.text,s.print_case));
+    fprintf(yyout,"%s",stocase( s.print_original_text ? yytext : s.text , s.print_case)); // 1st deside what text to use (original or degault), then handle its case
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
 }
@@ -183,6 +185,14 @@ void echo_print(char * txt){
 void set_case(int keyword_case){
     #define T_KW_SETTINGS_MACRO( NAME , ... ) \
         NAME.print_case = keyword_case;
+    #include "t_kw_settings_list.def"
+    #undef T_KW_SETTINGS_MACRO
+}
+
+
+void set_text_original(int ind_original){
+    #define T_KW_SETTINGS_MACRO( NAME , ... ) \
+        NAME.print_original_text = ind_original;
     #include "t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
 }

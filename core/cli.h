@@ -31,6 +31,7 @@ void usage_info(int argc, char **argv)
     PRINT_OPTION_INFO( "--newline-and-after <digit>"                , "Put <digit> new lines before AND keyword");
     PRINT_OPTION_INFO( "--newline-major-sections <digit>"           , "Put <digit> new lines before major sections (FROM, JOIN, WHERE)");
     PRINT_OPTION_INFO( "--keyword-case (upper|lower|initcap|none)"  , "Convert all keywrods to UPPER, lower, or Initcap case, or not to convert case at all");
+    PRINT_OPTION_INFO( "--keyword-text (original|default)"          , "Use original or programs default text for the keyword, when there are several alternatives");
     PRINT_OPTION_INFO( "--debug (none|state|match|paranthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more then once");
 }
 
@@ -76,6 +77,14 @@ void read_cli_options(int argc, char **argv)
                 set_case(CASE_lower);
             } else if(strcmp(argv[i],"initcap") == 0) {
                 set_case(CASE_Initcap);
+            }
+        } else if( ARGV_MATCH(i,"--keyword-text") )
+        {
+            if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
+            if(strcmp(argv[i],"original") == 0) {
+                set_text_original(1);
+            } else if(strcmp(argv[i],"default") == 0) {
+                set_text_original(0);
             }
         } else if( ARGV_MATCH(i,"--select-newline-after") )
         {
