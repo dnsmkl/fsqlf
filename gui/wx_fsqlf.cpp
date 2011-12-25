@@ -96,6 +96,10 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
 END_EVENT_TABLE()
 
 
+#define ADD_NEWCHECKBOX(var_checkbox , sizer , title , default_val) \
+    var_checkbox = new wxCheckBox(this, -1 , _(title) );\
+    var_checkbox->SetValue(default_val);\
+    sizer->Add(var_checkbox,0,0,0)\
 
 Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDefaultPosition, wxSize(650,500))
 {
@@ -148,27 +152,13 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
                      new wxStaticBox(this, -1, _("New line:[other]"))
                      , wxVERTICAL);
     sizerv->Add(nl_other_sizer,0,0,0);
-    
-    nl_after_select = new wxCheckBox(this, -1 , _("[select] after ") );
-    nl_after_select->SetValue(true);
-    nl_other_sizer->Add(nl_after_select,0,0,0);
-    
-    nl_before_or = new wxCheckBox(this, -1 , _("[or] before") );
-    nl_before_or->SetValue(false);
-    nl_other_sizer->Add(nl_before_or,0,0,0);
-    
-    nl_after_or = new wxCheckBox(this, -1 , _("[or] after") );
-    nl_after_or->SetValue(false);
-    nl_other_sizer->Add(nl_after_or,0,0,0);
-    
-    nl_before_and = new wxCheckBox(this, -1 , _("[and] before") );
-    nl_before_and->SetValue(true);
-    nl_other_sizer->Add(nl_before_and,0,0,0);
-    
-    nl_after_and = new wxCheckBox(this, -1 , _("[and] after") );
-    nl_after_and->SetValue(false);
-    nl_other_sizer->Add(nl_after_and,0,0,0);
 
+    ADD_NEWCHECKBOX(nl_after_select,nl_other_sizer,"[select] after",true);
+    ADD_NEWCHECKBOX(nl_before_or   ,nl_other_sizer,"[or] before"   ,false);
+    ADD_NEWCHECKBOX(nl_after_or    ,nl_other_sizer,"[or] after"    ,false);
+    ADD_NEWCHECKBOX(nl_before_and  ,nl_other_sizer,"[and] before"  ,true);
+    ADD_NEWCHECKBOX(nl_after_and   ,nl_other_sizer,"[and] after"   ,false);
+    
     wxString nl_major_sections_choices[3];
     nl_major_sections_choices[0] = _("Use Config File");
     nl_major_sections_choices[1] = _("1 New Line");
