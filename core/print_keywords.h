@@ -128,16 +128,17 @@ char* stocase(char* s_text, int s_case){
     return formatted_result;
 }
 
-void kw_print(t_kw_settings s){
-    extern FILE * yyout;
-    extern char * yytext; // text scaned by the parser TODO: pass extern variables as parameters
+void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
     int i=0;
+    // call keyword specific functions. Before fprintf    
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
 
-    sp_b(s, 0, 0);
+    sp_b(s, 0, 0); // print spacing before keyword
 
     fprintf(yyout,"%s",stocase( s.print_original_text ? yytext : s.text , s.print_case)); // 1st deside what text to use (original or degault), then handle its case
+    
+    // call keyword specific functions. After fprintf
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
 }

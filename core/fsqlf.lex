@@ -89,61 +89,61 @@ SEMICOLON ;
 %%
 
                 /* SET operations */
-{UNION}      {BEGIN_STATE(INITIAL);kw_print(kw_union)    ;};
-{UNION_ALL}  {BEGIN_STATE(INITIAL);kw_print(kw_union_all);};
-{INTERSECT}  {BEGIN_STATE(INITIAL);kw_print(kw_intersect);};
-{EXCEPT}     {BEGIN_STATE(INITIAL);kw_print(kw_except);};
+{UNION}      {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_union)    ; };
+{UNION_ALL}  {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_union_all); };
+{INTERSECT}  {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_intersect); };
+{EXCEPT}     {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_except);    };
 
                 /* SELECT ... FROM */
-<INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); kw_print(kw_select); };
-<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA); kw_print(kw_comma); };
-<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); kw_print(kw_left_p);  };
-<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");kw_print(kw_left_p);  };
+<INITIAL>{SELECT}           {BEGIN_STATE(stSELECT); kw_print(yyout,yytext,kw_select); };
+<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  kw_print(yyout,yytext,kw_comma);  };
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  kw_print(yyout,yytext,kw_left_p); };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");kw_print(yyout,yytext,kw_left_p);  };
 <stLEFTP>{COMMA}            {echo_print(yytext); };
-<stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(kw_from_2);};
-<stLEFTP>{RIGHTP}           {POP_STATE(); kw_print(kw_right_p); };
-<stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  );  kw_print(kw_from); };
-<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );kw_print(kw_as);};
+<stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(yyout,yytext,kw_from_2);  };
+<stLEFTP>{RIGHTP}           {POP_STATE();            kw_print(yyout,yytext,kw_right_p); };
+<stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  );  kw_print(yyout,yytext,kw_from);    };
+<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );  kw_print(yyout,yytext,kw_as);      };
 
                 /* FROM ... JOIN ... ON ... WHERE */
-<stON,stFROM,stJOIN>{IJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_inner_join); };
-<stON,stFROM,stJOIN>{LJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_left_join); };
-<stON,stFROM,stJOIN>{RJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_right_join); };
-<stON,stFROM,stJOIN>{FJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_full_join); };
-<stON,stFROM,stJOIN>{CJOIN} { BEGIN_STATE(stJOIN)  ;kw_print(kw_cross_join); };
+<stON,stFROM,stJOIN>{IJOIN} { BEGIN_STATE(stJOIN);  kw_print(yyout,yytext,kw_inner_join); };
+<stON,stFROM,stJOIN>{LJOIN} { BEGIN_STATE(stJOIN);  kw_print(yyout,yytext,kw_left_join ); };
+<stON,stFROM,stJOIN>{RJOIN} { BEGIN_STATE(stJOIN);  kw_print(yyout,yytext,kw_right_join); };
+<stON,stFROM,stJOIN>{FJOIN} { BEGIN_STATE(stJOIN);  kw_print(yyout,yytext,kw_full_join ); };
+<stON,stFROM,stJOIN>{CJOIN} { BEGIN_STATE(stJOIN);  kw_print(yyout,yytext,kw_cross_join); };
 
-<stJOIN>{ON}    {BEGIN_STATE(stON);   kw_print(kw_on); };
+<stJOIN>{ON}    {BEGIN_STATE(stON);   kw_print(yyout,yytext,kw_on); };
 
 
 
                 /* WHERE ... (also join conditions) */
-<stFROM,stJOIN,stON>{WHERE} {BEGIN_STATE(stWHERE ); kw_print(kw_where); };
-<stWHERE,stON,stJOIN>{AND}   { debug_match("{AND}"); kw_print(kw_and);};
-<stWHERE,stON,stJOIN>{OR}    { debug_match("{OR}"); kw_print(kw_or);};
+<stFROM,stJOIN,stON>{WHERE} {BEGIN_STATE(stWHERE );  kw_print(yyout,yytext,kw_where); };
+<stWHERE,stON,stJOIN>{AND}  { debug_match("{AND}");  kw_print(yyout,yytext,kw_and);   };
+<stWHERE,stON,stJOIN>{OR}   { debug_match("{OR}");   kw_print(yyout,yytext,kw_or);    };
 
-<stWHERE>{EXISTS}   {kw_print(kw_exists); };
+<stWHERE>{EXISTS}   {kw_print(yyout,yytext,kw_exists); };
 
 
-{GROUPBY}    {kw_print(kw_groupby); };
-{HAVING}     {BEGIN_STATE(stWHERE); kw_print(kw_having);  };
-{QUALIFY}    {BEGIN_STATE(stWHERE); kw_print(kw_qualify); };
+{GROUPBY}    {kw_print(yyout,yytext,kw_groupby); };
+{HAVING}     {BEGIN_STATE(stWHERE); kw_print(yyout,yytext,kw_having);  };
+{QUALIFY}    {BEGIN_STATE(stWHERE); kw_print(yyout,yytext,kw_qualify); };
 
-<stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); PUSH_STATE(stP_SUB);  };
+<stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(yyout,yytext,kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
-<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(kw_left_p_sub); kw_print(kw_select);};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); echo_print(yytext);};
-<stP_SUB>{COMMENT_ML_START}           { kw_print(kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; echo_print(yytext);};
-<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(kw_left_p    ); echo_print(yytext);};
+<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(yyout,"(",kw_left_p_sub); kw_print(yyout,yytext,kw_select);};
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yytext);};
+<stP_SUB>{COMMENT_ML_START}           { kw_print(yyout,"(",kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; echo_print(yytext);};
+<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(yyout,"(",kw_left_p    ); echo_print(yytext);};
 <stP_SUB>{SPACE}                      { echo_print(""); };
-<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(kw_left_p    ); echo_print(yytext); };
+<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yytext); };
 
 {RIGHTP}    {
                 POP_STATE();
                 if(subselect_level>0 && left_p - peek_sub_stack().left == (right_p+1) - peek_sub_stack().right - 1 ){
-                    kw_print(kw_right_p_sub);
+                    kw_print(yyout,yytext,kw_right_p_sub);
                 } else {
                     debug_match("<wtf-leftp>");
-                    kw_print(kw_right_p);
+                    kw_print(yyout,yytext,kw_right_p);
                 }
 
             };
@@ -163,7 +163,7 @@ SEMICOLON ;
 {SPACE}+     {echo_print(" ");};
 {DBOBJECT}   {echo_print(yytext);};
 {NUMBER}     {echo_print(yytext);};
-{SEMICOLON}  {kw_print(kw_semicolon);};
+{SEMICOLON}  {kw_print(yyout,yytext,kw_semicolon);};
 <*>.         {debug_match("<*>."); echo_print(yytext); };
 
 
