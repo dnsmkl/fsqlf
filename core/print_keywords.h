@@ -55,16 +55,6 @@ int debug_p();// TODO : make separate .c and .h files
 
 
 
-int new_line() {
-    extern FILE * yyout;
-    int i=0;
-    fprintf(yyout,"\n");
-    for(i=0;i<currindent;i++)
-        fprintf(yyout,"%s",tab_string);
-}
-
-
-
 static int sp_b(FILE * yyout, t_kw_settings s, int no_nl, int no_space ){
 // sp_b - spacing before
     int i=0, minus_sp=0, minus_tb=0, minus_nl=0;
