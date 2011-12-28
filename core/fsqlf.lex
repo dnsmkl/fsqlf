@@ -99,7 +99,7 @@ SEMICOLON ;
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  kw_print(yyout,yytext,kw_comma);  };
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  kw_print(yyout,yytext,kw_left_p); };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");kw_print(yyout,yytext,kw_left_p);  };
-<stLEFTP>{COMMA}            {echo_print(yytext); };
+<stLEFTP>{COMMA}            {echo_print(yyout,yytext); };
 <stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(yyout,yytext,kw_from_2);  };
 <stLEFTP>{RIGHTP}           {POP_STATE();            kw_print(yyout,yytext,kw_right_p); };
 <stSELECT,stCOMMA>{FROM}    {BEGIN_STATE(stFROM  );  kw_print(yyout,yytext,kw_from);    };
@@ -131,11 +131,11 @@ SEMICOLON ;
 <stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(yyout,yytext,kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(yyout,"(",kw_left_p_sub); kw_print(yyout,yytext,kw_select);};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yytext);};
-<stP_SUB>{COMMENT_ML_START}           { kw_print(yyout,"(",kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; echo_print(yytext);};
-<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(yyout,"(",kw_left_p    ); echo_print(yytext);};
-<stP_SUB>{SPACE}                      { echo_print(""); };
-<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yytext); };
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext);};
+<stP_SUB>{COMMENT_ML_START}           { kw_print(yyout,"(",kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; echo_print(yyout,yytext);};
+<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext);};
+<stP_SUB>{SPACE}                      { echo_print(yyout,""); };
+<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext); };
 
 {RIGHTP}    {
                 POP_STATE();
@@ -151,20 +151,20 @@ SEMICOLON ;
 
 
 
-{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); echo_print(yytext);};
-<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; echo_print(yytext);};
-<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; echo_print(yytext);};
-<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); echo_print(yytext);};
+{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); echo_print(yyout,yytext);};
+<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; echo_print(yyout,yytext);};
+<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; echo_print(yyout,yytext);};
+<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); echo_print(yyout,yytext);};
 
-{COMMENT_ONE_LINE}     {echo_print(yytext);};
+{COMMENT_ONE_LINE}     {echo_print(yyout,yytext);};
 
 
-{STRING}     {echo_print(yytext);};
-{SPACE}+     {echo_print(" ");};
-{DBOBJECT}   {echo_print(yytext);};
-{NUMBER}     {echo_print(yytext);};
+{STRING}     {echo_print(yyout,yytext);};
+{SPACE}+     {echo_print(yyout," ");};
+{DBOBJECT}   {echo_print(yyout,yytext);};
+{NUMBER}     {echo_print(yyout,yytext);};
 {SEMICOLON}  {kw_print(yyout,yytext,kw_semicolon);};
-<*>.         {debug_match("<*>."); echo_print(yytext); };
+<*>.         {debug_match("<*>."); echo_print(yyout,yytext); };
 
 
 <<EOF>> {

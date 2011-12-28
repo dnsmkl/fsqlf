@@ -65,9 +65,8 @@ int new_line() {
 
 
 
-int sp_b(t_kw_settings s, int no_nl, int no_space ){
+static int sp_b(FILE * yyout, t_kw_settings s, int no_nl, int no_space ){
 // sp_b - spacing before
-    extern FILE * yyout;
     int i=0, minus_sp=0, minus_tb=0, minus_nl=0;
     static int prev_nl=0, prev_tab=0, prev_space=0; // settings saved from previously printed (key)word for spacing after it
 
@@ -134,7 +133,7 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
 
-    sp_b(s, 0, 0); // print spacing before keyword
+    sp_b(yyout, s, 0, 0); // print spacing before keyword
 
     fprintf(yyout,"%s",stocase( s.print_original_text ? yytext : s.text , s.print_case)); // 1st deside what text to use (original or degault), then handle its case
     
@@ -145,8 +144,7 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
 
 
 
-void echo_print(char * txt){
-    extern FILE * yyout;
+void echo_print(FILE * yyout, char * txt){
     int i=0, space_cnt=0, nl_cnt=0, length, nbr;
     char *tmp_txt;
 
@@ -167,7 +165,7 @@ void echo_print(char * txt){
     // Spacing
     s.nl_after = nl_cnt;
     s.space_after = space_cnt;
-    sp_b(s,0,0);
+    sp_b(yyout, s, 0, 0);
 
     // Print
     fprintf(yyout,"%s",s.text);
