@@ -135,6 +135,7 @@ SEMICOLON ;
 <stP_SUB>{COMMENT_ML_START}           { kw_print(yyout,"(",kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; echo_print(yyout,yytext);};
 <stP_SUB>{COMMENT_ONE_LINE}           { kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext);};
 <stP_SUB>{SPACE}                      { echo_print(yyout,""); };
+<stP_SUB>{RIGHTP}                     { kw_print(yyout,"(",kw_left_p    ); POP_STATE(); kw_print(yyout,yytext,kw_right_p); }
 <stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext); };
 
 {RIGHTP}    {
