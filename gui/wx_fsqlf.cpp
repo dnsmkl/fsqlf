@@ -3,6 +3,7 @@
 #include <wx/dnd.h>
 #include <wx/aboutdlg.h>
 #include <wx/font.h>
+#include <wx/notebook.h>
 #include "fsqlf_right.xpm"
 #include "license_text.h"
 
@@ -74,6 +75,11 @@ class Notepad : public wxFrame {
     void OnSelectAll(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
 
+    void create_menubar();
+    void create_buttons(wxWindow* parent_window , wxSizer* parent_sizer);
+    void create_options(wxNotebook*);
+    void create_textarea(wxSizer* parent);
+
     enum MenuControls{ idSave = 1000, idOpen, idExit, idFormat, idUnformat, idCut, idCopy, idPaste, idSelectAll, idAbout  };
 
     DECLARE_EVENT_TABLE()
@@ -98,14 +104,37 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
 END_EVENT_TABLE()
 
 
-#define ADD_NEWCHECKBOX(var_checkbox , sizer , title , default_val) \
-    var_checkbox = new wxCheckBox(this, -1 , _(title) );\
+#define ADD_NEWCHECKBOX(var_checkbox , parent_window , sizer , title , default_val) \
+    var_checkbox = new wxCheckBox(parent_window, -1 , _(title) );\
     var_checkbox->SetValue(default_val);\
     sizer->Add(var_checkbox,0,0,0)\
 
 Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDefaultPosition, wxSize(650,500))
 {
-    // Menu
+    // create
+    wxBoxSizer* sizerh = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* left_sizer = new wxBoxSizer(wxVERTICAL);
+    wxNotebook* nb = new wxNotebook( this, wxID_ANY);
+
+    this->SetSizer(sizerh);
+    sizerh->Add(left_sizer,0,0,0);
+    Notepad::create_buttons(this,left_sizer);
+    left_sizer->Add(nb,0,0,0);
+    Notepad::create_options(nb);
+    Notepad::create_menubar();
+    Notepad::create_textarea(sizerh);
+
+    // (with drag and drop support)
+    dnd_target* drop_target = new dnd_target(this->text_area);
+    this->text_area->SetDropTarget(drop_target);
+
+    SetIcon(wxIcon(fsqlf_right));
+}
+
+
+
+void Notepad::create_menubar()
+{
     this->menu = new wxMenuBar();
     this->file = new wxMenu();
     this->edit = new wxMenu();
@@ -132,12 +161,25 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     this->help->Append(idAbout, wxT("&About...\tAlt-F1"));
 
     this->SetMenuBar(menu);
+}
 
-    // Buttons on the left
-    wxBoxSizer *sizerv = new wxBoxSizer(wxVERTICAL); // buttons on the left
-    sizerv->Add(new wxButton(this, idFormat, wxT("Format")), 0, 0, 0);
-    this->b_unformat = new wxButton(this, idUnformat, wxT("Unformat"));
-    sizerv->Add(this->b_unformat, 0, 0, 0);
+
+
+void Notepad::create_buttons(wxWindow* parent_window , wxSizer* parent_sizer)
+{
+    parent_sizer->Add(new wxButton(parent_window, idFormat, wxT("Format")), 0, 0, 0);
+    this->b_unformat = new wxButton(parent_window, idUnformat, wxT("Unformat"));
+    parent_sizer->Add(this->b_unformat, 0, 0, 0);
+}
+
+
+
+void Notepad::create_options(wxNotebook* nb)
+{
+    wxPanel* parent_panel = new wxPanel(nb);
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+    parent_panel->SetSizer(sizer);
+    nb->AddPage(parent_panel, _("Options"));
 
     // Radio buttons - new lines in SELECT clause
     wxString sel_comma_nl_choices[3];
@@ -145,31 +187,31 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     sel_comma_nl_choices[1] = _("Before");
     sel_comma_nl_choices[2] = _("After");
 
-    sel_comma_nl = new wxRadioBox(this, -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
+    sel_comma_nl = new wxRadioBox(parent_panel, -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
     sel_comma_nl->SetSelection(1);
-    sizerv->Add(sel_comma_nl,0,0,0);
+    sizer->Add(sel_comma_nl,0,0,0);
 
     // Check boxes for : OR , AND , SELECT
     wxStaticBoxSizer* nl_other_sizer = new wxStaticBoxSizer(
-                     new wxStaticBox(this, -1, _("New line:[other]"))
+                     new wxStaticBox(parent_panel, -1, _("New line:[other]"))
                      , wxVERTICAL);
-    sizerv->Add(nl_other_sizer,0,0,0);
+    sizer->Add(nl_other_sizer,0,0,0);
 
-    ADD_NEWCHECKBOX(nl_after_select,nl_other_sizer,"[select] after",true);
-    ADD_NEWCHECKBOX(nl_before_or   ,nl_other_sizer,"[or] before"   ,false);
-    ADD_NEWCHECKBOX(nl_after_or    ,nl_other_sizer,"[or] after"    ,false);
-    ADD_NEWCHECKBOX(nl_before_and  ,nl_other_sizer,"[and] before"  ,true);
-    ADD_NEWCHECKBOX(nl_after_and   ,nl_other_sizer,"[and] after"   ,false);
+    ADD_NEWCHECKBOX(nl_after_select,parent_panel,nl_other_sizer,"[select] after",true);
+    ADD_NEWCHECKBOX(nl_before_or   ,parent_panel,nl_other_sizer,"[or] before"   ,false);
+    ADD_NEWCHECKBOX(nl_after_or    ,parent_panel,nl_other_sizer,"[or] after"    ,false);
+    ADD_NEWCHECKBOX(nl_before_and  ,parent_panel,nl_other_sizer,"[and] before"  ,true);
+    ADD_NEWCHECKBOX(nl_after_and   ,parent_panel,nl_other_sizer,"[and] after"   ,false);
     
     wxString nl_major_sections_choices[3];
     nl_major_sections_choices[0] = _("Use Config File");
     nl_major_sections_choices[1] = _("1 New Line");
     nl_major_sections_choices[2] = _("2 New Lines");
-    nl_major_sections = new wxRadioBox(this, -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, nl_major_sections_choices,1,wxRA_SPECIFY_COLS);
+    nl_major_sections = new wxRadioBox(parent_panel, -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, nl_major_sections_choices,1,wxRA_SPECIFY_COLS);
     nl_major_sections->SetSelection(2);
-    sizerv->Add(nl_major_sections,0,0,0);
+    sizer->Add(nl_major_sections,0,0,0);
 
-    ADD_NEWCHECKBOX(use_original_text,sizerv,"Use original keyword text",false);
+    ADD_NEWCHECKBOX(use_original_text,parent_panel,sizer,"Use original keyword text",false);
     
     // CASE settings
     wxString case_all_kw_choices[4];
@@ -177,22 +219,17 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     case_all_kw_choices[1] = _("Upper (ABC)");
     case_all_kw_choices[2] = _("Lower (abc)");
     case_all_kw_choices[3] = _("Init (Abc)");
-    case_all_kw = new wxRadioBox(this, -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, case_all_kw_choices,1,wxRA_SPECIFY_COLS);
+    case_all_kw = new wxRadioBox(parent_panel, -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, case_all_kw_choices,1,wxRA_SPECIFY_COLS);
     case_all_kw->SetSelection(1);
-    sizerv->Add(case_all_kw,0,0,0);
+    sizer->Add(case_all_kw,0,0,0);
+}
 
-    // Text area on the right
-    wxBoxSizer *sizerh = new wxBoxSizer(wxHORIZONTAL);
-    sizerh->Add(sizerv,0,0,0);
+
+
+void Notepad::create_textarea(wxSizer* parent)
+{
     this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
-    sizerh->Add(this->text_area,1,wxEXPAND,0);
-    this->SetSizer(sizerh);
-    // (with drag and drop support)
-    dnd_target* drop_target = new dnd_target(this->text_area);
-    this->text_area->SetDropTarget(drop_target);
-
-
-    SetIcon(wxIcon(fsqlf_right));
+    parent->Add(this->text_area,1,wxEXPAND,0);
 }
 
 
