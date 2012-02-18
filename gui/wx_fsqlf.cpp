@@ -47,15 +47,8 @@ class Notepad : public wxFrame {
     Notepad();
 
     private:
-    wxMenuBar* menu;
-    wxMenu* file;
-    wxMenu* edit;
-    wxMenu* help;
-
     wxTextCtrl* text_area;
-    wxTextCtrl* textRight;
     wxString original_text;
-    wxButton* b_unformat;
 
     wxRadioBox* sel_comma_nl;
     wxCheckBox* nl_after_select;
@@ -104,14 +97,9 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
 END_EVENT_TABLE()
 
 
-#define ADD_NEWCHECKBOX(var_checkbox , parent_window , sizer , title , default_val) \
-    var_checkbox = new wxCheckBox(parent_window, -1 , _(title) );\
-    var_checkbox->SetValue(default_val);\
-    sizer->Add(var_checkbox,0,0,0)\
 
 Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDefaultPosition, wxSize(650,500))
 {
-    // create
     wxBoxSizer* sizerh = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* left_sizer = new wxBoxSizer(wxVERTICAL);
     wxNotebook* nb = new wxNotebook( this, wxID_ANY);
@@ -124,7 +112,7 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
     Notepad::create_menubar();
     Notepad::create_textarea(sizerh);
 
-    // (with drag and drop support)
+    // drag and drop support
     dnd_target* drop_target = new dnd_target(this->text_area);
     this->text_area->SetDropTarget(drop_target);
 
@@ -135,30 +123,35 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
 
 void Notepad::create_menubar()
 {
-    this->menu = new wxMenuBar();
-    this->file = new wxMenu();
-    this->edit = new wxMenu();
-    this->help = new wxMenu();
+    wxMenuBar* menu;
+    wxMenu* file;
+    wxMenu* edit;
+    wxMenu* help;
 
-    this->menu->Append(this->file, wxT("&File"));
-    this->menu->Append(this->edit, wxT("&Edit"));
-    this->menu->Append(this->help, wxT("&Help"));
+    menu = new wxMenuBar();
+    file = new wxMenu();
+    edit = new wxMenu();
+    help = new wxMenu();
 
-    this->file->Append(idSave, wxT("&Save File\tCtrl-S"));
-    this->file->Append(idOpen, wxT("&Open File\tCtrl-O"));
-    this->file->AppendSeparator();
-    this->file->Append(idExit, wxT("E&xit\tAlt-F4"));
+    menu->Append(file, wxT("&File"));
+    menu->Append(edit, wxT("&Edit"));
+    menu->Append(help, wxT("&Help"));
 
-    this->edit->Append(idCut   , wxT("Cu&t\tCtrl-X"));
-    this->edit->Append(idCopy  , wxT("&Copy\tCtrl-C"));
-    this->edit->Append(idPaste , wxT("&Paste\tCtrl-V"));
-    this->edit->AppendSeparator();
-    this->edit->Append(idSelectAll, wxT("Select &All\tCtrl-A"));
-    this->edit->AppendSeparator();
-    this->edit->Append(idFormat, wxT("&Format\tCtrl-F"));
-    this->edit->Append(idUnformat, wxT("&Unformat\tCtrl-U"));
+    file->Append(idSave, wxT("&Save File\tCtrl-S"));
+    file->Append(idOpen, wxT("&Open File\tCtrl-O"));
+    file->AppendSeparator();
+    file->Append(idExit, wxT("E&xit\tAlt-F4"));
 
-    this->help->Append(idAbout, wxT("&About...\tAlt-F1"));
+    edit->Append(idCut   , wxT("Cu&t\tCtrl-X"));
+    edit->Append(idCopy  , wxT("&Copy\tCtrl-C"));
+    edit->Append(idPaste , wxT("&Paste\tCtrl-V"));
+    edit->AppendSeparator();
+    edit->Append(idSelectAll, wxT("Select &All\tCtrl-A"));
+    edit->AppendSeparator();
+    edit->Append(idFormat, wxT("&Format\tCtrl-F"));
+    edit->Append(idUnformat, wxT("&Unformat\tCtrl-U"));
+
+    help->Append(idAbout, wxT("&About...\tAlt-F1"));
 
     this->SetMenuBar(menu);
 }
@@ -168,11 +161,15 @@ void Notepad::create_menubar()
 void Notepad::create_buttons(wxWindow* parent_window , wxSizer* parent_sizer)
 {
     parent_sizer->Add(new wxButton(parent_window, idFormat, wxT("Format")), 0, 0, 0);
-    this->b_unformat = new wxButton(parent_window, idUnformat, wxT("Unformat"));
-    parent_sizer->Add(this->b_unformat, 0, 0, 0);
+    parent_sizer->Add(new wxButton(parent_window, idUnformat, wxT("Unformat")), 0, 0, 0);
 }
 
 
+
+#define ADD_NEWCHECKBOX(var_checkbox , parent_window , sizer , title , default_val) \
+    var_checkbox = new wxCheckBox(parent_window, -1 , _(title) );\
+    var_checkbox->SetValue(default_val);\
+    sizer->Add(var_checkbox,0,0,0)
 
 void Notepad::create_options(wxNotebook* nb)
 {
@@ -202,7 +199,7 @@ void Notepad::create_options(wxNotebook* nb)
     ADD_NEWCHECKBOX(nl_after_or    ,parent_panel,nl_other_sizer,"[or] after"    ,false);
     ADD_NEWCHECKBOX(nl_before_and  ,parent_panel,nl_other_sizer,"[and] before"  ,true);
     ADD_NEWCHECKBOX(nl_after_and   ,parent_panel,nl_other_sizer,"[and] after"   ,false);
-    
+
     wxString nl_major_sections_choices[3];
     nl_major_sections_choices[0] = _("Use Config File");
     nl_major_sections_choices[1] = _("1 New Line");
@@ -212,7 +209,7 @@ void Notepad::create_options(wxNotebook* nb)
     sizer->Add(nl_major_sections,0,0,0);
 
     ADD_NEWCHECKBOX(use_original_text,parent_panel,sizer,"Use original keyword text",false);
-    
+
     // CASE settings
     wxString case_all_kw_choices[4];
     case_all_kw_choices[0] = _("None (aBc)");
@@ -260,22 +257,22 @@ void Notepad::OnFormat(wxCommandEvent &event)
         case 0: cmd << wxT("  --select-newline-after 0") ; break;
         case 1: cmd << wxT("  --select-newline-after 1") ; break;
     }
-    
+
     switch( this->nl_before_or->GetValue() ){
         case 0: cmd << wxT("  --newline-or-before 0") ; break;
         case 1: cmd << wxT("  --newline-or-before 1") ; break;
     }
-    
+
     switch( this->nl_after_or->GetValue() ){
         case 0: cmd << wxT("  --newline-or-after 0") ; break;
         case 1: cmd << wxT("  --newline-or-after 1") ; break;
     }
-    
+
     switch( this->nl_before_and->GetValue() ){
         case 0: cmd << wxT("  --newline-and-before 0") ; break;
         case 1: cmd << wxT("  --newline-and-before 1") ; break;
     }
-    
+
     switch( this->nl_after_and->GetValue() ){
         case 0: cmd << wxT("  --newline-and-after 0") ; break;
         case 1: cmd << wxT("  --newline-and-after 1") ; break;
@@ -365,7 +362,7 @@ void Notepad::OnAbout(wxCommandEvent &event){
     info.SetName(_("Free SQL Formatter"));
     info.SetVersion(_(VERSION));
     info.SetDescription(_T("Free SQL Formatter beautifies SQL code. It is particularly useful in case one has to deal with machine generated SQL code"));
-    info.SetCopyright(_T("(C) 2011 Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
+    info.SetCopyright(_T("(C) 2011,2012  Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
     info.SetLicence(_( LICENSE_TEXT ));
     wxAboutBox(info);
 }
