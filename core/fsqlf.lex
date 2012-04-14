@@ -136,8 +136,8 @@ SEMICOLON ;
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(yyout,"(",kw_left_p_sub); kw_print(yyout,yytext,kw_select);};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext);};
-<stP_SUB>{COMMENT_ML_START}           { kw_print(yyout,"(",kw_left_p    ); PUSH_STATE(stCOMMENTML)  ; echo_print(yyout,yytext);};
-<stP_SUB>{COMMENT_ONE_LINE}           { kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext);};
+<stP_SUB>{COMMENT_ML_START}           { echo_print(yyout,""); PUSH_STATE(stCOMMENTML)  ; echo_print(yyout,yytext);};
+<stP_SUB>{COMMENT_ONE_LINE}           { echo_print(yyout,""); echo_print(yyout,yytext);};
 <stP_SUB>{SPACE}                      { echo_print(yyout,""); };
 <stP_SUB>{RIGHTP}                     { kw_print(yyout,"(",kw_left_p    ); POP_STATE(); kw_print(yyout,yytext,kw_right_p); }
 <stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext); };
