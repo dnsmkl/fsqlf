@@ -3,7 +3,7 @@
 
 if [ "$#" -ne "2" ]
 then
-    echo "Usage:\t\t$0  input-file  output-file";
+    echo -e "Usage:\t\t$0  input-file  output-file";
 else
 
     # produce file macro and text macro names
@@ -19,6 +19,7 @@ else
     echo "#define $file_macro"               >> $2;
     echo "#define $text_macro \"\\"            >> $2;
     sed -e 's/$/\\n\\/g' -e 's/"/\\"/g'   $1    >> $2;
-    echo "\"\n"                                 >> $2;
-    echo "#endif\n"                             >> $2;
+    echo "\""                                 >> $2;
+    echo "#endif"                             >> $2;
 fi
+
