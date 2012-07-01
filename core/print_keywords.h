@@ -19,6 +19,7 @@ inline int max(int a, int b){
 }
 
 #define KW_FUNCT_ARRAY_SIZE (3)
+#define CONFIG_FILE "formatting.conf"
 
 // struture to store text keyword text  space,tab,newline, function to execute  before/after printig the keyword
 typedef struct t_kw_settings {
@@ -57,7 +58,7 @@ int debug_p();// TODO : make separate .c and .h files
 
 static int sp_b(FILE * yyout, t_kw_settings s, int no_nl, int no_space ){
 // sp_b - spacing before
-    int i=0, minus_sp=0, minus_tb=0, minus_nl=0;
+    int i=0, minus_sp=0, minus_tb=0;
     static int prev_nl=0, prev_tab=0, prev_space=0; // settings saved from previously printed (key)word for spacing after it
 
     if(s.text[0]!='\0')
@@ -90,6 +91,8 @@ static int sp_b(FILE * yyout, t_kw_settings s, int no_nl, int no_space ){
         prev_tab   += s.tab_after;
         prev_space = max(s.space_after, prev_space);
     }
+
+    return 0;
 }
 
 
@@ -136,7 +139,6 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
 
 void echo_print(FILE * yyout, char * txt){
     int i=0, space_cnt=0, nl_cnt=0, length, nbr;
-    char *tmp_txt;
 
     t_kw_settings s;
     s.nl_before=s.tab_before=s.space_before=s.nl_after=s.tab_after=s.space_after=0;
@@ -231,19 +233,76 @@ int setting_value(char * setting_name, int * setting_values)
 }
 
 
+// By Carlos SS: to recreate 'formatting.conf' file if it's missing.
+int create_config_file() {
+    FILE * config_file;
+
+    if ( !(config_file = fopen(CONFIG_FILE, "w")) ){ // Create config file
+        fprintf(stderr, "Failed to create '%s' file!\n", CONFIG_FILE);
+        return 1;
+    } else {
+         // Write default configuration to "formatting.conf" file:
+        fprintf(config_file, "# This file contains formatting (spacing) settings wich can be used to override the default formatting style used by FSQLF\n" );
+        fprintf(config_file, "# Lines starting with '#' are comments\n" );
+        fprintf(config_file, "# Each formatting (spacing) setting line contains:\n\n" );
+        fprintf(config_file, "# setting_name  new_line_before tab_before space_before new_line_after tab_after space_after\n" );
+        fprintf(config_file, "kw_comma            1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_select           1      0      0      1      0      2\n");
+        fprintf(config_file, "kw_inner_join       1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_left_join        1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_right_join       1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_full_join        1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_cross_join       1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_from             1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_on               1      0      1      0      0      1\n");
+        fprintf(config_file, "kw_where            1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_and              1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_or               1      0      0      0      0      1\n");
+        fprintf(config_file, "kw_exists           0      0      0      0      0      1\n");
+        fprintf(config_file, "kw_in               0      0      0      0      0      1\n");
+        fprintf(config_file, "kw_from_2           0      0      1      0      0      1\n");
+        fprintf(config_file, "kw_as               0      0      1      0      0      1\n");
+        fprintf(config_file, "kw_left_p           0      0      0      0      0      0\n");
+        fprintf(config_file, "kw_right_p          0      0      0      0      0      0\n");
+        fprintf(config_file, "kw_left_p_sub       1      0      0      0      0      0\n");
+        fprintf(config_file, "kw_right_p_sub      1      0      0      1      0      0\n");
+        fprintf(config_file, "kw_union            2      1      0      1      0      0\n");
+        fprintf(config_file, "kw_union_all        2      1      0      1      0      0\n");
+        fprintf(config_file, "kw_intersect        2      1      0      1      0      0\n");
+        fprintf(config_file, "kw_except           2      1      0      1      0      0\n");
+        fprintf(config_file, "kw_groupby          1      0      0      0      0      0\n");
+        fprintf(config_file, "kw_orderby          1      0      0      0      0      0\n");
+        fprintf(config_file, "kw_semicolon        1      0      0      1      0      0\n");
+        fprintf(config_file, "kw_having           1      0      0      0      0      0\n");
+        fprintf(config_file, "kw_qualify          1      0      0      0      0      0\n");
+        fprintf(config_file, "\n\n");
+        fprintf(config_file, "# If there are couple of lines with same setting_name, then only the last one has effect\n" );
+        fprintf(config_file, "# Empty lines are ignored\n" );
+
+        if (fclose(config_file) == 0) // Write and close config file
+            return 0;
+        else {
+            fprintf(stderr, "Failed to close '%s' file!\n", CONFIG_FILE);
+            return 2;
+        }
+    }
+}
+
+
 int read_configs()
 {
     FILE * config_file;
     char line[BUFFER_SIZE+1] , setting_name[BUFFER_SIZE+1];
     int setting_values[VALUE_NUMBER];
-    char * chr_ptr1,chr_ptr2;
+    char * chr_ptr1;
     int i;
 
 
-    if( ! (config_file=fopen("formatting.conf","r")) )
-    {
-        printf("Failed to open 'formatting.conf' config file!\n");
-        exit(1);
+    if( ! (config_file=fopen(CONFIG_FILE,"r")) ){
+        if (create_config_file() != 0) // Try to recreate 'formatting.conf' config file
+            exit(1);
+        else
+            config_file=fopen(CONFIG_FILE,"r"); // Open recreated 'formatting.conf' config file once recreated
     }
 
     while( fgets( line, BUFFER_SIZE, config_file ) )

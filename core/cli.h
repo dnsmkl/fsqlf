@@ -20,8 +20,8 @@
 void usage_info(int argc, char **argv)
 {
     fprintf(stderr,"usage: %s [<input_file>] [<output_file>] [options]\n", argv[0] );
-    fprintf(stderr,"\t", argv[0] );
-    fprintf(stderr,"If <output_file> or <input_file> is missing, then corresponding standart IO is used\n");
+    fprintf(stderr,"\t");
+    fprintf(stderr,"If <output_file> or <input_file> is missing, then corresponding standard IO is used\n");
     fprintf(stderr,"options:\n");
     PRINT_OPTION_INFO( "--select-comma-newline (after|before|none)" , "New lines for each item in SELECT clause");
     PRINT_OPTION_INFO( "--select-newline-after <digit>"             , "Put <digit> new lines right after SELECT keyword");
@@ -30,9 +30,11 @@ void usage_info(int argc, char **argv)
     PRINT_OPTION_INFO( "--newline-and-before <digit>"               , "Put <digit> new lines before AND keyword");
     PRINT_OPTION_INFO( "--newline-and-after <digit>"                , "Put <digit> new lines before AND keyword");
     PRINT_OPTION_INFO( "--newline-major-sections <digit>"           , "Put <digit> new lines before major sections (FROM, JOIN, WHERE)");
-    PRINT_OPTION_INFO( "--keyword-case (upper|lower|initcap|none)"  , "Convert all keywrods to UPPER, lower, or Initcap case, or not to convert case at all");
+    PRINT_OPTION_INFO( "--keyword-case (upper|lower|initcap|none)"  , "Convert all keywords to UPPER, lower, or Initcap case, or not to convert case at all");
     PRINT_OPTION_INFO( "--keyword-text (original|default)"          , "Use original or programs default text for the keyword, when there are several alternatives");
-    PRINT_OPTION_INFO( "--debug (none|state|match|paranthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more then once");
+    PRINT_OPTION_INFO( "--debug (none|state|match|paranthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more than once");
+    PRINT_OPTION_INFO( "--create-config-file"                       , "(Re)create '"CONFIG_FILE"' config file.");
+    PRINT_OPTION_INFO( "--help, -h"                                 , "Show this help.");
 }
 
 void read_cli_options(int argc, char **argv)
@@ -125,6 +127,14 @@ void read_cli_options(int argc, char **argv)
             else if( ARGV_MATCH(i,"paranthesis")  ) debug_level |= DEBUGPARCOUNTS;
             else FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
 
+        } else if( strcmp(argv[i],"--create-config-file") == 0) {
+			if(create_config_file() != 0)
+				exit(1);
+			else {
+				fprintf(stderr,"File '%s' (re)created.\n", CONFIG_FILE);
+				exit(0);
+			}
+
         } else if( strcmp(argv[i],"--help") == 0 || strcmp(argv[i],"-h") == 0)
         {
             usage_info(argc, argv);
@@ -136,3 +146,4 @@ void read_cli_options(int argc, char **argv)
 
 
 #endif
+
