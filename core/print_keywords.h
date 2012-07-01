@@ -240,8 +240,9 @@ int read_configs()
     int i;
 
 
-    if( ! (config_file=fopen("formatting.conf","r")) ){
-        printf("failed to open config file");
+    if( ! (config_file=fopen("formatting.conf","r")) )
+    {
+        printf("Failed to open 'formatting.conf' config file!\n");
         exit(1);
     }
 
