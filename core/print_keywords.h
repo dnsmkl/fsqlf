@@ -289,6 +289,11 @@ int create_config_file() {
 }
 
 
+
+
+#include <stdlib.h>
+#include <string.h>
+
 int read_configs()
 {
     FILE * config_file;
@@ -297,8 +302,22 @@ int read_configs()
     char * chr_ptr1;
     int i;
 
+    config_file=fopen(CONFIG_FILE,"r"); // open file in working directory
+    #ifndef _WIN32
+    if(config_file == NULL)
+    {
+        // in non-windows (probably unix/linux) also try folder in user-home directory
+        #define PATH_STRING_MAX_SIZE (200) 
+        char full_path[PATH_STRING_MAX_SIZE+1];
+        strncpy(full_path, getenv("HOME") , PATH_STRING_MAX_SIZE);
+        strncat(full_path, "/.fsqlf/" CONFIG_FILE ,PATH_STRING_MAX_SIZE - strlen(full_path));
+        config_file=fopen(full_path,"r");
+    }
+    #endif
 
-    if( ! (config_file=fopen(CONFIG_FILE,"r")) ){
+    if(config_file == NULL)
+    {
+        fprintf(stderr, "Can not find file '%s' neither in working directory nor in ~/.fsqlf/\nIt will be created in working directory\n\n", CONFIG_FILE);
         if (create_config_file() != 0) // Try to recreate 'formatting.conf' config file
             exit(1);
         else
