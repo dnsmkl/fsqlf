@@ -2,8 +2,8 @@ PROJECTFOLDER=fsqlf
 SRC=core/fsqlf.lex
 HEADERS=$(wildcard core/*.h core/*.def)
 
-# where all executables will be put
 LEX_OUTPUT=core/lex.yy.c
+CONF_FILE=formatting.conf
 
 
 CFLAGS+=-DVERSION=\"$(VERSION)\"
@@ -56,7 +56,7 @@ $(LICENSE_TEXT): LICENSE
 
 
 #  TESTING
-TEST_SAMPLE=testing/sample.sql
+TEST_SAMPLE=testing/sample_main.sql
 TEST_TMP_ORIGINAL=testing/tmp_test_original.txt
 TEST_TMP_FORMATED=testing/tmp_test_formated.txt
 test: test-print test-compare
@@ -77,17 +77,18 @@ $(TEST_TMP_FORMATED):
 TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 clean:   clean_local   clean_win
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp $(LICENSE_TEXT)
+	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp $(LICENSE_TEXT) $(CONF_FILE)
 clean_win:
 	make clean_local WIN=1
 
 
 
 #  BUILD ARCHIVE  (source and binaries for publishing)
-CONF_FILE=formatting.conf
+$(CONF_FILE): core/t_kw_settings_list.def core/create_conf_file.h
+	./$(EXEC_CLI) --create-config-file
 VERSION:=$(shell git describe master)
 ZIP_NAME:=$(PROJECTFOLDER).$(VERSION).zip
-zip: tmp_folder
+zip: tmp_folder $(CONF_FILE)
 	rm -f $(ZIP_NAME)
 	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PROJECTFOLDER)/source/'
 	cd tmp/ &&   zip -r ../$(ZIP_NAME)  $(PROJECTFOLDER)

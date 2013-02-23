@@ -3,6 +3,8 @@
 
 #include "settings.h"
 #include "global_variables.h"
+#include "create_conf_file.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -233,60 +235,7 @@ int setting_value(char * setting_name, int * setting_values)
 }
 
 
-// By Carlos SS: to recreate 'formatting.conf' file if it's missing.
-int create_config_file() {
-    FILE * config_file;
 
-    if ( !(config_file = fopen(CONFIG_FILE, "w")) ){ // Create config file
-        fprintf(stderr, "Failed to create '%s' file!\n", CONFIG_FILE);
-        return 1;
-    } else {
-         // Write default configuration to "formatting.conf" file:
-        fprintf(config_file, "# This file contains formatting (spacing) settings wich can be used to override the default formatting style used by FSQLF\n" );
-        fprintf(config_file, "# Lines starting with '#' are comments\n" );
-        fprintf(config_file, "# Each formatting (spacing) setting line contains:\n\n" );
-        fprintf(config_file, "# setting_name  new_line_before tab_before space_before new_line_after tab_after space_after\n" );
-        fprintf(config_file, "kw_comma            1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_select           1      0      0      1      0      2\n");
-        fprintf(config_file, "kw_inner_join       1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_left_join        1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_right_join       1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_full_join        1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_cross_join       1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_from             1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_on               1      0      1      0      0      1\n");
-        fprintf(config_file, "kw_where            1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_and              1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_or               1      0      0      0      0      1\n");
-        fprintf(config_file, "kw_exists           0      0      0      0      0      1\n");
-        fprintf(config_file, "kw_in               0      0      0      0      0      1\n");
-        fprintf(config_file, "kw_from_2           0      0      1      0      0      1\n");
-        fprintf(config_file, "kw_as               0      0      1      0      0      1\n");
-        fprintf(config_file, "kw_left_p           0      0      0      0      0      0\n");
-        fprintf(config_file, "kw_right_p          0      0      0      0      0      0\n");
-        fprintf(config_file, "kw_left_p_sub       1      0      0      0      0      0\n");
-        fprintf(config_file, "kw_right_p_sub      1      0      0      1      0      0\n");
-        fprintf(config_file, "kw_union            2      1      0      1      0      0\n");
-        fprintf(config_file, "kw_union_all        2      1      0      1      0      0\n");
-        fprintf(config_file, "kw_intersect        2      1      0      1      0      0\n");
-        fprintf(config_file, "kw_except           2      1      0      1      0      0\n");
-        fprintf(config_file, "kw_groupby          1      0      0      0      0      0\n");
-        fprintf(config_file, "kw_orderby          1      0      0      0      0      0\n");
-        fprintf(config_file, "kw_semicolon        1      0      0      1      0      0\n");
-        fprintf(config_file, "kw_having           1      0      0      0      0      0\n");
-        fprintf(config_file, "kw_qualify          1      0      0      0      0      0\n");
-        fprintf(config_file, "\n\n");
-        fprintf(config_file, "# If there are couple of lines with same setting_name, then only the last one has effect\n" );
-        fprintf(config_file, "# Empty lines are ignored\n" );
-
-        if (fclose(config_file) == 0) // Write and close config file
-            return 0;
-        else {
-            fprintf(stderr, "Failed to close '%s' file!\n", CONFIG_FILE);
-            return 2;
-        }
-    }
-}
 
 
 
@@ -317,11 +266,7 @@ int read_configs()
 
     if(config_file == NULL)
     {
-        fprintf(stderr, "Can not find file '%s' neither in working directory nor in ~/.fsqlf/\nIt will be created in working directory\n\n", CONFIG_FILE);
-        if (create_config_file() != 0) // Try to recreate 'formatting.conf' config file
-            exit(1);
-        else
-            config_file=fopen(CONFIG_FILE,"r"); // Open recreated 'formatting.conf' config file once recreated
+        return 1;
     }
 
     while( fgets( line, BUFFER_SIZE, config_file ) )

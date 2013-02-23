@@ -23,11 +23,11 @@ APPENDIX.1 - wxWidgets installation
 
 
 1. Current state of development
-    My use case is formating generated SQL code - make something readable out of one long line of SQL code
+    My use case is formatting generated SQL code - make something readable out of one long line of SQL code
 
     Current list of implemented capabilities:
     - indent subqueries
-    - new line in cases where it seems appropriate (items in SELECT list. Keywords FROM, JOIN, ON, WHERE, AND, OR )
+    - new line in cases where it seems appropriate (items in SELECT list. Keywords FROM, JOIN, ON, WHERE, AND, OR, DELETE, INSERT, UPDATE, SET)
     - capitalisation of recognised keywords (not all - I like some keywrods lowercase, but this should be configurable eventualy)
     - gui
     - configurations read from file
@@ -73,25 +73,16 @@ APPENDIX.1 - wxWidgets installation
 
 3. TODO lists:
     basic - to have working version 1
-    - `in' statements [done]
-    - comments one line [done]
-    - comments multiline [done]
-    - strings [done]
-    - subqueries in FROM/JOIN parts [done]
-    - OR [done]
-    - paranthesis in restrictions (e.g.   AND (a=1 OR b=1)   )
-    - paranthesis in FROM/JOIN parts (e.g.   FROM X LEFT JOIN (Y JOIN Z)   ) [sort of done: program does not crash if it encounters this, but I can not think of any good way to actualy format it]
+    - paranthesis in restrictions (e.g. AND (a=1 OR b=1) )
+    - improve GUI
+      make 3 configuration modes:
+            none-use-file-config
+            detailed-as-in-file
+            select-templates-of-configurations
+    - `case' statements (prerequisite: redo stack function)
+    - improve analytical function formatting
 
-    extention #1 - more comfortable usage (next level)
-    - formating configurations [done: default formatting can be overriden in file `formatting.conf']
-    - reading command line arguments [in progress: now only input/output arguments]
-    - GUI [in progress: need to polish some stuff, but usable, has drag'n'drop functionality]
-
-    extension #2 - better formating
-    - `case' statements (redo stack functions; add handling)
-    - analytical functions
-
-    possible extra functionality/ideas for the future
+    possible extra functionality/ideas for far future
     - in equality condition align all comparison signs ('=' , '<>', etc.)
     - align comments them selfs and content of comments
 
@@ -103,7 +94,7 @@ APPENDIX.1 - wxWidgets installation
         bin/fsqlf.exe input_file              # read from file, write to stdout
         bin/fsqlf.exe input_file output_file  # use files for reading and writing
     Usage in Linux is equivalent, just without the extention `.exe'
-    Forrmating configurations can be changed in `formatting.conf'
+    Formatting configurations can be changed in `formatting.conf'
 
 
 

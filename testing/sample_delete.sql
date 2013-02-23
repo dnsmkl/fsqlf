@@ -1,0 +1,2 @@
+DELETE FROM t1 WHERE c1=2;
+DELETE from t1 WHERE c1=2;
