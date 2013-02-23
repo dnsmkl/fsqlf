@@ -31,6 +31,7 @@ APPENDIX - wxWidgets installation
 My use case is formatting generated SQL code - make something readable out of one long line of SQL code
 
 Current list of implemented capabilities:
+
 -  indent subqueries
 -  new line in cases where it seems appropriate (items in SELECT list. Keywords FROM, JOIN, ON, WHERE, AND, OR, DELETE, INSERT, UPDATE, SET)
 -  capitalisation of recognised keywords (not all - I like some keywrods lowercase, but this should be configurable eventualy)
@@ -45,12 +46,15 @@ Current list of implemented capabilities:
 ----
 
 The following list actualy should be suficient. Look into 'makefile' for compilation instructions
+
 - flex         # http://flex.sourceforge.net/
 - C compiler   #
 - wxWidgets    # needed for Graphical User Interface (GUI)
 - C++ compiler # for compiling GUI
 
+
 Stuff that I got installed:
+
 - flex      # http://flex.sourceforge.net/
 - gcc
 - wxWidgets # needed for Graphical User Interface (GUI). If you want to build Windows executables on Linux machine see 'APPENDIX.1 - wxWidgets installation'
@@ -65,12 +69,14 @@ Stuff that I got installed:
 2.2 Compilation process
 ----
 General instructions
+
 - Use 'flex' on core/fsqlf.lex
 - Compile its output with C compiler and name the executable 'fsqlf.exe' if you on Windows and 'fsqlf' in other cases (such name is needed for gui to be able to call it)
 - Compile 'gui/wx_fsqlf.cpp' with C++ compiler
 - Put both executables 'fsqlf' and 'wx_fsqlf' into one directory.
 
 If you use Linux and have installed same programs as I do (see section 2.1), then you can use the make file
+
     # make all      # Compile source for LINUX and WINDOWS. Excutables can be found in 'bin/' directory:  'fsqlf', 'fsqlf.exe', 'gui_wx_basic', 'gui_wx_basic.exe'
     # make test     # Compile and run program on test file 'test.sql' and print output to console
     # make zip      # Create zip archive with executables and source code binaries (for publishing)
@@ -79,6 +85,7 @@ If you use Linux and have installed same programs as I do (see section 2.1), the
 
 3. TODO list:
 ----
+
 - paranthesis in restrictions (e.g. AND (a=1 OR b=1) )
 - improve GUI
 - make 3 configuration modes:
@@ -94,10 +101,11 @@ If you use Linux and have installed same programs as I do (see section 2.1), the
 4.1 Usage commandline
 ----
 Windows
-    `bin/fsqlf.exe`                         # read from stdin, write to stdout
-    `bin/fsqlf.exe input_file`              # read from file, write to stdout
-    `bin/fsqlf.exe input_file output_file`  # use files for reading and writing
-    `bin/fsqlf.exe --help`                  # info on more options 
+
+    # bin/fsqlf.exe                         # read from stdin, write to stdout
+    # bin/fsqlf.exe input_file              # read from file, write to stdout
+    # bin/fsqlf.exe input_file output_file  # use files for reading and writing
+    # bin/fsqlf.exe --help                  # info on more options 
 
 Usage in Linux is equivalent, just without the extention '.exe'
 Formatting configurations can be changed in 'formatting.conf'
