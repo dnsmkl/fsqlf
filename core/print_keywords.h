@@ -58,43 +58,68 @@ int debug_p();// TODO : make separate .c and .h files
 
 
 
-static int sp_b(FILE * yyout, t_kw_settings s, int no_nl, int no_space ){
-// sp_b - spacing before
-    int i=0, minus_sp=0, minus_tb=0;
-    static int prev_nl=0, prev_tab=0, prev_space=0; // settings saved from previously printed (key)word for spacing after it
+static void print_nlines(FILE * yyout, int count){
+    int i;
+    for(i=0; i < count; i++) fputs("\n", yyout);
+}
+static void print_tabs(FILE * yyout, int count){
+    int i;
+    for(i=0; i < count; i++) fputs(tab_string, yyout);
+}
+static void print_spaces(FILE * yyout, int count){
+    int i;
+    for(i=0; i < count; i++) fputs(" ", yyout);
+}
+
+static void print_spacing(FILE * yyout, t_kw_settings s){
+/* Prints all spacing, where 'spacing' means new lines, tabs and spaces
+
+ * Spacing is printed in the following order:
+ *   new lines
+ *   tabs for current level of indentation (depends on global var)
+ *   tabs specific for the keyword
+ *   spaces
+
+ * There are 2 sets of spacings printed - 'before' and 'after' the keyword.
+ * 'After' part is printed at the start of next call to this funtion, because there is dependency of adjacent word spacings
+ * (e.g. to avoid trailing tabs/spaces on the line)
+ * Additionaly it lets to extract all spacing printing into this function - separating it from keyword printing
+*/
+    static int prev_nl=0, prev_tab=0, prev_space=0; // keep track of 'after' spacing from previous call
+    int i=0, prev_spaces_printed=0, prev_tabs_printed=0;
 
     if(s.text[0]!='\0')
     {
-        // spacing from last (key)word
-        for(i=0; i < prev_nl; i++) fprintf(yyout,"\n");
-        if(!s.nl_before){
-            if( prev_nl > 0 ) for(i=0; i<currindent; i++)   fprintf(yyout,"%s",tab_string); // tabs - for indentation
-            for(i=0; i < prev_tab   ; i++) fprintf(yyout,"%s",tab_string);
-            for(i=0; i < prev_space ; i++) fprintf(yyout," ");
+        // Print spacing
+        // .. last (key)word's 'after' part
+        print_nlines(yyout, prev_nl);
+        if(!s.nl_before){ // avoid trailing tabs/spaces 
+            if( prev_nl > 0 ) print_tabs(yyout, currindent);
+            print_tabs(yyout, prev_tab);
+            print_spaces(yyout, prev_space);
+            prev_tabs_printed=prev_tab;
+            prev_spaces_printed=prev_space; // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
         }
 
-        // spacing before (key)word
-        for(i=0; i < s.nl_before - prev_nl ; i++) fprintf(yyout,"\n"); // new lines
-        minus_tb=(s.nl_before?0:prev_tab);
-        minus_sp=(s.nl_before?0:prev_space);
+        // .. current (key)word's before part
+        print_nlines(yyout, s.nl_before - prev_nl);
+        if(s.nl_before > 0) print_tabs(yyout, currindent); // tabs - for general indentation
+ 
+        //    print_X(,before-prev_printed) -> cnt(total X printed) = max(before, prev_printed)
+        print_tabs(yyout, s.tab_before - prev_tabs_printed); // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
+        print_spaces(yyout, s.space_before - prev_spaces_printed);
 
-        if(s.nl_before > 0 ) for(i=0; i<currindent; i++) fprintf(yyout,"%s",tab_string); // tabs - for general indentation
-        for(i=0; i < s.tab_before - minus_tb; i++)       fprintf(yyout,"%s",tab_string); // tabs
-        for(i=0; i < s.space_before - minus_sp; i++)  fprintf(yyout," "); // spaces
-
-        // save settings for next function call
+        // Save settings for next function call - overwrite
         prev_nl    = s.nl_after;
         prev_tab   = s.tab_after;
         prev_space = s.space_after;
     }
     else
-    {   // save settings, but not just overwrite
+    {   // Save settings for next function call - not overwrite, but combine
         prev_nl    += s.nl_after;
         prev_tab   += s.tab_after;
         prev_space = max(s.space_after, prev_space);
     }
-
-    return 0;
 }
 
 
@@ -128,7 +153,7 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
 
-    sp_b(yyout, s, 0, 0); // print spacing before keyword
+    print_spacing(yyout, s); // print spacing before keyword
 
     fprintf(yyout,"%s",stocase( s.print_original_text ? yytext : s.text , s.print_case)); // 1st deside what text to use (original or degault), then handle its case
     
@@ -159,7 +184,7 @@ void echo_print(FILE * yyout, char * txt){
     // Spacing
     s.nl_after = nl_cnt;
     s.space_after = space_cnt;
-    sp_b(yyout, s, 0, 0);
+    print_spacing(yyout, s);
 
     // Print
     fprintf(yyout,"%s",s.text);
