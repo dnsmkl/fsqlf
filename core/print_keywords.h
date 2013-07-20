@@ -59,6 +59,29 @@ int debug_p();// TODO : make separate .c and .h files
 
 
 
+
+static spacing_counts combine_spacings(
+    spacing_counts afterspacing_of_prev
+    ,spacing_counts beforespacing_of_current
+    ,int global_indent_level
+){
+    spacing_counts combined;
+    combined.new_line   = afterspacing_of_prev.new_line + beforespacing_of_current.new_line;
+
+    if(!beforespacing_of_current.new_line){
+        combined.indent     = max(afterspacing_of_prev.indent, beforespacing_of_current.indent);
+        combined.indent     += combined.new_line ? global_indent_level : 0;
+        combined.space      = max(afterspacing_of_prev.space, beforespacing_of_current.space);
+    }
+    else{
+        combined.indent     = beforespacing_of_current.indent;
+        combined.indent     += combined.new_line ? global_indent_level : 0;
+        combined.space      = beforespacing_of_current.space;
+    }
+    return combined;
+}
+
+
 static void print_nlines(FILE * yyout, int count){
     int i;
     for(i=0; i < count; i++) fputs("\n", yyout);
@@ -72,49 +95,29 @@ static void print_spaces(FILE * yyout, int count){
     for(i=0; i < count; i++) fputs(" ", yyout);
 }
 
-static void print_spacing(FILE * yyout, t_kw_settings s){
-/* Prints all spacing, where 'spacing' means new lines, tabs and spaces
-
- * Spacing is printed in the following order:
- *   new lines
- *   tabs for current level of indentation (depends on global var)
- *   tabs specific for the keyword
- *   spaces
-
- * There are 2 sets of spacings printed - 'before' and 'after' the keyword.
- * 'After' part is printed at the start of next call to this funtion, because there is dependency of adjacent word spacings
- * (e.g. to avoid trailing tabs/spaces on the line)
- * Additionaly it lets to extract all spacing printing into this function - separating it from keyword printing
+static void print_spacing(FILE * yyout, t_kw_settings s, int global_indent_level){
+/* Prints all spacing of the program
+ * Except when space is inside the multiword-keyword (e.g. "LEFT JOIN"), those will not be printed by this function
+ * 'spacing' means new lines, tabs and spaces
 */
     static spacing_counts from_previous = {0,0,0}; // keep track of 'after' spacing from previous call
-    int i=0, prev_spaces_printed=0, prev_tabs_printed=0;
+    spacing_counts combined = {0,0,0}; // it will hold spacing counts that will actualy be printed
 
-    if(s.text[0]!='\0')
-    {
-        // Print spacing
-        // .. last (key)word's 'after' part
-        print_nlines(yyout, from_previous.new_line);
-        if(!s.before.new_line){ // avoid trailing tabs/spaces 
-            if( from_previous.new_line > 0 ) print_tabs(yyout, currindent);
-            print_tabs(yyout, from_previous.indent);
-            print_spaces(yyout, from_previous.space);
-            prev_tabs_printed=from_previous.indent;
-            prev_spaces_printed=from_previous.space; // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
-        }
+    if(s.text[0]!='\0'){
+        // Calculate what spacings will be printed
+        combined = combine_spacings(from_previous, s.before, global_indent_level);
 
-        // .. current (key)word's before part
-        print_nlines(yyout, s.before.new_line - from_previous.new_line);
-        if(s.before.new_line > 0) print_tabs(yyout, currindent); // tabs - for general indentation
- 
-        //    print_X(,before-prev_printed) -> cnt(total X printed) = max(before, prev_printed)
-        print_tabs(yyout, s.before.indent - prev_tabs_printed); // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
-        print_spaces(yyout, s.before.space - prev_spaces_printed);
+        // Print
+        print_nlines(yyout, combined.new_line);
+        print_tabs(yyout, combined.indent); // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
+        print_spaces(yyout, combined.space);
 
         // Save settings for next function call - overwrite
         from_previous = s.after;
     }
-    else
-    {   // Save settings for next function call - not overwrite, but combine
+    else{
+        // this 'else' (actualy all 'if-else') is workaround for printing space, from echo_print()
+        // Save settings for next function call - not overwrite, but combine them somehow.
         from_previous.new_line  += s.after.new_line;
         from_previous.indent    += s.after.indent;
         from_previous.space     = max(s.after.space, from_previous.space);
@@ -127,7 +130,7 @@ enum{CASE_none,CASE_lower,CASE_UPPER,CASE_Initcap};
 char* stocase(char* s_text, int s_case){
     static char formatted_result[MAX_KEYWORD_SIZE];
     int i;
-    
+
     switch(s_case){
         case CASE_lower:
             for(i=0; i<strlen(s_text); i++) formatted_result[i] = tolower(s_text[i]);
@@ -148,14 +151,14 @@ char* stocase(char* s_text, int s_case){
 
 void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
     int i=0;
-    // call keyword specific functions. Before fprintf    
+    // call keyword specific functions. Before fprintf
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
 
-    print_spacing(yyout, s); // print spacing before keyword
+    print_spacing(yyout, s, currindent); // print spacing before keyword
 
     fprintf(yyout,"%s",stocase( s.print_original_text ? yytext : s.text , s.print_case)); // 1st deside what text to use (original or degault), then handle its case
-    
+
     // call keyword specific functions. After fprintf
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
@@ -183,7 +186,7 @@ void echo_print(FILE * yyout, char * txt){
     // Spacing
     s.after.new_line = nl_cnt;
     s.after.space = space_cnt;
-    print_spacing(yyout, s);
+    print_spacing(yyout, s, currindent);
 
     // Print
     fprintf(yyout,"%s",s.text);
@@ -280,7 +283,7 @@ int read_configs()
     if(config_file == NULL)
     {
         // in non-windows (probably unix/linux) also try folder in user-home directory
-        #define PATH_STRING_MAX_SIZE (200) 
+        #define PATH_STRING_MAX_SIZE (200)
         char full_path[PATH_STRING_MAX_SIZE+1];
         strncpy(full_path, getenv("HOME") , PATH_STRING_MAX_SIZE);
         strncat(full_path, "/.fsqlf/" CONFIG_FILE ,PATH_STRING_MAX_SIZE - strlen(full_path));
