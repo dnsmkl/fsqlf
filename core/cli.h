@@ -64,14 +64,14 @@ void read_cli_options(int argc, char **argv)
         {
             if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
             if(strcmp(argv[i],"after") == 0) {
-                kw_comma.nl_before = 0;
-                kw_comma.nl_after  = 1;
+                kw_comma.before.new_line = 0;
+                kw_comma.after.new_line  = 1;
             } else if(strcmp(argv[i],"before") == 0) {
-                kw_comma.nl_before = 1;
-                kw_comma.nl_after  = 0;
+                kw_comma.before.new_line = 1;
+                kw_comma.after.new_line  = 0;
             } else if(strcmp(argv[i],"none") == 0) {
-                kw_comma.nl_before = 0;
-                kw_comma.nl_after  = 0;
+                kw_comma.before.new_line = 0;
+                kw_comma.after.new_line  = 0;
             }
         } else if( ARGV_MATCH(i,"--keyword-case") )
         {
@@ -96,33 +96,33 @@ void read_cli_options(int argc, char **argv)
         } else if( ARGV_MATCH(i,"--select-newline-after") )
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
-            kw_select.nl_after = atoi(argv[i]);
+            kw_select.after.new_line = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--newline-or-before") )
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
-            kw_or.nl_before = atoi(argv[i]);
+            kw_or.before.new_line = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--newline-or-after") )
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
-            kw_or.nl_after = atoi(argv[i]);
+            kw_or.after.new_line = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--newline-and-before") )
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
-            kw_and.nl_before = atoi(argv[i]);
+            kw_and.before.new_line = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--newline-and-after") )
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
-            kw_and.nl_after = atoi(argv[i]);
+            kw_and.after.new_line = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--newline-major-sections") )
         {
             if( ++i >= argc || !isdigit(argv[i][0]) ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);
-            kw_from.nl_before = atoi(argv[i]);
-            kw_where.nl_before = atoi(argv[i]);
-            kw_inner_join.nl_before = atoi(argv[i]);
-            kw_left_join.nl_before  = atoi(argv[i]);
-            kw_right_join.nl_before = atoi(argv[i]);
-            kw_full_join.nl_before  = atoi(argv[i]);
-            kw_cross_join.nl_before = atoi(argv[i]);
+            kw_from.before.new_line = atoi(argv[i]);
+            kw_where.before.new_line = atoi(argv[i]);
+            kw_inner_join.before.new_line = atoi(argv[i]);
+            kw_left_join.before.new_line  = atoi(argv[i]);
+            kw_right_join.before.new_line = atoi(argv[i]);
+            kw_full_join.before.new_line  = atoi(argv[i]);
+            kw_cross_join.before.new_line = atoi(argv[i]);
         } else if( ARGV_MATCH(i,"--debug") )
         {
             if( ++i >= argc ) FAIL_WITH_ERROR(1,"Missing or invalid value for option : %s", argv[i-1]);

@@ -24,14 +24,16 @@ inline int max(int a, int b){
 #define CONFIG_FILE "formatting.conf"
 
 // struture to store text keyword text  space,tab,newline, function to execute  before/after printig the keyword
-typedef struct t_kw_settings {
-    int nl_before;
-    int tab_before;
-    int space_before;
+typedef struct{
+    int new_line;
+    int indent;
+    int space;
+} spacing_counts;
 
-    int nl_after;
-    int tab_after;
-    int space_after;
+
+typedef struct{
+    spacing_counts before;
+    spacing_counts after;
 
     int print_original_text;
     int print_case;
@@ -39,7 +41,6 @@ typedef struct t_kw_settings {
 
     int (*funct_before[KW_FUNCT_ARRAY_SIZE])();
     int (*funct_after [KW_FUNCT_ARRAY_SIZE])();
-
 } t_kw_settings;
 
 
@@ -47,7 +48,7 @@ typedef struct t_kw_settings {
 void debug_kw_settings(t_kw_settings s){
     extern FILE * yyout;
     fprintf(yyout,"\nspace_before %d , tab_before %d , nl_before %d , space_after %d , tab_after %d , nl_after %d\n , text %s "
-           ,s.space_before,s.tab_before,s.nl_before,s.space_after,s.tab_after,s.nl_after, s.text);
+           ,s.before.space, s.before.indent, s.before.new_line, s.after.space, s.after.indent, s.after.new_line, s.text);
     //printf("after %X %X %X\n", s.funct_after[0],s.funct_after[1],s.funct_after[2]);//debug string
     //printf("before %X %X %X\n", s.funct_before[0],s.funct_before[1],s.funct_before[2]);//debug string
 }
@@ -85,40 +86,38 @@ static void print_spacing(FILE * yyout, t_kw_settings s){
  * (e.g. to avoid trailing tabs/spaces on the line)
  * Additionaly it lets to extract all spacing printing into this function - separating it from keyword printing
 */
-    static int prev_nl=0, prev_tab=0, prev_space=0; // keep track of 'after' spacing from previous call
+    static spacing_counts from_previous = {0,0,0}; // keep track of 'after' spacing from previous call
     int i=0, prev_spaces_printed=0, prev_tabs_printed=0;
 
     if(s.text[0]!='\0')
     {
         // Print spacing
         // .. last (key)word's 'after' part
-        print_nlines(yyout, prev_nl);
-        if(!s.nl_before){ // avoid trailing tabs/spaces 
-            if( prev_nl > 0 ) print_tabs(yyout, currindent);
-            print_tabs(yyout, prev_tab);
-            print_spaces(yyout, prev_space);
-            prev_tabs_printed=prev_tab;
-            prev_spaces_printed=prev_space; // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
+        print_nlines(yyout, from_previous.new_line);
+        if(!s.before.new_line){ // avoid trailing tabs/spaces 
+            if( from_previous.new_line > 0 ) print_tabs(yyout, currindent);
+            print_tabs(yyout, from_previous.indent);
+            print_spaces(yyout, from_previous.space);
+            prev_tabs_printed=from_previous.indent;
+            prev_spaces_printed=from_previous.space; // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
         }
 
         // .. current (key)word's before part
-        print_nlines(yyout, s.nl_before - prev_nl);
-        if(s.nl_before > 0) print_tabs(yyout, currindent); // tabs - for general indentation
+        print_nlines(yyout, s.before.new_line - from_previous.new_line);
+        if(s.before.new_line > 0) print_tabs(yyout, currindent); // tabs - for general indentation
  
         //    print_X(,before-prev_printed) -> cnt(total X printed) = max(before, prev_printed)
-        print_tabs(yyout, s.tab_before - prev_tabs_printed); // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
-        print_spaces(yyout, s.space_before - prev_spaces_printed);
+        print_tabs(yyout, s.before.indent - prev_tabs_printed); // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
+        print_spaces(yyout, s.before.space - prev_spaces_printed);
 
         // Save settings for next function call - overwrite
-        prev_nl    = s.nl_after;
-        prev_tab   = s.tab_after;
-        prev_space = s.space_after;
+        from_previous = s.after;
     }
     else
     {   // Save settings for next function call - not overwrite, but combine
-        prev_nl    += s.nl_after;
-        prev_tab   += s.tab_after;
-        prev_space = max(s.space_after, prev_space);
+        from_previous.new_line  += s.after.new_line;
+        from_previous.indent    += s.after.indent;
+        from_previous.space     = max(s.after.space, from_previous.space);
     }
 }
 
@@ -168,7 +167,7 @@ void echo_print(FILE * yyout, char * txt){
     int i=0, space_cnt=0, nl_cnt=0, length, nbr;
 
     t_kw_settings s;
-    s.nl_before=s.tab_before=s.space_before=s.nl_after=s.tab_after=s.space_after=0;
+    s.before.new_line=s.before.indent=s.before.space=s.after.new_line=s.after.indent=s.after.space=0;
 
     //count blank characters at the end of the text
     length = strlen(txt);
@@ -182,8 +181,8 @@ void echo_print(FILE * yyout, char * txt){
     s.text[nbr]='\0';
 
     // Spacing
-    s.nl_after = nl_cnt;
-    s.space_after = space_cnt;
+    s.after.new_line = nl_cnt;
+    s.after.space = space_cnt;
     print_spacing(yyout, s);
 
     // Print
@@ -192,7 +191,7 @@ void echo_print(FILE * yyout, char * txt){
 }
 
 
-
+// initialize t_kw_settings variables
 #define T_KW_SETTINGS_MACRO( NAME , ... ) \
     t_kw_settings NAME ;
 #include "t_kw_settings_list.def"
@@ -217,16 +216,16 @@ void set_text_original(int ind_original){
 
 void init_all_settings(){
     #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,TEXT , fb1,fb2,fb3,fa1,fa2,fa3) \
-        NAME.nl_before    = nlb;    \
-        NAME.tab_before   = tb;     \
-        NAME.space_before = sb;     \
+        NAME.before.new_line    = nlb;    \
+        NAME.before.indent      = tb;     \
+        NAME.before.space       = sb;     \
                                     \
-        NAME.nl_after     = nla;    \
-        NAME.tab_after    = ta;     \
-        NAME.space_after  = sa;     \
+        NAME.after.new_line     = nla;    \
+        NAME.after.indent       = ta;     \
+        NAME.after.space        = sa;     \
         NAME.print_original_text = 0; \
-        NAME.print_case   = CASE_UPPER; \
-        NAME.text         = TEXT;   \
+        NAME.print_case         = CASE_UPPER; \
+        NAME.text               = TEXT;   \
                                     \
         NAME.funct_before[0] = fb1; \
         NAME.funct_before[1] = fb2; \
@@ -248,12 +247,12 @@ int setting_value(char * setting_name, int * setting_values)
 {
     #define T_KW_SETTINGS_MACRO( NAME, ... )    \
     if( strcmp(#NAME,setting_name) == 0 ){      \
-        NAME.nl_before    = setting_values[0];  \
-        NAME.tab_before   = setting_values[1];  \
-        NAME.space_before = setting_values[2];  \
-        NAME.nl_after     = setting_values[3];  \
-        NAME.tab_after    = setting_values[4];  \
-        NAME.space_after  = setting_values[5];  \
+        NAME.before.new_line    = setting_values[0];  \
+        NAME.before.indent      = setting_values[1];  \
+        NAME.before.space       = setting_values[2];  \
+        NAME.after.new_line     = setting_values[3];  \
+        NAME.after.indent       = setting_values[4];  \
+        NAME.after.space        = setting_values[5];  \
     }
     #include "t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
