@@ -22,6 +22,7 @@ OS_TARGET=linux
 EXEC_CLI=fsqlf
 EXEC_GUI=wx_fsqlf
 CC=gcc
+CCFLAGS=-m32
 CXX=g++
 CXXFLAGS+= `wx-config --cxxflags`   `wx-config --libs`
 endif
@@ -41,7 +42,7 @@ $(LEX_OUTPUT): $(SRC) $(HEADERS)
 #  BUILD
 all:$(EXEC_CLI) $(EXEC_GUI)
 $(EXEC_CLI):$(LEX_OUTPUT)
-	$(CC)   $<   -o $@
+	$(CC) $(CCFLAGS)  $<   -o $@
 	strip $@
 
 $(EXEC_GUI):   gui/wx_fsqlf.cpp  gui/license_text.h   | $(EXEC_CLI)
@@ -93,7 +94,7 @@ zip: tmp_folder $(CONF_FILE)
 	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PROJECTFOLDER)/source/'
 	cd tmp/ &&   zip -r ../$(ZIP_NAME)  $(PROJECTFOLDER)
 
-tmp_folder: LICENSE README
+tmp_folder: LICENSE README.md
 	make prep_bin
 	make prep_bin WIN=1
 	cp    -t tmp/$(PROJECTFOLDER)   $^
