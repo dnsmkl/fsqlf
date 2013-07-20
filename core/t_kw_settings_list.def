@@ -1,3 +1,16 @@
+// This file contains compile time (default) configuration of fsqlf
+
+//
+//  text                -------------------------+
+//  after: spaces       ----------------------+  |
+//  after: indentation  --------------------+ |  |
+//  after: new line     ------------------+ | |  |
+//  before: spaces      ----------------+ | | |  |
+//  before: indentation --------------+ | | | |  |
+//  before: new line    ------------+ | | | | |  |
+//  variable name  --+              | | | | | |  |
+//                   |              | | | | | |  |           /*   function pointers       */
+//
 T_KW_SETTINGS_MACRO( kw_comma      ,1,0,0,0,0,1,","          ,NULL,NULL,NULL,NULL,NULL,NULL )
 T_KW_SETTINGS_MACRO( kw_select     ,1,0,0,1,0,2,"SELECT"     ,NULL,NULL,NULL,NULL,NULL,NULL )
 T_KW_SETTINGS_MACRO( kw_inner_join ,1,0,0,0,0,1,"JOIN"       ,NULL,NULL,NULL,NULL,NULL,NULL )

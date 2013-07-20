@@ -10,10 +10,18 @@ int create_config_file( char* config_file_name ) {
         return 1;
     }
         // Write default configuration to "formatting.conf" file:
-    fprintf(config_file, "# This file contains formatting (spacing) settings wich can be used to override the default formatting style used by FSQLF\n" );
-    fprintf(config_file, "# Lines starting with '#' are comments\n" );
-    fprintf(config_file, "# Each formatting (spacing) setting line contains:\n\n" );
-    fprintf(config_file, "# setting_name  new_line_before tab_before space_before new_line_after tab_after space_after\n" );
+    fputs("# This file contains formatting (spacing) settings wich can be used to override the default formatting style used by FSQLF\n", config_file);
+    fputs("# Lines starting with '#' are comments.  Comments and empty lines are ignored\n", config_file);
+    fputs("# If there are couple of lines with same setting_name, then only the last one has effect\n\n" , config_file);
+
+    fputs("# space_after -----------------------------------------+\n", config_file);
+    fputs("# tab_after ------------------------------------+      |\n", config_file);
+    fputs("# new_line_after ------------------------+      |      |\n", config_file);
+    fputs("# space_before -------------------+      |      |      |\n", config_file);
+    fputs("# tab_before --------------+      |      |      |      |\n", config_file);
+    fputs("# new_line_before --+      |      |      |      |      |\n", config_file);
+    fputs("#                   |      |      |      |      |      |\n", config_file);
+    fputs("# setting_name\n", config_file);
 
     #define     QUOTE(name)     #name
     #define T_KW_SETTINGS_MACRO( NAME,nlb,tb,sb,nla,ta,sa,TEXT , ... ) \
@@ -29,9 +37,8 @@ int create_config_file( char* config_file_name ) {
     #undef T_KW_SETTINGS_MACRO
 
 
-    fprintf(config_file, "\n\n");
-    fprintf(config_file, "# If there are couple of lines with same setting_name, then only the last one has effect\n" );
-    fprintf(config_file, "# Empty lines are ignored\n" );
+    fputs("\n\n", config_file);
+
 
     if (fclose(config_file) == 0) // Write and close config file
         return 0;
