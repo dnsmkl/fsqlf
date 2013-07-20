@@ -35,8 +35,9 @@ typedef struct{
     spacing_counts before;
     spacing_counts after;
 
-    int print_original_text;
-    int print_case;
+    unsigned short int print_original_text;
+    unsigned short int print_case;
+    unsigned short int is_word; // two adjacent words MUST be separated by some spacing
     char * text;
 
     int (*funct_before[KW_FUNCT_ARRAY_SIZE])();
@@ -59,26 +60,59 @@ int debug_p();// TODO : make separate .c and .h files
 
 
 
-
-static spacing_counts combine_spacings(
-    spacing_counts afterspacing_of_prev
-    ,spacing_counts beforespacing_of_current
-    ,int global_indent_level
-){
-    spacing_counts combined;
-    combined.new_line   = afterspacing_of_prev.new_line + beforespacing_of_current.new_line;
-
-    if(!beforespacing_of_current.new_line){
-        combined.indent     = max(afterspacing_of_prev.indent, beforespacing_of_current.indent);
-        combined.indent     += combined.new_line ? global_indent_level : 0;
-        combined.space      = max(afterspacing_of_prev.space, beforespacing_of_current.space);
+int max_or_current(prev_count, curr_count, use_only_curr_ind){
+    if(use_only_curr_ind){
+        return curr_count;
     }
     else{
-        combined.indent     = beforespacing_of_current.indent;
-        combined.indent     += combined.new_line ? global_indent_level : 0;
-        combined.space      = beforespacing_of_current.space;
+        return max(prev_count, curr_count);
     }
-    return combined;
+}
+
+
+static spacing_counts calculate_spacing(
+    spacing_counts afterspacing_of_prev
+    ,unsigned short int isword_of_prev
+    ,spacing_counts beforespacing_of_current
+    ,unsigned short int isword_of_current
+    ,int global_indent_level
+){
+    /* Combine previous and current words adjacent spacings.
+        Combination is done by using MAX or just using current words settings.
+        Decision is made so:
+            There are 3 types of spacings and have ranks: space-1, indentation-2, new line-3.
+            if current word's has active spacing setting (not 0),
+            then all spacings of lower ranks, must be used from current word
+        Rationale for such logic:
+            if word has in its settings, new-line=1 and indent/spaces=0,
+            then there is expectation of keyword being at the start of the line (not counting global indent level because of subselect)
+    */
+    spacing_counts r; // result to be built
+
+
+    r.new_line = max(afterspacing_of_prev.new_line, beforespacing_of_current.new_line);
+
+    r.indent = max_or_current(
+            afterspacing_of_prev.indent
+            , beforespacing_of_current.indent
+            , beforespacing_of_current.new_line>1);
+    r.indent += r.new_line ? global_indent_level : 0;
+
+    r.space = max_or_current(
+            afterspacing_of_prev.space
+            , beforespacing_of_current.space
+            , beforespacing_of_current.new_line || beforespacing_of_current.indent);
+
+
+    // adjacent words MUST have some spacing
+    if(!r.new_line && !r.indent && !r.space
+        && isword_of_prev && isword_of_current
+    ){
+        r.space = 1;
+    }
+
+
+    return r;
 }
 
 
@@ -95,39 +129,45 @@ static void print_spaces(FILE * yyout, int count){
     for(i=0; i < count; i++) fputs(" ", yyout);
 }
 
-static void print_spacing(FILE * yyout, t_kw_settings s, int global_indent_level){
+static void print_struct_spacing_count(FILE * yyout, spacing_counts s){
+    print_nlines(yyout, s.new_line);
+    print_tabs(yyout, s.indent);
+    print_spaces(yyout, s.space);
+}
+
+
+
+
+static void print_spacing(FILE * yyout, t_kw_settings current_settings, int global_indent_level){
 /* Prints all spacing of the program
  * Except when space is inside the multiword-keyword (e.g. "LEFT JOIN"), those will not be printed by this function
  * 'spacing' means new lines, tabs and spaces
 */
-    static spacing_counts from_previous = {0,0,0}; // keep track of 'after' spacing from previous call
-    spacing_counts combined = {0,0,0}; // it will hold spacing counts that will actualy be printed
 
-    if(s.text[0]!='\0'){
-        // Calculate what spacings will be printed
-        combined = combine_spacings(from_previous, s.before, global_indent_level);
+    static spacing_counts from_previous__scounts = {0,0,0}; // keep track of 'after' spacing from previous call
+    static unsigned short int from_previous__isword = 0;    // keep track of previous 'is_word'
 
-        // Print
-        print_nlines(yyout, combined.new_line);
-        print_tabs(yyout, combined.indent); // FIXME-prevspacesprinted: can lead to spaces preceeding tab char
-        print_spaces(yyout, combined.space);
+    spacing_counts spacing =
+        calculate_spacing(
+            from_previous__scounts
+            , from_previous__isword
+            , current_settings.before
+            , current_settings.is_word
+            , global_indent_level
+        );
 
-        // Save settings for next function call - overwrite
-        from_previous = s.after;
-    }
-    else{
-        // this 'else' (actualy all 'if-else') is workaround for printing space, from echo_print()
-        // Save settings for next function call - not overwrite, but combine them somehow.
-        from_previous.new_line  += s.after.new_line;
-        from_previous.indent    += s.after.indent;
-        from_previous.space     = max(s.after.space, from_previous.space);
-    }
+    print_struct_spacing_count(yyout, spacing);
+
+    // Save settings for next function call - overwrite
+    from_previous__scounts = current_settings.after;
+    from_previous__isword = current_settings.is_word;
+
 }
 
 
 #define MAX_KEYWORD_SIZE (50)
 enum{CASE_none,CASE_lower,CASE_UPPER,CASE_Initcap};
-char* stocase(char* s_text, int s_case){
+char* stocase(char* s_text, unsigned short int s_case){
     static char formatted_result[MAX_KEYWORD_SIZE];
     int i;
 
@@ -154,11 +194,8 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
     // call keyword specific functions. Before fprintf
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
-
     print_spacing(yyout, s, currindent); // print spacing before keyword
-
     fprintf(yyout,"%s",stocase( s.print_original_text ? yytext : s.text , s.print_case)); // 1st deside what text to use (original or degault), then handle its case
-
     // call keyword specific functions. After fprintf
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
@@ -167,29 +204,29 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
 
 
 void echo_print(FILE * yyout, char * txt){
-    int i=0, space_cnt=0, nl_cnt=0, length, nbr;
+    int i=0, space_cnt=0, nl_cnt=0, length;
 
     t_kw_settings s;
     s.before.new_line=s.before.indent=s.before.space=s.after.new_line=s.after.indent=s.after.space=0;
 
-    //count blank characters at the end of the text
     length = strlen(txt);
-    for(i=length-1; txt[i]==' '  && i>=0; i--) space_cnt++;
-    for(          ; txt[i]=='\n' && i>=0; i--) nl_cnt++; // 'i=..' omited to continue from where last loop has finished
 
     // Prepare text for print (i is used with value set by last loop)
-    nbr=i+1;
-    s.text = (char*) malloc((nbr+1)*sizeof(char));
-    strncpy(s.text, txt, nbr);
-    s.text[nbr]='\0';
+    s.text = (char*) malloc((length+1)*sizeof(char));
+    if(!s.text) exit(1);
+
+    strncpy(s.text, txt, length+1);
+
+
+    s.is_word = ! (length == 1 && !isalnum(s.text[0]));
 
     // Spacing
     s.after.new_line = nl_cnt;
     s.after.space = space_cnt;
     print_spacing(yyout, s, currindent);
 
-    // Print
     fprintf(yyout,"%s",s.text);
+
     free(s.text);
 }
 
@@ -202,7 +239,7 @@ void echo_print(FILE * yyout, char * txt){
 
 
 
-void set_case(int keyword_case){
+void set_case(unsigned short int keyword_case){
     #define T_KW_SETTINGS_MACRO( NAME , ... ) \
         NAME.print_case = keyword_case;
     #include "t_kw_settings_list.def"
@@ -210,7 +247,7 @@ void set_case(int keyword_case){
 }
 
 
-void set_text_original(int ind_original){
+void set_text_original(unsigned short int ind_original){
     #define T_KW_SETTINGS_MACRO( NAME , ... ) \
         NAME.print_original_text = ind_original;
     #include "t_kw_settings_list.def"
@@ -229,6 +266,7 @@ void init_all_settings(){
         NAME.print_original_text = 0; \
         NAME.print_case         = CASE_UPPER; \
         NAME.text               = TEXT;   \
+        NAME.is_word            = 1; \
                                     \
         NAME.funct_before[0] = fb1; \
         NAME.funct_before[1] = fb2; \

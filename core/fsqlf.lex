@@ -25,7 +25,7 @@ char * state_to_char(int);
 #define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
 
 // YY_USER_INIT is lex macro executed before initialising parser
-#define YY_USER_INIT 
+#define YY_USER_INIT
 
 %}
 
@@ -191,7 +191,8 @@ DELETEFROM (?i:(del|delete){SPACE}+from)
 
 
 {STRING}     {echo_print(yyout,yytext);};
-{SPACE}+     {echo_print(yyout," ");};
+
+{SPACE}+     {/* discard spaces */;};
 {DBOBJECT}   {echo_print(yyout,yytext);};
 {NUMBER}     {echo_print(yyout,yytext);};
 {SEMICOLON}  {BEGIN_STATE(INITIAL); kw_print(yyout,yytext,kw_semicolon);};
