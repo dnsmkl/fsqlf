@@ -23,6 +23,8 @@ void usage_info(int argc, char **argv)
     PRINT_OPTION_INFO( "fsqlf [<input_file>] [<output_file>] [options]" , "Read from <input_file> and write formatted output to <output_file>. (use std I/O if missing)");
     PRINT_OPTION_INFO( "fsqlf --create-config-file" , "(Re)create '"CONFIG_FILE"' config file.");
     fprintf(stderr,"options:\n");
+    PRINT_OPTION_INFO( "-i <input_file>" , "Use <input_file> as input");
+    PRINT_OPTION_INFO( "-o <output_file>" , "Use  <output_file> as output");
     PRINT_OPTION_INFO( "--select-comma-newline (after|before|none)" , "New lines for each item in SELECT clause");
     PRINT_OPTION_INFO( "--select-newline-after <digit>"             , "Put <digit> new lines right after SELECT keyword");
     PRINT_OPTION_INFO( "--newline-or-before <digit>"                , "Put <digit> new lines before OR keyword");
@@ -60,6 +62,12 @@ void read_cli_options(int argc, char **argv)
             else if(yyout == stdout){   //try to openinig OUTPUT file (only if INPUT file is set)
                 if(  !(yyout=fopen(argv[2],"w+"))  ) FAIL_WITH_ERROR(1,"Error opening output file: %s", argv[i]);
             }
+        } else if( ARGV_MATCH(i,"-i") ){
+            if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
+	    if(  !(yyin=fopen(argv[i],"r"))  ) FAIL_WITH_ERROR(1,"Error opening input file: %s", argv[i]);
+        } else if( ARGV_MATCH(i,"-o") ){
+            if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
+	    if(  !(yyout=fopen(argv[i],"w+"))  ) FAIL_WITH_ERROR(1,"Error opening output file: %s", argv[i]);
         } else if( ARGV_MATCH(i,"--select-comma-newline") )
         {
             if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
