@@ -10,6 +10,8 @@ Helped to learn about flex a bit
 #include "global_variables.h"
 #include "print_keywords.h"
 #include "settings.h"
+void debug_stchange(int);
+void debug_match(char*);
 }
 
 
@@ -17,7 +19,6 @@ Helped to learn about flex a bit
 char * state_to_char(int);
 //#define YY_USER_ACTION fprintf(yyout,"\n %10s - rule (%d) - line(%d) " ,state_to_char(YY_START),yy_act, __LINE__);
 #define DMATCH(name) fprintf(yyout,"%20s is rule (%d) : ", name , yy_act);
-
 
 
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
@@ -220,7 +221,6 @@ DELETEFROM (?i:(del|delete){SPACE}+from)
 
 int main(int argc, char **argv)
 {
-    int i,in_set=0,out_set=0;
     // initialise with STD I/O, later changed by command line options (if any)
     yyin  = stdin;
     yyout = stdout;

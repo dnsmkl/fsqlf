@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <ctype.h>
 
 
 // tab_string is needed to be able switch between spaces "    " and tabs '\t'
@@ -40,8 +40,8 @@ typedef struct{
     unsigned short int is_word; // two adjacent words MUST be separated by some spacing
     char * text;
 
-    int (*funct_before[KW_FUNCT_ARRAY_SIZE])();
-    int (*funct_after [KW_FUNCT_ARRAY_SIZE])();
+    void (*funct_before[KW_FUNCT_ARRAY_SIZE])();
+    void (*funct_after [KW_FUNCT_ARRAY_SIZE])();
 } t_kw_settings;
 
 
@@ -56,7 +56,7 @@ void debug_kw_settings(t_kw_settings s){
 
 
 
-int debug_p();// TODO : make separate .c and .h files
+void debug_p();// TODO : make separate .c and .h files
 
 
 
@@ -204,7 +204,7 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
 
 
 void echo_print(FILE * yyout, char * txt){
-    int i=0, space_cnt=0, nl_cnt=0, length;
+    int space_cnt=0, nl_cnt=0, length;
 
     t_kw_settings s;
     s.before.new_line=s.before.indent=s.before.space=s.after.new_line=s.after.indent=s.after.space=0;
@@ -284,7 +284,7 @@ void init_all_settings(){
 #define BUFFER_SIZE (100)
 #define VALUE_NUMBER (6)
 
-int setting_value(char * setting_name, int * setting_values)
+void setting_value(char * setting_name, int * setting_values)
 {
     #define T_KW_SETTINGS_MACRO( NAME, ... )    \
     if( strcmp(#NAME,setting_name) == 0 ){      \

@@ -12,20 +12,20 @@
 int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 
-int d()
+void d()
 {
     printf("|XXX|");
 }
 
 
-int debug_p()
+void debug_p()
 {
     if(debug_level & DEBUGPARCOUNTS)
         printf("\n\t***  '('=%d; ')'=%d; subselect_level=%d)  ***\n", left_p, right_p, subselect_level);
 }
 
 
-int debug_match(char * debugstring)
+void debug_match(char * debugstring)
 {
     if(debug_level & DEBUGMATCHES)
         printf("\n\t**   %s   **\n", debugstring);
@@ -58,7 +58,7 @@ char* state_to_char(int state)
 }
 
 
-int debug_stchange(int newstate_int)
+void debug_stchange(int newstate_int)
 {
     char* currentstate;
     char* newstate;

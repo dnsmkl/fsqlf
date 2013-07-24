@@ -8,8 +8,8 @@ int left_p  = 0;
 int right_p = 0;
 int subselect_level = 0;
 
-int inc_LEFTP() { left_p++  ; }
-int inc_RIGHTP(){ right_p++ ; }
+void inc_LEFTP() { left_p++  ; }
+void inc_RIGHTP(){ right_p++ ; }
 int p_level()  { return left_p - right_p - subselect_level ; }
 
 
@@ -44,8 +44,8 @@ para_st peek_sub_stack()
 }
 
 
-int begin_SUB(){ push_sub_stack(left_p,right_p); currindent++; }
-int end_SUB()  { pop_sub_stack(); currindent--; }
+void begin_SUB(){ push_sub_stack(left_p,right_p); currindent++; }
+void end_SUB()  { pop_sub_stack(); currindent--; }
 
 
 
