@@ -22,7 +22,7 @@ OS_TARGET=linux
 EXEC_CLI=fsqlf
 EXEC_GUI=wx_fsqlf
 CC=gcc
-CCFLAGS=-m32 -Wall -DYY_NO_INPUT
+CCFLAGS=-m32 -Wall
 CXX=g++
 CXXFLAGS+= `wx-config --cxxflags`   `wx-config --libs`
 endif

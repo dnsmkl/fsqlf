@@ -16,7 +16,7 @@ char * tab_string = "    ";
 
 
 
-inline int max(int a, int b){
+static inline int max(int a, int b){
     return a > b ? a : b;
 }
 
@@ -60,7 +60,7 @@ void debug_p();// TODO : make separate .c and .h files
 
 
 
-int max_or_current(prev_count, curr_count, use_only_curr_ind){
+int max_or_current(int prev_count, int curr_count, unsigned short int use_only_curr_ind){
     if(use_only_curr_ind){
         return curr_count;
     }

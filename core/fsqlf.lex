@@ -88,7 +88,7 @@ SET (?i:set)
 DELETEFROM (?i:(del|delete){SPACE}+from)
 
 
-%option noyywrap
+%option noyywrap nounput noinput
 
 %s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST
 %x stCOMMENTML stSTRING
