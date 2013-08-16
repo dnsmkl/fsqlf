@@ -76,30 +76,27 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
 
 
 void echo_print(FILE * yyout, char * txt){
-    int space_cnt=0, nl_cnt=0, length;
-
-    t_kw_settings s;
+    int length; // length of the input text string
+    int pos_last_char; // position of last character
+    t_kw_settings s; // printing of spacing is delegated to print_spacing(), which needs t_kw_settings as input
+    
     s.before.new_line=s.before.indent=s.before.space=s.after.new_line=s.after.indent=s.after.space=0;
 
     length = strlen(txt);
 
-    // Prepare text for print (i is used with value set by last loop)
-    s.text = (char*) malloc((length+1)*sizeof(char));
-    if(!s.text) exit(1);
+    // adjustment for single line comments - necessary for keeping indentation and new lines right
+    pos_last_char = length - 1;
+    if(txt[pos_last_char] == '\n'){
+        txt[pos_last_char] = '\0'; // shorten the string - overwrite \n (new line) with \0 (end of string mark)
+        s.after.new_line = 1; // delegate to print_spacing() printing of the new line
+    }
 
-    strncpy(s.text, txt, length+1);
+    // word-vs-operator check - ensures that two adjacent words have spacing inbetween
+    s.is_word = !(length == 1 && !isalnum(txt[0]));
 
-
-    s.is_word = ! (length == 1 && !isalnum(s.text[0]));
-
-    // Spacing
-    s.after.new_line = nl_cnt;
-    s.after.space = space_cnt;
+    // print spacing then text 
     print_spacing(yyout, s, currindent);
-
-    fprintf(yyout,"%s",s.text);
-
-    free(s.text);
+    fputs(txt, yyout);
 }
 
 
