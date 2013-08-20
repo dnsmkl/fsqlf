@@ -41,8 +41,8 @@ DBOBJECT    ({ID}[.]){0,2}{ID}
 LEFTP   [(]
 RIGHTP  [)]
 
-UNION     (?i:UNION)
-UNION_ALL (?i:UNION[ ]ALL)
+UNION     (?i:union)
+UNION_ALL (?i:union{SPACE}+all)
 INTERSECT (?i:intersect)
 EXCEPT    (?i:except)
 MINUS     (?i:minus)
