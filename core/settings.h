@@ -12,7 +12,7 @@
 const char * tab_string = "    "; //indentation is done with 4 spaces
 
 
-inline int max(int a, int b){ 
+inline int max(int a, int b){
     return a > b ? a : b;
 }
 

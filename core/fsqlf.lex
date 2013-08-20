@@ -45,6 +45,7 @@ UNION     (?i:UNION)
 UNION_ALL (?i:UNION[ ]ALL)
 INTERSECT (?i:intersect)
 EXCEPT    (?i:except)
+MINUS     (?i:minus)
 
 SELECT  (?i:select|sel)
 AS      (?i:as)
@@ -103,6 +104,7 @@ DELETEFROM (?i:(del|delete){SPACE}+from)
                 /* SET operations */
 {UNION}      {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_union)    ; };
 {UNION_ALL}  {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_union_all); };
+{MINUS}      {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_minus);     };
 {INTERSECT}  {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_intersect); };
 {EXCEPT}     {BEGIN_STATE(INITIAL);kw_print(yyout,yytext,kw_except);    };
 
