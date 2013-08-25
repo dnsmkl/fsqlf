@@ -19,7 +19,6 @@ typedef struct para_st {
     int right;
 } para_st ;
 
-int sub_opening_leftps[SUB_STACK_SIZE];
 para_st sub_openings[SUB_STACK_SIZE];
 
 
