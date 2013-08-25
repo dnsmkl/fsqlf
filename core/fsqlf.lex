@@ -117,6 +117,7 @@ DELETEFROM (?i:(del|delete){SPACE}+from)
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  kw_print(yyout,yytext,kw_left_p); };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");kw_print(yyout,yytext,kw_left_p);  };
 <stLEFTP>{COMMA}            {echo_print(yyout,yytext); };
+<stLEFTP>{ORDERBY}          {echo_print(yyout,yytext); };
 <stLEFTP>{FROM}             {debug_match("{FROM}" ); kw_print(yyout,yytext,kw_from_2);  };
 <stLEFTP>{RIGHTP}           {POP_STATE();            kw_print(yyout,yytext,kw_right_p); };
 <stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  kw_print(yyout,yytext,kw_from);    };
