@@ -12,9 +12,11 @@ core/lex.yy.c
 gui/license_text.h
 
 
-#tmp backups
+#editor stuff
 *~
 *.swp
+*.*project
+*.*workspace
 
 #archive for uploading
 *.zip
