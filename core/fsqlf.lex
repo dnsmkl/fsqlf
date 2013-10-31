@@ -75,6 +75,7 @@ QUALIFY (?i:qualify)
 COMMA [,]
 
 COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
+COMMENT_ONE_LINE_LAST_LINE_IN_FILE [-]{2,}[^\n]*
 COMMENT_ML_START [/][*]+
 COMMENT_ML_PART1 [^*]+
 COMMENT_ML_PART2 [*]+[^/]
@@ -192,6 +193,8 @@ DELETEFROM (?i:(del|delete){SPACE}+from)
 <stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); echo_print(yyout,yytext);};
 
 {COMMENT_ONE_LINE}     {echo_print(yyout,yytext);};
+    /* Exeption to one-line-comment: comment on last line, without new-line after it */
+{COMMENT_ONE_LINE_LAST_LINE_IN_FILE}    {echo_print(yyout,yytext);};
 
 
 {STRING}     {echo_print(yyout,yytext);};
