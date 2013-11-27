@@ -12,12 +12,6 @@
 int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 
-void d()
-{
-    printf("|XXX|");
-}
-
-
 void debug_p()
 {
     if(debug_level & DEBUGPARCOUNTS)
