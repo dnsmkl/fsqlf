@@ -45,9 +45,15 @@ $(EXEC_CLI):$(LEX_OUTPUT)
 	$(CC) $(CCFLAGS)  $<   -o $@
 	strip $@
 
-$(EXEC_GUI):   gui/wx_fsqlf.cpp  gui/license_text.h   | $(EXEC_CLI)
-	$(CXX)   $<   -o $@   $(CXXFLAGS)
-	strip $@
+$(EXEC_GUI): wx_fsqlf.o  dnd_target.o   | $(EXEC_CLI)
+	g++  wx_fsqlf.o  dnd_target.o  -o wx_fsqlf  $(CXXFLAGS)
+
+wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/license_text.h
+	g++  -c gui/wx_fsqlf.cpp  $(CXXFLAGS)
+
+dnd_target.o: gui/dnd_target.cpp gui/dnd_target.hpp
+	g++  -c gui/dnd_target.cpp  $(CXXFLAGS)
+
 
 LICENSE_TEXT=gui/license_text.h
 $(LICENSE_TEXT): LICENSE
@@ -79,6 +85,7 @@ TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMA
 clean:   clean_local   clean_win
 clean_local:
 	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp $(LICENSE_TEXT) $(CONF_FILE)
+	rm -f *.o
 clean_win:
 	make clean_local WIN=1
 
