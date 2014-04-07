@@ -136,6 +136,7 @@ void Notepad::create_options(wxNotebook* nb)
 void Notepad::create_textarea(wxSizer* parent)
 {
     this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
+    this->text_area->SetFont(wxFont(10, wxTELETYPE, wxNORMAL, wxNORMAL));
     parent->Add(this->text_area,1,wxEXPAND,0);
 }
 
@@ -221,7 +222,6 @@ void Notepad::OnFormat(wxCommandEvent &event)
         return;
     }
     this->text_area->LoadFile(wxT(TMP_OUTPUT_FILE));
-    MONOSPACE_FONT;
 
     if( !wxRemoveFile(wxT(TMP_INPUT_FILE))  ) wxMessageBox(wxT("Failed to remove temporary file " TMP_INPUT_FILE),wxT("Error") , wxOK | wxICON_INFORMATION, this);
     if( !wxRemoveFile(wxT(TMP_OUTPUT_FILE)) ) wxMessageBox(wxT("Failed to remove temporary file " TMP_OUTPUT_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
@@ -238,7 +238,6 @@ void Notepad::OnSave( wxCommandEvent &event ){
 void Notepad::OnOpen( wxCommandEvent &event ){
     wxFileDialog *openDialog = new wxFileDialog(this, wxT("Open File~"), wxT(""), wxT(""), wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxOPEN);
     if( wxID_OK == openDialog->ShowModal() ) this->text_area->LoadFile(openDialog->GetPath());
-    MONOSPACE_FONT;
 }
 
 
@@ -246,7 +245,6 @@ void Notepad::OnUnformat(wxCommandEvent &event){
     if(this->original_text.IsEmpty()) return; // prevent deletion of everything
     this->text_area->Clear();
     this->text_area->SetValue(this->original_text);
-    MONOSPACE_FONT;
 }
 
 void Notepad::OnCut(wxCommandEvent &event){
@@ -272,7 +270,7 @@ void Notepad::OnAbout(wxCommandEvent &event){
     info.SetName(_("Free SQL Formatter"));
     info.SetVersion(_(VERSION));
     info.SetDescription(_T("Free SQL Formatter beautifies SQL code. It is particularly useful in case one has to deal with machine generated SQL code"));
-    info.SetCopyright(_T("(C) 2011,2012  Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
+    info.SetCopyright(_T("(C) 2011,2012,2013,2014  Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
     info.SetLicence(_( LICENSE_TEXT ));
     wxAboutBox(info);
 }

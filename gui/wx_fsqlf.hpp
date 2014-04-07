@@ -13,13 +13,6 @@
 
 
 
-// set monospace font for all content of this->text_area
-#define MONOSPACE_FONT                                                                                  \
-    wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize(), wxFONTFAMILY_TELETYPE, wxNORMAL, wxNORMAL);                     \
-    wxTextAttr text_style(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour, font);    \
-    this->text_area->SetStyle(0,this->text_area->GetLastPosition(),text_style)
-
-
 class Notepad : public wxFrame {
     public:
     Notepad();

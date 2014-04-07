@@ -4,7 +4,6 @@
 
 bool dnd_target::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames){
     this->text_area->LoadFile(filenames[0]);
-    MONOSPACE_FONT;
 };
 
 
