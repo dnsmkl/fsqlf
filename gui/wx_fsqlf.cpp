@@ -263,6 +263,10 @@ void Notepad::OnSelectAll(wxCommandEvent &event){
     this->text_area->SetSelection(-1, -1);
 }
 
+void Notepad::OnMaxLen(wxCommandEvent &event){
+    new wxMessageDialog(this, _("Maximum Limit Reached"), _(""), wxOK|wxCENTRE );
+}
+
 
 
 void Notepad::OnAbout(wxCommandEvent &event){

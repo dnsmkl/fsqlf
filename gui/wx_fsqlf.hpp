@@ -38,13 +38,14 @@ class Notepad : public wxFrame {
     void OnPaste(wxCommandEvent &event);
     void OnSelectAll(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
+    void OnMaxLen(wxCommandEvent &event);
 
     void create_menubar();
     void create_buttons(wxWindow* parent_window , wxSizer* parent_sizer);
     void create_options(wxNotebook*);
     void create_textarea(wxSizer* parent);
 
-    enum MenuControls{ idSave = 1000, idOpen, idExit, idFormat, idUnformat, idCut, idCopy, idPaste, idSelectAll, idAbout  };
+    enum MenuControls{ idSave = 1000, idOpen, idExit, idFormat, idUnformat, idCut, idCopy, idPaste, idSelectAll, idAbout, idMaxLen  };
 
     DECLARE_EVENT_TABLE()
 };
@@ -66,6 +67,8 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
 
     EVT_BUTTON(idFormat, Notepad::OnFormat)
     EVT_BUTTON(idUnformat, Notepad::OnUnformat)
+
+    EVT_TEXT_MAXLEN(idMaxLen, Notepad::OnMaxLen)
 END_EVENT_TABLE()
 
 
