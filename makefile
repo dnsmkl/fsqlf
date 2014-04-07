@@ -46,13 +46,15 @@ $(EXEC_CLI):$(LEX_OUTPUT)
 	strip $@
 
 $(EXEC_GUI): wx_fsqlf.o  dnd_target.o   | $(EXEC_CLI)
-	g++  wx_fsqlf.o  dnd_target.o  -o wx_fsqlf  $(CXXFLAGS)
+	$(CXX)  wx_fsqlf.o  dnd_target.o  -o $@  $(CXXFLAGS)
+	strip $@
+	rm *.o
 
 wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/license_text.h
-	g++  -c gui/wx_fsqlf.cpp  $(CXXFLAGS)
+	$(CXX)  -c gui/wx_fsqlf.cpp  $(CXXFLAGS)
 
 dnd_target.o: gui/dnd_target.cpp gui/dnd_target.hpp
-	g++  -c gui/dnd_target.cpp  $(CXXFLAGS)
+	$(CXX)  -c gui/dnd_target.cpp  $(CXXFLAGS)
 
 
 LICENSE_TEXT=gui/license_text.h
