@@ -76,10 +76,11 @@ void Notepad::create_buttons(wxSizer* parent_sizer)
 
 
 
-#define ADD_NEWCHECKBOX(var_checkbox , parent_window , sizer , title , default_val) \
-    var_checkbox = new wxCheckBox(parent_window, -1 , _(title) );\
-    var_checkbox->SetValue(default_val);\
-    sizer->Add(var_checkbox,0,0,0)
+void add_newcheckbox(wxCheckBox* var_checkbox, wxWindow* parent_window, wxSizer* sizer, wxString title, bool default_val){
+    var_checkbox = new wxCheckBox(parent_window, -1, title);
+    var_checkbox->SetValue(default_val);
+    sizer->Add(var_checkbox, 0, 0, 0);
+}
 
 void Notepad::create_options(wxNotebook* nb)
 {
@@ -106,11 +107,11 @@ void Notepad::create_options(wxNotebook* nb)
                      , wxVERTICAL);
     sizer->Add(nl_other_sizer,0,0,0);
 
-    ADD_NEWCHECKBOX(nl_after_select,parent_panel,nl_other_sizer,"[select] after",true);
-    ADD_NEWCHECKBOX(nl_before_or   ,parent_panel,nl_other_sizer,"[or] before"   ,false);
-    ADD_NEWCHECKBOX(nl_after_or    ,parent_panel,nl_other_sizer,"[or] after"    ,false);
-    ADD_NEWCHECKBOX(nl_before_and  ,parent_panel,nl_other_sizer,"[and] before"  ,true);
-    ADD_NEWCHECKBOX(nl_after_and   ,parent_panel,nl_other_sizer,"[and] after"   ,false);
+    add_newcheckbox(nl_after_select, parent_panel, nl_other_sizer, _("[select] after"), true);
+    add_newcheckbox(nl_before_or   , parent_panel, nl_other_sizer, _("[or] before")   , false);
+    add_newcheckbox(nl_after_or    , parent_panel, nl_other_sizer, _("[or] after")    , false);
+    add_newcheckbox(nl_before_and  , parent_panel, nl_other_sizer, _("[and] before")  , true);
+    add_newcheckbox(nl_after_and   , parent_panel, nl_other_sizer, _("[and] after")   , false);
 
     wxString nl_major_sections_choices[3];
     nl_major_sections_choices[0] = _("Use Config File");
@@ -120,7 +121,7 @@ void Notepad::create_options(wxNotebook* nb)
     nl_major_sections->SetSelection(2);
     sizer->Add(nl_major_sections,0,0,0);
 
-    ADD_NEWCHECKBOX(use_original_text,parent_panel,sizer,"Use original keyword text",false);
+    add_newcheckbox(use_original_text, parent_panel, sizer, _("Use original keyword text"), false);
 
     // CASE settings
     wxString case_all_kw_choices[4];
