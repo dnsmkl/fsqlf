@@ -41,7 +41,7 @@ class Notepad : public wxFrame {
     void OnMaxLen(wxCommandEvent &event);
 
     void create_menubar();
-    void create_buttons(wxWindow* parent_window , wxSizer* parent_sizer);
+    void create_buttons(wxSizer* parent_sizer);
     void create_options(wxNotebook*);
     void create_textarea(wxSizer* parent);
 

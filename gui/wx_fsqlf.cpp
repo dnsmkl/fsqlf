@@ -16,7 +16,7 @@ Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDef
 
     this->SetSizer(sizerh);
     sizerh->Add(left_sizer,0,0,0);
-    Notepad::create_buttons(this,left_sizer);
+    Notepad::create_buttons(left_sizer);
     left_sizer->Add(nb,0,0,0);
     Notepad::create_options(nb);
     Notepad::create_menubar();
@@ -68,10 +68,10 @@ void Notepad::create_menubar()
 
 
 
-void Notepad::create_buttons(wxWindow* parent_window , wxSizer* parent_sizer)
+void Notepad::create_buttons(wxSizer* parent_sizer)
 {
-    parent_sizer->Add(new wxButton(parent_window, idFormat, wxT("Format")), 0, 0, 0);
-    parent_sizer->Add(new wxButton(parent_window, idUnformat, wxT("Unformat")), 0, 0, 0);
+    parent_sizer->Add(new wxButton(parent_sizer->GetContainingWindow(), idFormat, wxT("Format")), 0, 0, 0);
+    parent_sizer->Add(new wxButton(parent_sizer->GetContainingWindow(), idUnformat, wxT("Unformat")), 0, 0, 0);
 }
 
 
