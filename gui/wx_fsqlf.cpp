@@ -89,13 +89,15 @@ void Notepad::create_options(wxNotebook* nb)
     nb->AddPage(parent_panel, _("Options"));
 
     // Radio buttons - new lines in SELECT clause
-    wxString sel_comma_nl_choices[3];
+    #define NUM_COMMA_NL_CHOICES (4)
+    wxString sel_comma_nl_choices[NUM_COMMA_NL_CHOICES];
     sel_comma_nl_choices[0] = _("None");
     sel_comma_nl_choices[1] = _("Before");
     sel_comma_nl_choices[2] = _("After");
+    sel_comma_nl_choices[3] = _("Use Config File");
 
-    sel_comma_nl = new wxRadioBox(parent_panel, -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, 3, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
-    sel_comma_nl->SetSelection(1);
+    sel_comma_nl = new wxRadioBox(parent_panel, -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, NUM_COMMA_NL_CHOICES, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
+    sel_comma_nl->SetSelection(3);
     sizer->Add(sel_comma_nl,0,0,0);
 
     // Check boxes for : OR , AND , SELECT
