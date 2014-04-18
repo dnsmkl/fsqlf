@@ -76,8 +76,8 @@ void Notepad::create_buttons(wxSizer* parent_sizer)
 
 
 
-void add_newcheckbox(wxCheckBox* var_checkbox, wxWindow* parent_window, wxSizer* sizer, wxString title, bool default_val){
-    var_checkbox = new wxCheckBox(parent_window, -1, title);
+void add_newcheckbox(wxCheckBox* var_checkbox, wxSizer* sizer, wxString title, bool default_val){
+    var_checkbox = new wxCheckBox(sizer->GetContainingWindow(), -1, title);
     var_checkbox->SetValue(default_val);
     sizer->Add(var_checkbox, 0, 0, 0);
 }
@@ -120,12 +120,12 @@ void Notepad::create_options_nl_keywords(wxSizer* sizer)
                      , wxVERTICAL);
     sizer->Add(nl_other_sizer,0,0,0);
 
-    add_newcheckbox(nl_use_config, sizer->GetContainingWindow(), nl_other_sizer, _("Use config"), true);
-    add_newcheckbox(nl_after_select, sizer->GetContainingWindow(), nl_other_sizer, _("[select] after"), true);
-    add_newcheckbox(nl_before_or   , sizer->GetContainingWindow(), nl_other_sizer, _("[or] before")   , false);
-    add_newcheckbox(nl_after_or    , sizer->GetContainingWindow(), nl_other_sizer, _("[or] after")    , false);
-    add_newcheckbox(nl_before_and  , sizer->GetContainingWindow(), nl_other_sizer, _("[and] before")  , true);
-    add_newcheckbox(nl_after_and   , sizer->GetContainingWindow(), nl_other_sizer, _("[and] after")   , false);
+    add_newcheckbox(nl_use_config, nl_other_sizer, _("Use config"), true);
+    add_newcheckbox(nl_after_select, nl_other_sizer, _("[select] after"), true);
+    add_newcheckbox(nl_before_or   , nl_other_sizer, _("[or] before")   , false);
+    add_newcheckbox(nl_after_or    , nl_other_sizer, _("[or] after")    , false);
+    add_newcheckbox(nl_before_and  , nl_other_sizer, _("[and] before")  , true);
+    add_newcheckbox(nl_after_and   , nl_other_sizer, _("[and] after")   , false);
 }
 
 
@@ -143,7 +143,7 @@ void Notepad::create_options_nl_major_sections(wxSizer* sizer)
 
 void Notepad::create_options_text(wxSizer* sizer)
 {
-    add_newcheckbox(use_original_text, sizer->GetContainingWindow(), sizer, _("Use original keyword text"), false);
+    add_newcheckbox(use_original_text, sizer, _("Use original keyword text"), false);
 
     // CASE settings
     wxString choices[4];
