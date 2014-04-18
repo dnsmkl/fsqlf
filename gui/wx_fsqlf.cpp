@@ -136,7 +136,7 @@ void Notepad::create_options_nl_major_sections(wxSizer* sizer)
     nl_major_sections_choices[1] = _("1 New Line");
     nl_major_sections_choices[2] = _("2 New Lines");
     nl_major_sections = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, nl_major_sections_choices,1,wxRA_SPECIFY_COLS);
-    nl_major_sections->SetSelection(2);
+    nl_major_sections->SetSelection(0);
     sizer->Add(nl_major_sections,0,0,0);
 }
 
