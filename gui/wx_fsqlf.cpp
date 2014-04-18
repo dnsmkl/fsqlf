@@ -100,13 +100,13 @@ void Notepad::create_options_nl_comma(wxSizer* sizer)
 {
     // Radio buttons - new lines in SELECT clause
     #define NUM_COMMA_NL_CHOICES (4)
-    wxString sel_comma_nl_choices[NUM_COMMA_NL_CHOICES];
-    sel_comma_nl_choices[0] = _("None");
-    sel_comma_nl_choices[1] = _("Before");
-    sel_comma_nl_choices[2] = _("After");
-    sel_comma_nl_choices[3] = _("Use Config File");
+    wxString choices[NUM_COMMA_NL_CHOICES];
+    choices[0] = _("None");
+    choices[1] = _("Before");
+    choices[2] = _("After");
+    choices[3] = _("Use Config File");
 
-    sel_comma_nl = new wxRadioBox(sizer->GetContainingWindow(), -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, NUM_COMMA_NL_CHOICES, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
+    sel_comma_nl = new wxRadioBox(sizer->GetContainingWindow(), -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, NUM_COMMA_NL_CHOICES, choices,1,wxRA_SPECIFY_COLS);
     sel_comma_nl->SetSelection(3);
     sizer->Add(sel_comma_nl,0,0,0);
 }
@@ -131,11 +131,11 @@ void Notepad::create_options_nl_keywords(wxSizer* sizer)
 
 void Notepad::create_options_nl_major_sections(wxSizer* sizer)
 {
-    wxString nl_major_sections_choices[3];
-    nl_major_sections_choices[0] = _("Use Config File");
-    nl_major_sections_choices[1] = _("1 New Line");
-    nl_major_sections_choices[2] = _("2 New Lines");
-    nl_major_sections = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, nl_major_sections_choices,1,wxRA_SPECIFY_COLS);
+    wxString choices[3];
+    choices[0] = _("Use Config File");
+    choices[1] = _("1 New Line");
+    choices[2] = _("2 New Lines");
+    nl_major_sections = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, choices,1,wxRA_SPECIFY_COLS);
     nl_major_sections->SetSelection(0);
     sizer->Add(nl_major_sections,0,0,0);
 }
@@ -146,12 +146,12 @@ void Notepad::create_options_text(wxSizer* sizer)
     add_newcheckbox(use_original_text, sizer->GetContainingWindow(), sizer, _("Use original keyword text"), false);
 
     // CASE settings
-    wxString case_all_kw_choices[4];
-    case_all_kw_choices[0] = _("None (aBc)");
-    case_all_kw_choices[1] = _("Upper (ABC)");
-    case_all_kw_choices[2] = _("Lower (abc)");
-    case_all_kw_choices[3] = _("Init (Abc)");
-    case_all_kw = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, case_all_kw_choices,1,wxRA_SPECIFY_COLS);
+    wxString choices[4];
+    choices[0] = _("None (aBc)");
+    choices[1] = _("Upper (ABC)");
+    choices[2] = _("Lower (abc)");
+    choices[3] = _("Init (Abc)");
+    case_all_kw = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, choices,1,wxRA_SPECIFY_COLS);
     case_all_kw->SetSelection(1);
     sizer->Add(case_all_kw,0,0,0);
 }
