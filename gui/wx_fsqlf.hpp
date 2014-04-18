@@ -21,11 +21,9 @@ class Notepad : public wxFrame {
     wxTextCtrl* text_area;
     wxString original_text;
 
-    wxRadioBox* sel_comma_nl;
+    wxRadioBox *sel_comma_nl, *case_all_kw, *nl_major_sections;
     wxCheckBox* nl_after_select;
     wxCheckBox *nl_use_config, *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
-    wxRadioBox* nl_major_sections;
-    wxRadioBox* case_all_kw;
     wxCheckBox* use_original_text;
 
     void OnUnformat(wxCommandEvent &event);
