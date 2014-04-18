@@ -23,7 +23,7 @@ class Notepad : public wxFrame {
 
     wxRadioBox* sel_comma_nl;
     wxCheckBox* nl_after_select;
-    wxCheckBox *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
+    wxCheckBox *nl_use_config, *nl_before_or, *nl_after_or, *nl_before_and, *nl_after_and;
     wxRadioBox* nl_major_sections;
     wxRadioBox* case_all_kw;
     wxCheckBox* use_original_text;
@@ -43,6 +43,10 @@ class Notepad : public wxFrame {
     void create_menubar();
     void create_buttons(wxSizer* parent_sizer);
     void create_options(wxNotebook*);
+    void create_options_nl_comma(wxSizer*);
+    void create_options_nl_keywords(wxSizer*);
+    void create_options_nl_major_sections(wxSizer*);
+    void create_options_text(wxSizer* sizer);
     void create_textarea(wxSizer* parent);
 
     enum MenuControls{ idSave = 1000, idOpen, idExit, idFormat, idUnformat, idCut, idCopy, idPaste, idSelectAll, idAbout, idMaxLen  };

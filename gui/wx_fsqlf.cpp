@@ -89,6 +89,15 @@ void Notepad::create_options(wxNotebook* nb)
     parent_panel->SetSizer(sizer);
     nb->AddPage(parent_panel, _("Options"));
 
+    create_options_nl_comma(sizer);
+    create_options_nl_keywords(sizer);
+    create_options_nl_major_sections(sizer);
+    create_options_text(sizer);
+}
+
+
+void Notepad::create_options_nl_comma(wxSizer* sizer)
+{
     // Radio buttons - new lines in SELECT clause
     #define NUM_COMMA_NL_CHOICES (4)
     wxString sel_comma_nl_choices[NUM_COMMA_NL_CHOICES];
@@ -97,31 +106,44 @@ void Notepad::create_options(wxNotebook* nb)
     sel_comma_nl_choices[2] = _("After");
     sel_comma_nl_choices[3] = _("Use Config File");
 
-    sel_comma_nl = new wxRadioBox(parent_panel, -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, NUM_COMMA_NL_CHOICES, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
+    sel_comma_nl = new wxRadioBox(sizer->GetContainingWindow(), -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, NUM_COMMA_NL_CHOICES, sel_comma_nl_choices,1,wxRA_SPECIFY_COLS);
     sel_comma_nl->SetSelection(3);
     sizer->Add(sel_comma_nl,0,0,0);
+}
 
+
+void Notepad::create_options_nl_keywords(wxSizer* sizer)
+{
     // Check boxes for : OR , AND , SELECT
     wxStaticBoxSizer* nl_other_sizer = new wxStaticBoxSizer(
-                     new wxStaticBox(parent_panel, -1, _("New line:[other]"))
+                     new wxStaticBox(sizer->GetContainingWindow(), -1, _("New line:[other]"))
                      , wxVERTICAL);
     sizer->Add(nl_other_sizer,0,0,0);
 
-    add_newcheckbox(nl_after_select, parent_panel, nl_other_sizer, _("[select] after"), true);
-    add_newcheckbox(nl_before_or   , parent_panel, nl_other_sizer, _("[or] before")   , false);
-    add_newcheckbox(nl_after_or    , parent_panel, nl_other_sizer, _("[or] after")    , false);
-    add_newcheckbox(nl_before_and  , parent_panel, nl_other_sizer, _("[and] before")  , true);
-    add_newcheckbox(nl_after_and   , parent_panel, nl_other_sizer, _("[and] after")   , false);
+    add_newcheckbox(nl_use_config, sizer->GetContainingWindow(), nl_other_sizer, _("Use config"), true);
+    add_newcheckbox(nl_after_select, sizer->GetContainingWindow(), nl_other_sizer, _("[select] after"), true);
+    add_newcheckbox(nl_before_or   , sizer->GetContainingWindow(), nl_other_sizer, _("[or] before")   , false);
+    add_newcheckbox(nl_after_or    , sizer->GetContainingWindow(), nl_other_sizer, _("[or] after")    , false);
+    add_newcheckbox(nl_before_and  , sizer->GetContainingWindow(), nl_other_sizer, _("[and] before")  , true);
+    add_newcheckbox(nl_after_and   , sizer->GetContainingWindow(), nl_other_sizer, _("[and] after")   , false);
+}
 
+
+void Notepad::create_options_nl_major_sections(wxSizer* sizer)
+{
     wxString nl_major_sections_choices[3];
     nl_major_sections_choices[0] = _("Use Config File");
     nl_major_sections_choices[1] = _("1 New Line");
     nl_major_sections_choices[2] = _("2 New Lines");
-    nl_major_sections = new wxRadioBox(parent_panel, -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, nl_major_sections_choices,1,wxRA_SPECIFY_COLS);
+    nl_major_sections = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, nl_major_sections_choices,1,wxRA_SPECIFY_COLS);
     nl_major_sections->SetSelection(2);
     sizer->Add(nl_major_sections,0,0,0);
+}
 
-    add_newcheckbox(use_original_text, parent_panel, sizer, _("Use original keyword text"), false);
+
+void Notepad::create_options_text(wxSizer* sizer)
+{
+    add_newcheckbox(use_original_text, sizer->GetContainingWindow(), sizer, _("Use original keyword text"), false);
 
     // CASE settings
     wxString case_all_kw_choices[4];
@@ -129,11 +151,10 @@ void Notepad::create_options(wxNotebook* nb)
     case_all_kw_choices[1] = _("Upper (ABC)");
     case_all_kw_choices[2] = _("Lower (abc)");
     case_all_kw_choices[3] = _("Init (Abc)");
-    case_all_kw = new wxRadioBox(parent_panel, -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, case_all_kw_choices,1,wxRA_SPECIFY_COLS);
+    case_all_kw = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, case_all_kw_choices,1,wxRA_SPECIFY_COLS);
     case_all_kw->SetSelection(1);
     sizer->Add(case_all_kw,0,0,0);
 }
-
 
 
 void Notepad::create_textarea(wxSizer* parent)
