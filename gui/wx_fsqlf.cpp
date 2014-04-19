@@ -76,7 +76,7 @@ void Notepad::create_buttons(wxSizer* parent_sizer)
 
 
 
-void add_newcheckbox(wxCheckBox* var_checkbox, wxSizer* sizer, wxString title, bool default_val){
+void add_newcheckbox(wxCheckBox* &var_checkbox, wxSizer* sizer, wxString title, bool default_val){
     var_checkbox = new wxCheckBox(sizer->GetContainingWindow(), -1, title);
     var_checkbox->SetValue(default_val);
     sizer->Add(var_checkbox, 0, 0, 0);
