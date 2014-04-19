@@ -188,29 +188,31 @@ void Notepad::OnFormat(wxCommandEvent &event)
         case 2: cmd << wxT("  --select-comma-newline after")  ; break;
     }
 
-    switch( this->nl_after_select->GetValue() ){
-        case 0: cmd << wxT("  --select-newline-after 0") ; break;
-        case 1: cmd << wxT("  --select-newline-after 1") ; break;
-    }
+    if(this->nl_use_config->GetValue() == 0){
+        switch( this->nl_after_select->GetValue() ){
+            case 0: cmd << wxT("  --select-newline-after 0") ; break;
+            case 1: cmd << wxT("  --select-newline-after 1") ; break;
+        }
 
-    switch( this->nl_before_or->GetValue() ){
-        case 0: cmd << wxT("  --newline-or-before 0") ; break;
-        case 1: cmd << wxT("  --newline-or-before 1") ; break;
-    }
+        switch( this->nl_before_or->GetValue() ){
+            case 0: cmd << wxT("  --newline-or-before 0") ; break;
+            case 1: cmd << wxT("  --newline-or-before 1") ; break;
+        }
 
-    switch( this->nl_after_or->GetValue() ){
-        case 0: cmd << wxT("  --newline-or-after 0") ; break;
-        case 1: cmd << wxT("  --newline-or-after 1") ; break;
-    }
+        switch( this->nl_after_or->GetValue() ){
+            case 0: cmd << wxT("  --newline-or-after 0") ; break;
+            case 1: cmd << wxT("  --newline-or-after 1") ; break;
+        }
 
-    switch( this->nl_before_and->GetValue() ){
-        case 0: cmd << wxT("  --newline-and-before 0") ; break;
-        case 1: cmd << wxT("  --newline-and-before 1") ; break;
-    }
+        switch( this->nl_before_and->GetValue() ){
+            case 0: cmd << wxT("  --newline-and-before 0") ; break;
+            case 1: cmd << wxT("  --newline-and-before 1") ; break;
+        }
 
-    switch( this->nl_after_and->GetValue() ){
-        case 0: cmd << wxT("  --newline-and-after 0") ; break;
-        case 1: cmd << wxT("  --newline-and-after 1") ; break;
+        switch( this->nl_after_and->GetValue() ){
+            case 0: cmd << wxT("  --newline-and-after 0") ; break;
+            case 1: cmd << wxT("  --newline-and-after 1") ; break;
+        }
     }
 
     switch( this->nl_major_sections->GetSelection() ){
