@@ -47,7 +47,12 @@ class Notepad : public wxFrame {
     void create_options_text(wxSizer* sizer);
     void create_textarea(wxSizer* parent);
 
-    enum EventIds{ idSave = 1000, idOpen, idExit, idFormat, idUnformat, idCut, idCopy, idPaste, idSelectAll, idAbout, idMaxLen  };
+    enum EventIds{
+        idSave = 1000, idOpen, idExit, idAbout
+        , idFormat, idUnformat
+        , idCut, idCopy, idPaste, idSelectAll
+        , idMaxLen
+    };
 
     DECLARE_EVENT_TABLE()
 };
