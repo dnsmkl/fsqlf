@@ -37,6 +37,7 @@ class Notepad : public wxFrame {
     void OnSelectAll(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
     void OnMaxLen(wxCommandEvent &event);
+    void OnUseConfigNlOther(wxCommandEvent &event);
 
     void create_menubar();
     void create_buttons(wxSizer* parent_sizer);
@@ -52,6 +53,7 @@ class Notepad : public wxFrame {
         , idFormat, idUnformat
         , idCut, idCopy, idPaste, idSelectAll
         , idMaxLen
+        , idUseConfigNlOther
     };
 
     DECLARE_EVENT_TABLE()
@@ -76,6 +78,8 @@ BEGIN_EVENT_TABLE(Notepad, wxFrame)
     EVT_BUTTON(idUnformat, Notepad::OnUnformat)
 
     EVT_TEXT_MAXLEN(idMaxLen, Notepad::OnMaxLen)
+
+    EVT_CHECKBOX(idUseConfigNlOther, Notepad::OnUseConfigNlOther)
 END_EVENT_TABLE()
 
 

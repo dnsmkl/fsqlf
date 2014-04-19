@@ -76,9 +76,11 @@ void Notepad::create_buttons(wxSizer* parent_sizer)
 
 
 
-void add_newcheckbox(wxCheckBox* &var_checkbox, wxSizer* sizer, wxString title, bool default_val){
-    var_checkbox = new wxCheckBox(sizer->GetContainingWindow(), -1, title);
+void add_newcheckbox(wxCheckBox* &var_checkbox, wxSizer* sizer, wxString title, bool default_val
+        , bool enabled = true, int id = -1){
+    var_checkbox = new wxCheckBox(sizer->GetContainingWindow(), id, title);
     var_checkbox->SetValue(default_val);
+    if(!enabled) var_checkbox->Disable();
     sizer->Add(var_checkbox, 0, 0, 0);
 }
 
@@ -120,12 +122,12 @@ void Notepad::create_options_nl_keywords(wxSizer* sizer)
                      , wxVERTICAL);
     sizer->Add(nl_other_sizer,0,0,0);
 
-    add_newcheckbox(nl_use_config, nl_other_sizer, _("Use config"), true);
-    add_newcheckbox(nl_after_select, nl_other_sizer, _("[select] after"), true);
-    add_newcheckbox(nl_before_or   , nl_other_sizer, _("[or] before")   , false);
-    add_newcheckbox(nl_after_or    , nl_other_sizer, _("[or] after")    , false);
-    add_newcheckbox(nl_before_and  , nl_other_sizer, _("[and] before")  , true);
-    add_newcheckbox(nl_after_and   , nl_other_sizer, _("[and] after")   , false);
+    add_newcheckbox(nl_use_config, nl_other_sizer, _("Use config"), true, true, idUseConfigNlOther);
+    add_newcheckbox(nl_after_select, nl_other_sizer, _("[select] after"), true , false);
+    add_newcheckbox(nl_before_or   , nl_other_sizer, _("[or] before")   , false, false);
+    add_newcheckbox(nl_after_or    , nl_other_sizer, _("[or] after")    , false, false);
+    add_newcheckbox(nl_before_and  , nl_other_sizer, _("[and] before")  , true , false);
+    add_newcheckbox(nl_after_and   , nl_other_sizer, _("[and] after")   , false, false);
 }
 
 
@@ -303,4 +305,22 @@ void Notepad::OnAbout(wxCommandEvent &event){
     info.SetCopyright(_T("(C) 2011,2012,2013,2014  Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
     info.SetLicence(_( LICENSE_TEXT ));
     wxAboutBox(info);
+}
+
+
+void Notepad::OnUseConfigNlOther( wxCommandEvent &event ){
+    if(event.IsChecked()){
+        this->nl_after_select->Disable();
+        this->nl_before_or->Disable();
+        this->nl_after_or->Disable();
+        this->nl_before_and->Disable();
+        this->nl_after_and->Disable();
+    }
+    else{
+        this->nl_after_select->Enable();
+        this->nl_before_or->Enable();
+        this->nl_after_or->Enable();
+        this->nl_before_and->Enable();
+        this->nl_after_and->Enable();
+    }
 }
