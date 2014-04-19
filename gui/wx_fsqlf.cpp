@@ -103,13 +103,13 @@ void Notepad::create_options_nl_comma(wxSizer* sizer)
     // Radio buttons - new lines in SELECT clause
     #define NUM_COMMA_NL_CHOICES (4)
     wxString choices[NUM_COMMA_NL_CHOICES];
-    choices[0] = _("None");
+    choices[0] = _("Use Config File");
     choices[1] = _("Before");
     choices[2] = _("After");
-    choices[3] = _("Use Config File");
+    choices[3] = _("None");
 
     sel_comma_nl = new wxRadioBox(sizer->GetContainingWindow(), -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, NUM_COMMA_NL_CHOICES, choices,1,wxRA_SPECIFY_COLS);
-    sel_comma_nl->SetSelection(3);
+    sel_comma_nl->SetSelection(0);
     sizer->Add(sel_comma_nl,0,0,0);
 }
 
@@ -185,9 +185,9 @@ void Notepad::OnFormat(wxCommandEvent &event)
     wxString cmd;
     cmd = wxT( EXECUTION_PREFIX EXECUTABLE_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE );
     switch( this->sel_comma_nl->GetSelection() ){
-        case 0: cmd << wxT("  --select-comma-newline none")   ; break;
         case 1: cmd << wxT("  --select-comma-newline before") ; break;
         case 2: cmd << wxT("  --select-comma-newline after")  ; break;
+        case 3: cmd << wxT("  --select-comma-newline none")   ; break;
     }
 
     if(this->nl_use_config->GetValue() == 0){
