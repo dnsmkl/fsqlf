@@ -49,7 +49,7 @@ class Notepad : public wxFrame {
     void create_textarea(wxSizer* parent);
 
     enum EventIds{
-        idSave = 1000, idOpen, idExit, idAbout
+        idSave = wxID_HIGHEST, idOpen, idExit, idAbout
         , idFormat, idUnformat
         , idCut, idCopy, idPaste, idSelectAll
         , idMaxLen
