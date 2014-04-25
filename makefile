@@ -45,17 +45,18 @@ $(EXEC_CLI):$(LEX_OUTPUT)
 	$(CC) $(CCFLAGS)  $<   -o $@
 	strip $@
 
-$(EXEC_GUI): wx_fsqlf.o  dnd_target.o   | $(EXEC_CLI)
-	$(CXX)  wx_fsqlf.o  dnd_target.o  -o $@  $(CXXFLAGS)
+$(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
+	$(CXX)  wx_fsqlf.o  basic_notepad.o  dnd_target.o -o $@  $(CXXFLAGS)
 	strip $@
-	rm *.o
 
 wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/license_text.h
 	$(CXX)  -c gui/wx_fsqlf.cpp  $(CXXFLAGS)
 
+basic_notepad.o: gui/basic_notepad.cpp gui/basic_notepad.hpp gui/dnd_target.hpp
+	$(CXX)  -c gui/basic_notepad.cpp  $(CXXFLAGS)
+
 dnd_target.o: gui/dnd_target.cpp gui/dnd_target.hpp
 	$(CXX)  -c gui/dnd_target.cpp  $(CXXFLAGS)
-
 
 LICENSE_TEXT=gui/license_text.h
 $(LICENSE_TEXT): LICENSE
@@ -105,6 +106,7 @@ zip: tmp_folder $(CONF_FILE)
 
 tmp_folder: LICENSE README.md
 	make prep_bin
+	make clean
 	make prep_bin WIN=1
 	cp    -t tmp/$(PROJECTFOLDER)   $^
 

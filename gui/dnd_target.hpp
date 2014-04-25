@@ -5,14 +5,20 @@
 #include <wx/dnd.h>
 
 
-
-class dnd_target : public wxFileDropTarget{
+// Drag and drop target
+// Note:
+// Notepad it self can not ingerit from wxFileDropTarget
+// because this causes segfault at exit
+// (See also: http://stackoverflow.com/a/7096992/788634)
+class DndTarget: public wxFileDropTarget
+{
     private:
     wxTextCtrl* text_area;
-    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
+    bool OnDropFiles(wxCoord x, wxCoord y
+        , const wxArrayString &filenames);
 
     public:
-    dnd_target(wxTextCtrl* text_area);
+    DndTarget(wxTextCtrl* text_area);
 };
 
 

@@ -1,5 +1,5 @@
 #include "wx_fsqlf.hpp"
-#include "dnd_target.hpp"
+
 
 // define version if it was not passed as an argument in compilation command
 #ifndef VERSION
@@ -7,84 +7,58 @@
 #endif
 
 
-
-Notepad::Notepad() : wxFrame(NULL, wxID_ANY, wxT("wx Free SQL Formatter"), wxDefaultPosition, wxSize(650,500))
+enum EventIds
 {
+    idFormat = wxID_HIGHEST
+    ,idUnformat
+    ,idUseConfigNlOther
+};
+
+
+BEGIN_EVENT_TABLE(FsqlfGui, BasicNotepad)
+    EVT_BUTTON(idFormat, FsqlfGui::onFormat)
+    EVT_BUTTON(idUnformat, FsqlfGui::onUnformat)
+
+    EVT_MENU(idFormat    , FsqlfGui::onFormat)
+    EVT_MENU(idUnformat  , FsqlfGui::onUnformat)
+
+    EVT_CHECKBOX(idUseConfigNlOther, FsqlfGui::onUseConfigNlOther)
+END_EVENT_TABLE()
+
+
+#define TITLE "wx Free SQL Formatter"
+
+
+FsqlfGui::FsqlfGui(): BasicNotepad(_(TITLE))
+{
+    wxNotebook* nb = new wxNotebook(this, wxID_ANY);
     wxBoxSizer* sizerh = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* left_sizer = new wxBoxSizer(wxVERTICAL);
-    wxNotebook* nb = new wxNotebook( this, wxID_ANY);
 
     this->SetSizer(sizerh);
     sizerh->Add(left_sizer,0,0,0);
-    Notepad::create_buttons(left_sizer);
+
+    FsqlfGui::create_buttons(left_sizer);
+    FsqlfGui::create_textarea(sizerh);
+
     left_sizer->Add(nb,0,0,0);
-    Notepad::create_options(nb);
-    Notepad::create_menubar();
-    Notepad::create_textarea(sizerh);
+    FsqlfGui::create_options(nb);
 
-    // drag and drop support
-    dnd_target* drop_target = new dnd_target(this->text_area);
-    this->text_area->SetDropTarget(drop_target);
-
-    SetIcon(wxIcon(fsqlf_right));
+    this->edit_menu->AppendSeparator();
+    this->edit_menu->Append(idFormat, _("&Format\tCtrl-F"));
+    this->edit_menu->Append(idUnformat, _("&Unformat\tCtrl-U"));
 }
 
 
-
-void Notepad::create_menubar()
+void FsqlfGui::create_buttons(wxSizer* parent_sizer)
 {
-    wxMenuBar* menu;
-    wxMenu* file;
-    wxMenu* edit;
-    wxMenu* help;
-
-    menu = new wxMenuBar();
-    file = new wxMenu();
-    edit = new wxMenu();
-    help = new wxMenu();
-
-    menu->Append(file, wxT("&File"));
-    menu->Append(edit, wxT("&Edit"));
-    menu->Append(help, wxT("&Help"));
-
-    file->Append(idSave, wxT("&Save File\tCtrl-S"));
-    file->Append(idOpen, wxT("&Open File\tCtrl-O"));
-    file->AppendSeparator();
-    file->Append(idExit, wxT("E&xit\tAlt-F4"));
-
-    edit->Append(idCut   , wxT("Cu&t\tCtrl-X"));
-    edit->Append(idCopy  , wxT("&Copy\tCtrl-C"));
-    edit->Append(idPaste , wxT("&Paste\tCtrl-V"));
-    edit->AppendSeparator();
-    edit->Append(idSelectAll, wxT("Select &All\tCtrl-A"));
-    edit->AppendSeparator();
-    edit->Append(idFormat, wxT("&Format\tCtrl-F"));
-    edit->Append(idUnformat, wxT("&Unformat\tCtrl-U"));
-
-    help->Append(idAbout, wxT("&About...\tAlt-F1"));
-
-    this->SetMenuBar(menu);
+    wxWindow* window = parent_sizer->GetContainingWindow();
+    parent_sizer->Add(new wxButton(window, idFormat, _("Format")), 0, 0, 0);
+    parent_sizer->Add(new wxButton(window, idUnformat, _("Unformat")), 0, 0, 0);
 }
 
 
-
-void Notepad::create_buttons(wxSizer* parent_sizer)
-{
-    parent_sizer->Add(new wxButton(parent_sizer->GetContainingWindow(), idFormat, wxT("Format")), 0, 0, 0);
-    parent_sizer->Add(new wxButton(parent_sizer->GetContainingWindow(), idUnformat, wxT("Unformat")), 0, 0, 0);
-}
-
-
-
-void add_newcheckbox(wxCheckBox* &var_checkbox, wxSizer* sizer, wxString title, bool default_val
-        , bool enabled = true, int id = -1){
-    var_checkbox = new wxCheckBox(sizer->GetContainingWindow(), id, title);
-    var_checkbox->SetValue(default_val);
-    if(!enabled) var_checkbox->Disable();
-    sizer->Add(var_checkbox, 0, 0, 0);
-}
-
-void Notepad::create_options(wxNotebook* nb)
+void FsqlfGui::create_options(wxNotebook* nb)
 {
     wxPanel* parent_panel = new wxPanel(nb);
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
@@ -98,7 +72,20 @@ void Notepad::create_options(wxNotebook* nb)
 }
 
 
-void Notepad::create_options_nl_comma(wxSizer* sizer)
+void add_newcheckbox(wxCheckBox* &result_checkbox
+    , wxSizer* parent_sizer
+    , wxString title
+    , bool default_val
+    , bool enabled = true, int id = -1)
+{
+    result_checkbox = new wxCheckBox(parent_sizer->GetContainingWindow(), id, title);
+    result_checkbox->SetValue(default_val);
+    if( !enabled ) result_checkbox->Disable();
+    parent_sizer->Add(result_checkbox, 0, 0, 0);
+}
+
+
+void FsqlfGui::create_options_nl_comma(wxSizer* parent_sizer)
 {
     // Radio buttons - new lines in SELECT clause
     #define NUM_COMMA_NL_CHOICES (4)
@@ -108,44 +95,50 @@ void Notepad::create_options_nl_comma(wxSizer* sizer)
     choices[2] = _("After");
     choices[3] = _("None");
 
-    sel_comma_nl = new wxRadioBox(sizer->GetContainingWindow(), -1, _("New line:[comma]"), wxDefaultPosition, wxDefaultSize, NUM_COMMA_NL_CHOICES, choices,1,wxRA_SPECIFY_COLS);
+    sel_comma_nl = new wxRadioBox(parent_sizer->GetContainingWindow(), wxID_ANY
+        , _("New line:[comma]"), wxDefaultPosition, wxDefaultSize
+        , NUM_COMMA_NL_CHOICES, choices, 1, wxRA_SPECIFY_COLS);
     sel_comma_nl->SetSelection(0);
-    sizer->Add(sel_comma_nl,0,0,0);
+    parent_sizer->Add(sel_comma_nl,0,0,0);
 }
 
 
-void Notepad::create_options_nl_keywords(wxSizer* sizer)
+void FsqlfGui::create_options_nl_keywords(wxSizer* parent_sizer)
 {
     // Check boxes for : OR , AND , SELECT
-    wxStaticBoxSizer* nl_other_sizer = new wxStaticBoxSizer(
-                     new wxStaticBox(sizer->GetContainingWindow(), -1, _("New line:[other]"))
-                     , wxVERTICAL);
-    sizer->Add(nl_other_sizer,0,0,0);
+    wxStaticBox * box = new wxStaticBox(parent_sizer->GetContainingWindow()
+        , wxID_ANY, _("New line:[other]"));
+    wxStaticBoxSizer* sizer = new wxStaticBoxSizer(box, wxVERTICAL);
+    parent_sizer->Add(sizer,0,0,0);
 
-    add_newcheckbox(nl_use_config, nl_other_sizer, _("Use config"), true, true, idUseConfigNlOther);
-    add_newcheckbox(nl_after_select, nl_other_sizer, _("[select] after"), true , false);
-    add_newcheckbox(nl_before_or   , nl_other_sizer, _("[or] before")   , false, false);
-    add_newcheckbox(nl_after_or    , nl_other_sizer, _("[or] after")    , false, false);
-    add_newcheckbox(nl_before_and  , nl_other_sizer, _("[and] before")  , true , false);
-    add_newcheckbox(nl_after_and   , nl_other_sizer, _("[and] after")   , false, false);
+    add_newcheckbox(nl_use_config  , sizer, _("Use config")    , true , true
+        , idUseConfigNlOther);
+    add_newcheckbox(nl_after_select, sizer, _("[select] after"), true , false);
+    add_newcheckbox(nl_before_or   , sizer, _("[or] before")   , false, false);
+    add_newcheckbox(nl_after_or    , sizer, _("[or] after")    , false, false);
+    add_newcheckbox(nl_before_and  , sizer, _("[and] before")  , true , false);
+    add_newcheckbox(nl_after_and   , sizer, _("[and] after")   , false, false);
 }
 
 
-void Notepad::create_options_nl_major_sections(wxSizer* sizer)
+void FsqlfGui::create_options_nl_major_sections(wxSizer* parent_sizer)
 {
-    wxString choices[3];
+    #define NUM_CHOICES (3)
+    wxString choices[NUM_CHOICES];
     choices[0] = _("Use Config File");
     choices[1] = _("1 New Line");
     choices[2] = _("2 New Lines");
-    nl_major_sections = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Major sections"), wxDefaultPosition, wxDefaultSize, 3, choices,1,wxRA_SPECIFY_COLS);
+    nl_major_sections = new wxRadioBox(parent_sizer->GetContainingWindow(), wxID_ANY
+        , _("Major sections"), wxDefaultPosition, wxDefaultSize
+        , NUM_CHOICES, choices, 1, wxRA_SPECIFY_COLS);
     nl_major_sections->SetSelection(0);
-    sizer->Add(nl_major_sections,0,0,0);
+    parent_sizer->Add(nl_major_sections,0,0,0);
 }
 
 
-void Notepad::create_options_text(wxSizer* sizer)
+void FsqlfGui::create_options_text(wxSizer* parent_sizer)
 {
-    add_newcheckbox(use_original_text, sizer, _("Use original keyword text"), false);
+    add_newcheckbox(use_original_text, parent_sizer, _("Use original keyword text"), false);
 
     // CASE settings
     wxString choices[4];
@@ -153,170 +146,141 @@ void Notepad::create_options_text(wxSizer* sizer)
     choices[1] = _("Upper (ABC)");
     choices[2] = _("Lower (abc)");
     choices[3] = _("Init (Abc)");
-    case_all_kw = new wxRadioBox(sizer->GetContainingWindow(), -1, _("Keyword case"), wxDefaultPosition, wxDefaultSize, 4, choices,1,wxRA_SPECIFY_COLS);
+    case_all_kw = new wxRadioBox(parent_sizer->GetContainingWindow(), wxID_ANY
+        , _("Keyword case"), wxDefaultPosition, wxDefaultSize
+        , 4, choices, 1, wxRA_SPECIFY_COLS);
     case_all_kw->SetSelection(1);
-    sizer->Add(case_all_kw,0,0,0);
+    parent_sizer->Add(case_all_kw,0,0,0);
 }
 
 
-void Notepad::create_textarea(wxSizer* parent)
-{
-    this->text_area = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE);
-    this->text_area->SetFont(wxFont(10, wxTELETYPE, wxNORMAL, wxNORMAL));
-    parent->Add(this->text_area,1,wxEXPAND,0);
-}
-
-
-
-void Notepad::OnFormat(wxCommandEvent &event)
+void FsqlfGui::onFormat(wxCommandEvent &event)
 {
     this->original_text = this->text_area->GetValue();
     #ifdef _WIN32
-        #define EXECUTABLE_FILE "fsqlf.exe"
-        #define EXECUTION_PREFIX
+        #define EXEC_FILE "fsqlf.exe"
+        #define EXEC_PREFIX
     #else
-        #define EXECUTABLE_FILE "fsqlf"
-        #define EXECUTION_PREFIX "./"
+        #define EXEC_FILE "fsqlf"
+        #define EXEC_PREFIX "./"
     #endif
 
     #define TMP_INPUT_FILE  "tmp_fsqlf_in.txt"
     #define TMP_OUTPUT_FILE "tmp_fsqlf_out.txt"
 
     wxString cmd;
-    cmd = wxT( EXECUTION_PREFIX EXECUTABLE_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE );
+    cmd = _(EXEC_PREFIX EXEC_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE);
     switch( this->sel_comma_nl->GetSelection() ){
-        case 1: cmd << wxT("  --select-comma-newline before") ; break;
-        case 2: cmd << wxT("  --select-comma-newline after")  ; break;
-        case 3: cmd << wxT("  --select-comma-newline none")   ; break;
+        case 1: cmd << _("  --select-comma-newline before") ; break;
+        case 2: cmd << _("  --select-comma-newline after")  ; break;
+        case 3: cmd << _("  --select-comma-newline none")   ; break;
     }
 
-    if(this->nl_use_config->GetValue() == 0){
-        switch( this->nl_after_select->GetValue() ){
-            case 0: cmd << wxT("  --select-newline-after 0") ; break;
-            case 1: cmd << wxT("  --select-newline-after 1") ; break;
+    if( this->nl_use_config->GetValue() == 0 )
+    {
+        switch( this->nl_after_select->GetValue() )
+        {
+            case 0: cmd << _("  --select-newline-after 0") ; break;
+            case 1: cmd << _("  --select-newline-after 1") ; break;
         }
 
-        switch( this->nl_before_or->GetValue() ){
-            case 0: cmd << wxT("  --newline-or-before 0") ; break;
-            case 1: cmd << wxT("  --newline-or-before 1") ; break;
+        switch( this->nl_before_or->GetValue() )
+        {
+            case 0: cmd << _("  --newline-or-before 0") ; break;
+            case 1: cmd << _("  --newline-or-before 1") ; break;
         }
 
-        switch( this->nl_after_or->GetValue() ){
-            case 0: cmd << wxT("  --newline-or-after 0") ; break;
-            case 1: cmd << wxT("  --newline-or-after 1") ; break;
+        switch( this->nl_after_or->GetValue() )
+        {
+            case 0: cmd << _("  --newline-or-after 0") ; break;
+            case 1: cmd << _("  --newline-or-after 1") ; break;
         }
 
-        switch( this->nl_before_and->GetValue() ){
-            case 0: cmd << wxT("  --newline-and-before 0") ; break;
-            case 1: cmd << wxT("  --newline-and-before 1") ; break;
+        switch( this->nl_before_and->GetValue() )
+        {
+            case 0: cmd << _("  --newline-and-before 0") ; break;
+            case 1: cmd << _("  --newline-and-before 1") ; break;
         }
 
-        switch( this->nl_after_and->GetValue() ){
-            case 0: cmd << wxT("  --newline-and-after 0") ; break;
-            case 1: cmd << wxT("  --newline-and-after 1") ; break;
+        switch( this->nl_after_and->GetValue() )
+        {
+            case 0: cmd << _("  --newline-and-after 0") ; break;
+            case 1: cmd << _("  --newline-and-after 1") ; break;
         }
     }
 
-    switch( this->nl_major_sections->GetSelection() ){
+    switch( this->nl_major_sections->GetSelection() )
+    {
         case 0: break;
-        case 1: cmd << wxT("  --newline-major-sections 1") ; break;
-        case 2: cmd << wxT("  --newline-major-sections 2")  ; break;
+        case 1: cmd << _("  --newline-major-sections 1") ; break;
+        case 2: cmd << _("  --newline-major-sections 2")  ; break;
     }
 
-    switch( this->use_original_text->GetValue() ){
-        case 0: cmd << wxT("  --keyword-text default")  ; break;
-        case 1: cmd << wxT("  --keyword-text original") ; break;
+    switch( this->use_original_text->GetValue() )
+    {
+        case 0: cmd << _("  --keyword-text default")  ; break;
+        case 1: cmd << _("  --keyword-text original") ; break;
     }
 
-    switch( this->case_all_kw->GetSelection() ){
-        case 0: cmd << wxT("  --keyword-case none")    ; break;
-        case 1: cmd << wxT("  --keyword-case upper")   ; break;
-        case 2: cmd << wxT("  --keyword-case lower")   ; break;
-        case 3: cmd << wxT("  --keyword-case initcap") ; break;
+    switch( this->case_all_kw->GetSelection() )
+    {
+        case 0: cmd << _("  --keyword-case none")    ; break;
+        case 1: cmd << _("  --keyword-case upper")   ; break;
+        case 2: cmd << _("  --keyword-case lower")   ; break;
+        case 3: cmd << _("  --keyword-case initcap") ; break;
     }
 
     wxDir dir(wxGetCwd());
-    if(  !dir.HasFiles(wxT(EXECUTABLE_FILE))  )
+    if( !dir.HasFiles(_(EXEC_FILE)) )
     {
-        wxMessageBox(wxT("Formatter executable file not found: " EXECUTABLE_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+        wxMessageBox(_("Formatter executable file not found: " EXEC_FILE)
+            , _("Error")
+            , wxOK | wxICON_INFORMATION, this);
         return;
     }
 
-    this->text_area->SaveFile(wxT(TMP_INPUT_FILE));
+    this->text_area->SaveFile(_(TMP_INPUT_FILE));
 
     if( system(cmd.mb_str()) )
     {   // non zero status
-        wxMessageBox(cmd << wxT("\n returned non zero code"),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+        wxMessageBox(cmd << _("\n returned non zero code")
+            , _("Error")
+            , wxOK | wxICON_INFORMATION, this);
         return;
     }
-    this->text_area->LoadFile(wxT(TMP_OUTPUT_FILE));
+    this->text_area->LoadFile(_(TMP_OUTPUT_FILE));
 
-    if( !wxRemoveFile(wxT(TMP_INPUT_FILE))  ) wxMessageBox(wxT("Failed to remove temporary file " TMP_INPUT_FILE),wxT("Error") , wxOK | wxICON_INFORMATION, this);
-    if( !wxRemoveFile(wxT(TMP_OUTPUT_FILE)) ) wxMessageBox(wxT("Failed to remove temporary file " TMP_OUTPUT_FILE),wxT("Error"), wxOK | wxICON_INFORMATION, this);
+    if( !wxRemoveFile(_(TMP_INPUT_FILE))  )
+        wxMessageBox(_("Failed to remove temporary file " TMP_INPUT_FILE)
+            ,_("Error")
+            , wxOK | wxICON_INFORMATION, this);
+    if( !wxRemoveFile(_(TMP_OUTPUT_FILE)) )
+        wxMessageBox(_("Failed to remove temporary file " TMP_OUTPUT_FILE)
+            , _("Error")
+            , wxOK | wxICON_INFORMATION, this);
 }
 
 
-
-void Notepad::OnSave( wxCommandEvent &event ){
-    wxFileDialog *saveDialog = new wxFileDialog(this, wxT("Save File~"), wxT(""), wxT(""), wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxSAVE);
-    if( wxID_OK == saveDialog->ShowModal() ) this->text_area->SaveFile(saveDialog->GetPath());
-}
-
-
-void Notepad::OnOpen( wxCommandEvent &event ){
-    wxFileDialog *openDialog = new wxFileDialog(this, wxT("Open File~"), wxT(""), wxT(""), wxT("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxOPEN);
-    if( wxID_OK == openDialog->ShowModal() ) this->text_area->LoadFile(openDialog->GetPath());
-}
-
-
-void Notepad::OnUnformat(wxCommandEvent &event){
+void FsqlfGui::onUnformat(wxCommandEvent &event)
+{
     if(this->original_text.IsEmpty()) return; // prevent deletion of everything
     this->text_area->Clear();
     this->text_area->SetValue(this->original_text);
 }
 
-void Notepad::OnCut(wxCommandEvent &event){
-    this->text_area->Cut();
-}
 
-void Notepad::OnCopy(wxCommandEvent &event){
-    this->text_area->Copy();
-}
-
-void Notepad::OnPaste(wxCommandEvent &event){
-    this->text_area->Paste();
-}
-
-void Notepad::OnSelectAll(wxCommandEvent &event){
-    this->text_area->SetSelection(-1, -1);
-}
-
-void Notepad::OnMaxLen(wxCommandEvent &event){
-    new wxMessageDialog(this, _("Maximum Limit Reached"), _(""), wxOK|wxCENTRE );
-}
-
-
-
-void Notepad::OnAbout(wxCommandEvent &event){
-    wxAboutDialogInfo info;
-    info.SetName(_("Free SQL Formatter"));
-    info.SetVersion(_(VERSION));
-    info.SetDescription(_T("Free SQL Formatter beautifies SQL code. It is particularly useful in case one has to deal with machine generated SQL code"));
-    info.SetCopyright(_T("(C) 2011,2012,2013,2014  Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
-    info.SetLicence(_( LICENSE_TEXT ));
-    wxAboutBox(info);
-}
-
-
-void Notepad::OnUseConfigNlOther( wxCommandEvent &event ){
-    if(event.IsChecked()){
+void FsqlfGui::onUseConfigNlOther(wxCommandEvent &event)
+{
+    if(event.IsChecked())
+    {
         this->nl_after_select->Disable();
         this->nl_before_or->Disable();
         this->nl_after_or->Disable();
         this->nl_before_and->Disable();
         this->nl_after_and->Disable();
     }
-    else{
+    else
+    {
         this->nl_after_select->Enable();
         this->nl_before_or->Enable();
         this->nl_after_or->Enable();
