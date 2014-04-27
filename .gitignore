@@ -7,9 +7,10 @@ fsqlf.exe
 wx_fsqlf
 wx_fsqlf.exe
 
-# Generated code
+# Generated files
 core/lex.yy.c
 gui/license_text.h
+*.o
 
 
 #editor stuff
