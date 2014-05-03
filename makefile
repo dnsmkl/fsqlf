@@ -15,7 +15,9 @@ EXEC_CLI=fsqlf.exe
 EXEC_GUI=wx_fsqlf.exe
 CC=i586-mingw32msvc-gcc
 CXX=i586-mingw32msvc-g++
-CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`          `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+LDFLAGS+=  `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`
+# CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`          `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
 # -mthreads needs to be removed , so mingwm10.dll would not be needed (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else
 OS_TARGET=linux
@@ -24,7 +26,9 @@ EXEC_GUI=wx_fsqlf
 CC=gcc
 CCFLAGS=-m32 -Wall
 CXX=g++
-CXXFLAGS+= `wx-config --cxxflags`   `wx-config --libs`
+CXXFLAGS+= `wx-config --cxxflags`
+LDFLAGS+=  `wx-config --libs`
+# CXXFLAGS+= `wx-config --cxxflags`   `wx-config --libs`
 endif
 
 
@@ -46,7 +50,7 @@ $(EXEC_CLI):$(LEX_OUTPUT)
 	strip $@
 
 $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
-	$(CXX)  wx_fsqlf.o  basic_notepad.o  dnd_target.o -o $@  $(CXXFLAGS)
+	$(CXX)  wx_fsqlf.o  basic_notepad.o  dnd_target.o -o $@  $(CXXFLAGS) $(LDFLAGS)
 	strip $@
 
 wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/license_text.h
