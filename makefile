@@ -118,3 +118,15 @@ tmp_folder: LICENSE README.md
 prep_bin:   $(EXEC_CLI) $(EXEC_GUI) $(CONF_FILE)
 	mkdir -p tmp/$(PROJECTFOLDER)/$(OS_TARGET)
 	cp    -t tmp/$(PROJECTFOLDER)/$(OS_TARGET)    $^
+
+
+# makefile reference
+# $@ - target
+# $+ - all prerequisites
+# $^ - all prerequisites, but list each name only once
+# $< - first prerequisite
+# $? - all prerequisites newer then target
+# $| - order only prerequisites
+#
+# See also:
+# http://www.gnu.org/software/make/manual/make.html#Automatic-Variables
