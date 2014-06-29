@@ -88,6 +88,7 @@ INSERTINTO (?i:(ins|insert){SPACE}+into)
 UPDATE (?i:upd|update)
 SET (?i:set)
 DELETEFROM (?i:(del|delete){SPACE}+from)
+DELETE (?i:(del|delete))
 
 
 %option noyywrap nounput noinput
@@ -98,6 +99,7 @@ DELETEFROM (?i:(del|delete){SPACE}+from)
 %%
 
 {DELETEFROM}  { BEGIN_STATE(stDELETE);kw_print(yyout,yytext,kw_deletefrom); }
+{DELETE}      { BEGIN_STATE(stDELETE);kw_print(yyout,yytext,kw_deletefrom); }
 {INSERTINTO}  { BEGIN_STATE(stINSERT);kw_print(yyout,yytext,kw_insertinto); }
 {UPDATE}      { BEGIN_STATE(stUPDATE);kw_print(yyout,yytext,kw_update); }
 <stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);kw_print(yyout,yytext,kw_set); }
