@@ -41,7 +41,7 @@ $(EXEC_CLI): core/lex.yy.c
 	strip $@
 
 core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.h core/*.def)
-	flex  $<  -o $@
+	flex  -o $@  $< # options (i.e. `-o`) has to be before input file
 
 $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
 	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)
