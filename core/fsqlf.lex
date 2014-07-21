@@ -81,7 +81,7 @@ COMMENT_ML_PART1 [^*]+
 COMMENT_ML_PART2 [*]+[^/]
 COMMENT_ML_END   [*]+[/]
 
-STRING (['][^']*['])+
+STRING ([xX]?['][^']*['])+
 SEMICOLON ;
 
 INSERTINTO (?i:(ins|insert){SPACE}+into)
