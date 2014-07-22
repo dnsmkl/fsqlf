@@ -47,10 +47,10 @@ $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
 	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)
 	strip $@
 
-wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/license_text.h  gui/basic_notepad.hpp
+wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/basic_notepad.hpp
 	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
 
-basic_notepad.o: gui/basic_notepad.cpp  gui/basic_notepad.hpp  gui/dnd_target.hpp
+basic_notepad.o: gui/basic_notepad.cpp  gui/basic_notepad.hpp  gui/dnd_target.hpp  gui/license_text.h
 	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
 
 dnd_target.o: gui/dnd_target.cpp  gui/dnd_target.hpp
