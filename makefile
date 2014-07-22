@@ -47,14 +47,15 @@ $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
 	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)
 	strip $@
 
+# generic rule for C++ building
+CXXOBJ = wx_fsqlf.o basic_notepad.o dnd_target.o
+
+$(CXXOBJ): %.o: gui/%.cpp
+	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
+
 wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/basic_notepad.hpp
-	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
-
 basic_notepad.o: gui/basic_notepad.cpp  gui/basic_notepad.hpp  gui/dnd_target.hpp  gui/license_text.h
-	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
-
 dnd_target.o: gui/dnd_target.cpp  gui/dnd_target.hpp
-	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
 
 gui/license_text.h: LICENSE
 	tools/text_to_header.sh  $<  $@
