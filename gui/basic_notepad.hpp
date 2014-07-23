@@ -3,9 +3,6 @@
 
 #include <wx/wx.h>
 
-#include "fsqlf_right.xpm"
-#include "license_text.h"
-
 #include "dnd_target.hpp"
 
 

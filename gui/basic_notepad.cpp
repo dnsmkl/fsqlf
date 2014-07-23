@@ -2,6 +2,9 @@
 
 #include "basic_notepad.hpp"
 
+#include "fsqlf_right.xpm"
+#include "license_text.h"
+
 
 enum EventIds
 {
