@@ -32,7 +32,7 @@ char * state_to_char(int);
 
 
 DIGIT   [0-9]
-NUMBER  {DIGIT}+([.]{DIGIT}+)?
+NUMBER  {DIGIT}+([.]{DIGIT}+)?([eE][+-]?{DIGIT}+)?
 ID      [A-Za-z_][A-Za-z0-9_]*
 SPACE   [ \t\n]
 DBOBJECT    ({ID}[.]){0,2}{ID}
