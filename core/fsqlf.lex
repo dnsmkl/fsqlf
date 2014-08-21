@@ -31,7 +31,8 @@ char * state_to_char(int);
 
 // YY_USER_INIT is lex macro executed before initialising parser
 #define YY_USER_INIT \
-    int_stack_init(&state_stack);
+    int_stack_init(&state_stack); \
+    pair_stack_init(&sub_openings);
 %}
 
 
