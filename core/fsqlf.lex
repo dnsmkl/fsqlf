@@ -12,6 +12,10 @@ Helped to learn about flex a bit
 #include "settings.h"
 void debug_stchange(int);
 void debug_match(char*);
+
+#define ITEM_T int
+#include "stack.h"
+int_stack state_stack;
 }
 
 
@@ -22,12 +26,12 @@ char * state_to_char(int);
 
 
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
-#define PUSH_STATE(NEWSTATE)  push_stack(YY_START); /*printf("\nPUSH");*/ BEGIN_STATE(NEWSTATE);
-#define POP_STATE(); /*printf("\nPOP");*/ BEGIN_STATE(peek_stack()); pop_stack();
+#define PUSH_STATE(NEWSTATE)  int_stack_push(&state_stack, YY_START); BEGIN_STATE(NEWSTATE);
+#define POP_STATE(); BEGIN_STATE(int_stack_peek(&state_stack)); int_stack_pop(&state_stack);
 
 // YY_USER_INIT is lex macro executed before initialising parser
-#define YY_USER_INIT
-
+#define YY_USER_INIT \
+    int_stack_init(&state_stack);
 %}
 
 
@@ -158,13 +162,13 @@ DELETE (?i:(del|delete))
 <stINSCOLLIST>{COMMA}    { kw_print(yyout,yytext,kw_comma_ins ); }
 <stINSCOLLIST>{RIGHTP}   { POP_STATE();              kw_print(yyout,yytext,kw_right_p_ins ); };
 
-<stP_SUB>{LEFTP}                      { BEGIN_STATE(peek_stack()); kw_print(yyout,yytext,kw_left_p    ); PUSH_STATE(stP_SUB);  };
+<stP_SUB>{LEFTP}                      { BEGIN_STATE(int_stack_peek(&state_stack)); kw_print(yyout,yytext,kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     kw_print(yyout,"(",kw_left_p_sub); kw_print(yyout,yytext,kw_select);};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
-    if( peek_stack() == stFROM
-        || peek_stack() == stJOIN )
-    { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext);}
+    if( int_stack_peek(&state_stack) == stFROM
+        || int_stack_peek(&state_stack) == stJOIN )
+    { BEGIN_STATE(int_stack_peek(&state_stack)); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext);}
     else
     { BEGIN_STATE(stIN_CONSTLIST); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext); }
     };
@@ -173,7 +177,7 @@ DELETE (?i:(del|delete))
 <stP_SUB>{COMMENT_ONE_LINE}           { echo_print(yyout,""); echo_print(yyout,yytext);};
 <stP_SUB>{SPACE}                      { echo_print(yyout,""); };
 <stP_SUB>{RIGHTP}                     { kw_print(yyout,"(",kw_left_p    ); POP_STATE(); kw_print(yyout,yytext,kw_right_p); }
-<stP_SUB>.                            { BEGIN_STATE(peek_stack()); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext); };
+<stP_SUB>.                            { BEGIN_STATE(int_stack_peek(&state_stack)); kw_print(yyout,"(",kw_left_p    ); echo_print(yyout,yytext); };
 
 {RIGHTP}    {
                 POP_STATE();

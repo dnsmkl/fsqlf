@@ -47,32 +47,4 @@ void begin_SUB(){ push_sub_stack(left_p,right_p); currindent++; }
 void end_SUB()  { pop_sub_stack(); currindent--; }
 
 
-
-
-#define ITEM_T int
-#include "stack.h"
-int_stack state_stack;
-
-
-void init_stack()
-{
-    int_stack_init(&state_stack);
-}
-
-void push_stack(int item)
-{
-    int_stack_push(&state_stack, item);
-}
-
-int pop_stack()
-{
-    return int_stack_pop(&state_stack);
-}
-
-int peek_stack()
-{
-    return int_stack_peek(&state_stack);
-}
-
-
 #endif
