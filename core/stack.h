@@ -1,7 +1,3 @@
-#ifndef STACK_H
-#define STACK_H
-
-
 // Generic stack implementation.
 // ITEM_T macro has to be defined before inclusion.
 //
@@ -72,5 +68,5 @@ int P(ITEM_T, _stack_empty)(const P(ITEM_T, _stack)* stk)
 }
 
 
-#endif
+#undef ITEM_T
 
