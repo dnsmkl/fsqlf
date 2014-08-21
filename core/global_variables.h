@@ -58,30 +58,21 @@ int_stack state_stack;
 
 void init_stack()
 {
-    // state_stack_index = 0;
     int_stack_init(&state_stack);
 }
 
 void push_stack(int item)
 {
-    // if(state_stack_index < 0 || state_stack_index >= STATE_STACK_SIZE) printf("\n --ERORR: push_stack() - bounds\n");
-    // state_stack[state_stack_index] = item;
-    // state_stack_index++;
     int_stack_push(&state_stack, item);
 }
 
 int pop_stack()
 {
-    // if(state_stack_index <= 0 || state_stack_index >= STATE_STACK_SIZE) printf("\n --ERORR: pop_stack() - bounds\n");
-    // --state_stack_index;
-    // return state_stack[state_stack_index];
     return int_stack_pop(&state_stack);
 }
 
 int peek_stack()
 {
-    // if(state_stack_index <= 0 || state_stack_index >= STATE_STACK_SIZE) printf("\n --ERORR: peek_stack() - bounds\n");
-    // return state_stack[state_stack_index-1];
     return int_stack_peek(&state_stack);
 }
 
