@@ -181,7 +181,8 @@ DELETE (?i:(del|delete))
 
 {RIGHTP}    {
                 POP_STATE();
-                if(subselect_level>0 && left_p - peek_sub_stack().left == (right_p+1) - peek_sub_stack().right - 1 ){
+                if(!pair_stack_empty(&sub_openings)
+                    && left_p - pair_stack_peek(&sub_openings).left == (right_p+1) - pair_stack_peek(&sub_openings).right - 1 ){
                     kw_print(yyout,yytext,kw_right_p_sub);
                 } else {
                     debug_match("<wtf-leftp>");

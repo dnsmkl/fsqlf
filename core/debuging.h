@@ -15,7 +15,7 @@ int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 void debug_p()
 {
     if(debug_level & DEBUGPARCOUNTS)
-        printf("\n\t***  '('=%d; ')'=%d; subselect_level=%d)  ***\n", left_p, right_p, subselect_level);
+        printf("\n\t***  '('=%d; ')'=%d; sub_openings.length=%d)  ***\n", left_p, right_p, sub_openings.length);
 }
 
 

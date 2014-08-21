@@ -6,45 +6,42 @@
 int currindent=0;
 int left_p  = 0;
 int right_p = 0;
-int subselect_level = 0;
 
 void inc_LEFTP() { left_p++  ; }
 void inc_RIGHTP(){ right_p++ ; }
-int p_level()  { return left_p - right_p - subselect_level ; }
 
 
-#define SUB_STACK_SIZE (100)
-typedef struct para_st {
+typedef struct
+{
     int left;
     int right;
-} para_st ;
-
-para_st sub_openings[SUB_STACK_SIZE];
+} pair;
 
 
-void push_sub_stack(int left_p, int right_p)
-{   if(subselect_level < 0 || subselect_level >= SUB_STACK_SIZE) printf("\n --ERORR: push_sub_stack() - bounds\n");
-    para_st tmp;
-    tmp.left=left_p;
-    tmp.right=right_p;
-    sub_openings[subselect_level] = tmp;
-    subselect_level++;
-}
-
-para_st pop_sub_stack()
-{   if(subselect_level <= 0 || subselect_level >= SUB_STACK_SIZE) printf("\n --ERORR: pop_sub_stack() - bounds\n");
-    --subselect_level;
-    return sub_openings[subselect_level];
-}
-
-para_st peek_sub_stack()
-{   if(subselect_level < 0 || subselect_level >= SUB_STACK_SIZE) printf("\n --ERORR: peek_sub_stack() - bounds\n");
-    return sub_openings[subselect_level-1];
+pair make_pair(int l, int r)
+{
+    pair tmp = {l,r};
+    return tmp;
 }
 
 
-void begin_SUB(){ push_sub_stack(left_p,right_p); currindent++; }
-void end_SUB()  { pop_sub_stack(); currindent--; }
+#define ITEM_T pair
+#include "stack.h"
+pair_stack sub_openings;
+
+
+void begin_SUB()
+{
+    pair_stack_push(&sub_openings, make_pair(left_p,right_p));
+    currindent++;
+}
+
+
+void end_SUB()
+{
+    pair_stack_pop(&sub_openings);
+    currindent--;
+}
 
 
 #endif
