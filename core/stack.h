@@ -23,6 +23,7 @@
 #endif
 
 
+#define STACK_T P(ITEM_T, _stack)
 typedef struct
 {
     // last item => items[length-1]
@@ -30,16 +31,16 @@ typedef struct
     // stack empty => length=0
     size_t length;
     ITEM_T items[STATE_STACK_SIZE];
-} P(ITEM_T, _stack);
+} STACK_T;
 
 
-void P(ITEM_T, _stack_init)(P(ITEM_T, _stack)* stk)
+void P(ITEM_T, _stack_init)(STACK_T* stk)
 {
     stk->length = 0;
 }
 
 
-void P(ITEM_T, _stack_push)(P(ITEM_T, _stack)* stk, ITEM_T newitem)
+void P(ITEM_T, _stack_push)(STACK_T* stk, ITEM_T newitem)
 {
     assert(stk->length >= 0 && stk->length < STATE_STACK_SIZE);
     stk->items[stk->length] = newitem;
@@ -47,7 +48,7 @@ void P(ITEM_T, _stack_push)(P(ITEM_T, _stack)* stk, ITEM_T newitem)
 }
 
 
-ITEM_T P(ITEM_T, _stack_pop)(P(ITEM_T, _stack)* stk)
+ITEM_T P(ITEM_T, _stack_pop)(STACK_T* stk)
 {
     stk->length--;
     assert(stk->length >= 0 && stk->length < STATE_STACK_SIZE);
@@ -55,14 +56,14 @@ ITEM_T P(ITEM_T, _stack_pop)(P(ITEM_T, _stack)* stk)
 }
 
 
-ITEM_T P(ITEM_T, _stack_peek)(const P(ITEM_T, _stack)* stk)
+ITEM_T P(ITEM_T, _stack_peek)(const STACK_T* stk)
 {
     assert(stk->length > 0 && stk->length < STATE_STACK_SIZE);
     return stk->items[stk->length-1];
 }
 
 
-int P(ITEM_T, _stack_empty)(const P(ITEM_T, _stack)* stk)
+int P(ITEM_T, _stack_empty)(const STACK_T* stk)
 {
     return stk->length==0;
 }
