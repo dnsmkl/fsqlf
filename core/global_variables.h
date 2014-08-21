@@ -49,10 +49,8 @@ void end_SUB()  { pop_sub_stack(); currindent--; }
 
 
 
+#define ITEM_T int
 #include "stack.h"
-// #define STATE_STACK_SIZE (100)
-// int state_stack[STATE_STACK_SIZE];
-// int state_stack_index;
 int_stack state_stack;
 
 

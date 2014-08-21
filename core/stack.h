@@ -10,7 +10,11 @@
 #define P(a,b) PASTE2(a,b)
 
 
-#define ITEM_T int
+#ifndef ITEM_T
+#error `ITEM_T` must be defined before the: #include "stack.h"
+#endif
+
+
 typedef struct
 {
     // last item => items[length-1]
@@ -53,13 +57,6 @@ ITEM_T P(ITEM_T, _stack_peek)(const P(ITEM_T, _stack)* stk)
 int P(ITEM_T, _stack_empty)(const P(ITEM_T, _stack)* stk)
 {
     return stk->length==0;
-}
-
-
-void P(ITEM_T, _stack_dump)(P(ITEM_T, _stack) stk)
-{
-    printf("%d:%d %d %d %d\n", stk.length, stk.items[0], stk.items[1], stk.items[2], stk.items[3]);
-    fflush(stdout);
 }
 
 
