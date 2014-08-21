@@ -1,6 +1,18 @@
 #ifndef STACK_H
 #define STACK_H
 
+
+// Generic stack implementation.
+// ITEM_T macro has to be defined before inclusion.
+//
+// List of functions defined:
+//  void <t>_stack_init(<t>_stack* stk)
+//  void <t>_stack_push(<t>_stack* stk, <t> newitem)
+//  <t> <t>_stack_pop(<t>_stack* stk)
+//  <t> <t>_stack_peek(const <t>_stack* stk)
+//  int <t>_stack_empty(const <t>_stack* stk)
+
+
 #include <assert.h>
 
 #define STATE_STACK_SIZE (100)
