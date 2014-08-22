@@ -95,6 +95,12 @@ SET (?i:set)
 DELETEFROM (?i:(del|delete){SPACE}+from)
 DELETE (?i:(del|delete))
 
+CASE (?i:case)
+WHEN (?i:when)
+THEN (?i:then)
+ELSE (?i:else)
+END (?i:end)
+
 
 %option noyywrap nounput noinput
 
@@ -192,6 +198,11 @@ DELETE (?i:(del|delete))
 
             };
 
+{CASE}  { kw_print(yyout,yytext,kw_case); currindent++;}
+{WHEN}  { kw_print(yyout,yytext,kw_when); }
+{THEN}  { kw_print(yyout,yytext,kw_then); }
+{ELSE}  { kw_print(yyout,yytext,kw_else); }
+{END}   { currindent--; kw_print(yyout,yytext,kw_end); }
 
 
 
