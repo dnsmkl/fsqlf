@@ -119,6 +119,14 @@ void echo_print(FILE * yyout, char * txt){
 }
 
 
+void handle_kw(FILE * yyout, char * yytext, t_kw_settings s){
+    kw_print(yyout, yytext, s);
+}
+
+
+void handle_text(FILE * yyout, char * txt){
+    echo_print(yyout, txt);
+}
 
 
 #endif
