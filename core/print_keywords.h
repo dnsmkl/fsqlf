@@ -35,12 +35,11 @@ static void print_struct_spacing_count(FILE * yyout, spacing_counts s){
 }
 
 
+// All printing of spacing goes through here.
+// Except when space is inside the multiword-keyword (e.g. "LEFT JOIN"),
+// those will not be printed by this function.
+// ('spacing' means new lines, tabs and spaces)
 static void print_spacing(FILE * yyout, t_kw_settings current_settings, int global_indent_level){
-/* Prints all spacing of the program
- * Except when space is inside the multiword-keyword (e.g. "LEFT JOIN"), those will not be printed by this function
- * 'spacing' means new lines, tabs and spaces
-*/
-
     static spacing_counts from_previous__scounts = {0,0,0}; // keep track of 'after' spacing from previous call
     static unsigned short int from_previous__isword = 0;    // keep track of previous 'is_word'
 
