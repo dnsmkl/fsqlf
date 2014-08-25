@@ -91,21 +91,21 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
 
 void echo_print(FILE * yyout, char * txt){
     int length; // length of the input text string
-    int pos_last_char; // position of last character
-
-    // Printing of spacing is delegated to print_spacing(),
-    // which requires as input t_kw_settings.
-    t_kw_settings s = {{0,0,0},{0,0,0},0,0,0,0};
-
     length = strlen(txt);
 
     // Adjustment for single line comments.
     // Necessary for keeping indentation and new lines right.
-    pos_last_char = length - 1;
+    int pos_last_char = length - 1; // position of last character
+
+    // Printing of spacing is delegated to print_spacing(),
+    // which requires as input t_kw_settings.
+    t_kw_settings s = {{0,0,0},{0,0,0},0,0,0,0};
+ 
+    // Delegate to print_spacing() printing of the new line.
     if(txt[pos_last_char] == '\n'){
         // Shorten the string - overwrite \n with \0 (end of string mark).
         txt[pos_last_char] = '\0';
-        // Delegate to print_spacing() printing of the new line.
+        // Adjust setting used by print_spacing()
         s.after.new_line = 1;
     }
 
