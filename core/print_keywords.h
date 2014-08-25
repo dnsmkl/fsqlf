@@ -39,9 +39,15 @@ static void print_struct_spacing_count(FILE * yyout, spacing_counts s){
 // Except when space is inside the multiword-keyword (e.g. "LEFT JOIN"),
 // those will not be printed by this function.
 // ('spacing' means new lines, tabs and spaces)
-static void print_spacing(FILE * yyout, t_kw_settings current_settings, int global_indent_level){
-    static spacing_counts from_previous__scounts = {0,0,0}; // keep track of 'after' spacing from previous call
-    static unsigned short int from_previous__isword = 0;    // keep track of previous 'is_word'
+static void print_spacing(
+    FILE * yyout
+    , t_kw_settings current_settings
+    , int global_indent_level
+){
+    // keep track of 'after' spacing from previous call
+    static spacing_counts from_previous__scounts = {0,0,0};
+    // keep track of previous 'is_word'
+    static unsigned short int from_previous__isword = 0;
 
     spacing_counts spacing =
         calculate_spacing(
@@ -57,18 +63,27 @@ static void print_spacing(FILE * yyout, t_kw_settings current_settings, int glob
     // Save settings for next function call - overwrite
     from_previous__scounts = current_settings.after;
     from_previous__isword = current_settings.is_word;
-
 }
 
 
 void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
     int i=0;
-    // call keyword specific functions. Before fprintf
+    // Call keyword specific functions, before printing.
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++)
         s.funct_before[i]();
+
+    // Print spacing.
     print_spacing(yyout, s, currindent); // print spacing before keyword
-    fprintf(yyout,"%s",stocase( s.print_original_text ? yytext : s.text , s.print_case)); // 1st deside what text to use (original or degault), then handle its case
-    // call keyword specific functions. After fprintf
+
+    // Print text:
+    // .. first decide what text to use (original or default)
+    char * text_nocase = s.print_original_text ? yytext : s.text;
+    // .. then handle its case
+    char * text = stocase(text_nocase, s.print_case);
+    // .. then print the text.
+    fprintf(yyout, "%s", text);
+
+    // Call keyword specific functions. after printing.
     for(i=0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL ; i++)
         s.funct_after[i]();
 }
@@ -77,23 +92,28 @@ void kw_print(FILE * yyout, char * yytext, t_kw_settings s){
 void echo_print(FILE * yyout, char * txt){
     int length; // length of the input text string
     int pos_last_char; // position of last character
-    t_kw_settings s; // printing of spacing is delegated to print_spacing(), which needs t_kw_settings as input
-    
-    s.before.new_line=s.before.indent=s.before.space=s.after.new_line=s.after.indent=s.after.space=0;
+
+    // Printing of spacing is delegated to print_spacing(),
+    // which requires as input t_kw_settings.
+    t_kw_settings s = {{0,0,0},{0,0,0},0,0,0,0};
 
     length = strlen(txt);
 
-    // adjustment for single line comments - necessary for keeping indentation and new lines right
+    // Adjustment for single line comments.
+    // Necessary for keeping indentation and new lines right.
     pos_last_char = length - 1;
     if(txt[pos_last_char] == '\n'){
-        txt[pos_last_char] = '\0'; // shorten the string - overwrite \n (new line) with \0 (end of string mark)
-        s.after.new_line = 1; // delegate to print_spacing() printing of the new line
+        // Shorten the string - overwrite \n with \0 (end of string mark).
+        txt[pos_last_char] = '\0';
+        // Delegate to print_spacing() printing of the new line.
+        s.after.new_line = 1;
     }
 
-    // word-vs-operator check - ensures that two adjacent words have spacing inbetween
+    // Word-vs-operator check.
+    // Ensure that two adjacent words have spacing inbetween.
     s.is_word = !(length == 1 && !isalnum(txt[0]));
 
-    // print spacing then text 
+    // print spacing then text
     print_spacing(yyout, s, currindent);
     fputs(txt, yyout);
 }
