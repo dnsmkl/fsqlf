@@ -3,7 +3,6 @@
 
 
 #include "global_variables.h"
-#include "create_conf_file.h"
 #include "settings.h"
 #include <stdio.h>
 

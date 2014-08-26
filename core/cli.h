@@ -3,6 +3,7 @@
 
 
 #include "conf_file_read.h"
+#include "conf_file_create.h"
 
 
 #define FAIL_WITH_ERROR( CODE , MESSAGE , ... ) \
