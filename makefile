@@ -70,6 +70,11 @@ TEST_TMP_ORIGINAL=testing/tmp_test_original.txt
 TEST_TMP_FORMATED=testing/tmp_test_formated.txt
 
 test: test-print  test-compare
+testgold: testing/sample_main_output_lead.sql testing/sample_main_output_gold.sql
+	diff $+
+
+testing/sample_main_output_lead.sql: testing/sample_main.sql $(EXEC_CLI)
+	./fsqlf $< $@
 
 test-print: $(EXEC_CLI)
 	./$(EXEC_CLI) $(TEST_SAMPLE) |  awk -F, '{ printf("%4d # ", NR) ; print}'
