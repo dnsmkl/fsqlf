@@ -2,6 +2,8 @@
 #define CLI_H
 
 
+#include "conf_file_read.h"
+
 
 #define FAIL_WITH_ERROR( CODE , MESSAGE , ... ) \
     {                                           \
