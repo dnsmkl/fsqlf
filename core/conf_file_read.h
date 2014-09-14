@@ -5,9 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <sys/stat.h>   // For stat().
 
 #include "settings.h"
+
+
+int file_exists(char *filename)
+{
+    struct stat buffer;
+    return stat(filename, &buffer) == 0;
+}
 
 
 void setting_value(char * setting_name, int * setting_values)
@@ -26,10 +33,10 @@ void setting_value(char * setting_name, int * setting_values)
 }
 
 
-#define CONFIG_FILE "formatting.conf"
 #define VALUE_NUMBER (6)
 #define BUFFER_SIZE (100)
-int read_configs()
+// Read specified config file
+int read_conf_file(const char* file_pathname)
 {
     FILE * config_file;
     char line[BUFFER_SIZE+1] , setting_name[BUFFER_SIZE+1];
@@ -37,20 +44,7 @@ int read_configs()
     char * chr_ptr1;
     int i;
 
-    config_file=fopen(CONFIG_FILE,"r"); // open file in working directory
-    #ifndef _WIN32
-    if(config_file == NULL)
-    {
-        // in non-windows (unix/linux) also try folder in user-home directory
-        #define PATH_STRING_MAX_SIZE (200)
-        char full_path[PATH_STRING_MAX_SIZE+1];
-        strncpy(full_path, getenv("HOME") , PATH_STRING_MAX_SIZE);
-        strncat(full_path, "/.fsqlf/" CONFIG_FILE ,PATH_STRING_MAX_SIZE - strlen(full_path));
-        config_file=fopen(full_path,"r");
-    }
-    #endif
-
-    if(config_file == NULL)
+    if(!(config_file=fopen(file_pathname,"r")))
     {
         return 1;
     }
@@ -74,6 +68,29 @@ int read_configs()
 
     fclose(config_file);
     return 0;
+}
+
+
+
+#define CONFIG_FILE "formatting.conf"
+// Read configuration file from default conf file
+// This would be "formatting.conf" in working idrectory
+// If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
+// TODO: rename to read_default_conf_files
+int read_configs()
+{
+    if(file_exists(CONFIG_FILE)) // check file in working directory
+    {
+        return read_conf_file(CONFIG_FILE);
+    }
+    #ifndef _WIN32
+        // in non-windows (unix/linux) also try folder in user-home directory
+        #define PATH_STRING_MAX_SIZE (200)
+        char full_path[PATH_STRING_MAX_SIZE+1];
+        strncpy(full_path, getenv("HOME") , PATH_STRING_MAX_SIZE);
+        strncat(full_path, "/.fsqlf/" CONFIG_FILE ,PATH_STRING_MAX_SIZE - strlen(full_path));
+        return read_conf_file(full_path);
+    #endif
 }
 
 
