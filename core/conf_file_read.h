@@ -51,18 +51,20 @@ int read_conf_file(const char* file_pathname)
 
     while( fgets( line, BUFFER_SIZE, config_file ) )
     {
-        if(line[0]=='#') continue; // lines starting with '#' are commnets
-        // find and mark with '\0' where first stace is (end c string)
+        // Lines starting with '#' are comments.
+        if(line[0]=='#') continue;
+
+        // Read setting name. It starts at line start and ends with space.
         if( !(chr_ptr1=strchr(line,' ')) ) continue;
         chr_ptr1[0]='\0';
-
-        // store into variables
         strncpy( setting_name, line, BUFFER_SIZE );
+
+        // Read setting values.
         for(i = 0; i < VALUE_NUMBER; i++){
             setting_values[i] = strtol( chr_ptr1+1, &chr_ptr1, 10 );
         }
 
-        // debug        printf("\nsetting_name='%s'; v0='%d'; v1='%d'; v2='%d'; v3='%d'; v4='%d'; v5='%d';",setting_name, setting_values[0], setting_values[1], setting_values[2], setting_values[3], setting_values[4], setting_values[5]);
+        // Assign read values to global variables.
         setting_value(setting_name,setting_values);
     }
 
