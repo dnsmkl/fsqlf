@@ -7,7 +7,7 @@ Licensed under LGPL.  Full license is available in file 'LICENCE', which you sho
 
 How it works
 ----
-fsqlf simply goes through provided input text, and tries to recognise predefined set of keywords.  If keyword is recognized it adds spacing around it using settings in configuration file (and to some level settings from CLI/GUI). 
+fsqlf simply goes through provided input text, and tries to recognise predefined set of keywords.  If keyword is recognized it adds spacing around it using settings in configuration file (and to some level settings from CLI/GUI).
 
 
 Table of content:
@@ -92,7 +92,6 @@ If you use Linux and have installed same programs as I do (see section 2.1), the
 	none-use-file-config
 	detailed-as-in-file
 	select-templates-of-configurations
-- 'case' statements (prerequisite: redo stack function)
 - improve analytical function formatting
 - alignment of comments
 - in equality condition align all comparison signs ('=' , '<>', etc.)
@@ -105,7 +104,7 @@ Windows
     # bin/fsqlf.exe                         # read from stdin, write to stdout
     # bin/fsqlf.exe input_file              # read from file, write to stdout
     # bin/fsqlf.exe input_file output_file  # use files for reading and writing
-    # bin/fsqlf.exe --help                  # info on more options 
+    # bin/fsqlf.exe --help                  # info on more options
 
 Usage in Linux is equivalent, just without the extention '.exe'
 Formatting configurations can be changed in 'formatting.conf'
