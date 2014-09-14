@@ -109,7 +109,7 @@ clean_win:
 #
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
-formatting.conf: core/t_kw_settings_list.def core/create_conf_file.h
+formatting.conf: core/t_kw_settings_list.def core/conf_file_create.h
 	./$(EXEC_CLI) --create-config-file
 
 VERSION:=$(shell git describe master)
