@@ -35,6 +35,8 @@ void setting_value(char * setting_name, int * setting_values)
 
 #define VALUE_NUMBER (6)
 #define BUFFER_SIZE (100)
+#define READ_SUCCESSFULL 0
+#define READ_FAILED 1
 // Read specified config file
 int read_conf_file(const char* file_pathname)
 {
@@ -46,7 +48,7 @@ int read_conf_file(const char* file_pathname)
 
     if(!(config_file=fopen(file_pathname,"r")))
     {
-        return 1;
+        return READ_FAILED;
     }
 
     while( fgets( line, BUFFER_SIZE, config_file ) )
@@ -69,7 +71,7 @@ int read_conf_file(const char* file_pathname)
     }
 
     fclose(config_file);
-    return 0;
+    return READ_SUCCESSFULL;
 }
 
 
