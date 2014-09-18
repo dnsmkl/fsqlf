@@ -11,7 +11,8 @@ CC=i586-mingw32msvc-gcc
 CXX=i586-mingw32msvc-g++
 CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
 LDFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`
-# -mthreads needs to be removed, so mingwm10.dll would not be needed (http://old.nabble.com/mingwm10.dll-ts8920679.html)
+# Option "-mthreads" needs to be removed, so mingwm10.dll would not be needed
+# (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else
 OS_TARGET=linux
 EXEC_CLI=fsqlf
@@ -82,10 +83,12 @@ test-compare: $(EXEC_CLI)  $(TEST_TMP_ORIGINAL)  $(TEST_TMP_FORMATED)
 	diff -i -E -b -w -B -q $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 
 $(TEST_TMP_ORIGINAL):
-	cat        $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL)
+	cat        $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' \
+		| sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL)
 
 $(TEST_TMP_FORMATED):
-	./$(EXEC_CLI) $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' | sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
+	./$(EXEC_CLI) $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' \
+		| sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
 
 
 
@@ -97,7 +100,8 @@ TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMA
 clean: clean_local  clean_win  clean_obj
 
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE)
+	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  \
+		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE)
 
 clean_obj:
 	rm -f *.o
