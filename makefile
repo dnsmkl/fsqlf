@@ -50,12 +50,11 @@ $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
 # generic rule for C++ building
 CXXOBJ = wx_fsqlf.o basic_notepad.o dnd_target.o
 
-$(CXXOBJ): %.o: gui/%.cpp
+$(CXXOBJ): %.o: gui/%.cpp  gui/%.hpp
 	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
 
-wx_fsqlf.o: gui/wx_fsqlf.cpp  gui/wx_fsqlf.hpp  gui/basic_notepad.hpp
-basic_notepad.o: gui/basic_notepad.cpp  gui/basic_notepad.hpp  gui/dnd_target.hpp  gui/license_text.h
-dnd_target.o: gui/dnd_target.cpp  gui/dnd_target.hpp
+wx_fsqlf.o: gui/basic_notepad.hpp
+basic_notepad.o: gui/dnd_target.hpp  gui/license_text.h
 
 gui/license_text.h: LICENSE
 	tools/text_to_header.sh  $<  $@
