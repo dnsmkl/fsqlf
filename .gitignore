@@ -7,10 +7,12 @@ fsqlf.exe
 wx_fsqlf
 wx_fsqlf.exe
 
+
 # Generated files
 core/lex.yy.c
 gui/license_text.h
 *.o
+formatting.conf
 
 
 #editor stuff
@@ -18,6 +20,7 @@ gui/license_text.h
 *.swp
 *.*project
 *.*workspace
+
 
 #archive for uploading
 *.zip
@@ -28,3 +31,4 @@ tmp
 tmp/*
 testing/tmp_test_original.txt
 testing/tmp_test_formated.txt
+testing/sample*lead.sql
