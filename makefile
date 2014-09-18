@@ -25,7 +25,7 @@ endif
 
 
 
-.PHONY: all  clean  zip  test  test-print  test-compare
+.PHONY: all  clean  zip  test  test-print  test-compare  clean_obj
 
 
 
@@ -95,10 +95,12 @@ $(TEST_TMP_FORMATED):
 #
 TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 
-clean: clean_local  clean_win
+clean: clean_local  clean_win  clean_obj
 
 clean_local:
 	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  $(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE)
+
+clean_obj:
 	rm -f *.o
 
 clean_win:
@@ -122,7 +124,7 @@ zip: tmp_folder formatting.conf
 
 tmp_folder: LICENSE README.md
 	make prep_bin
-	make clean
+	make clean_obj # to ensure that object files are for needed OS
 	make prep_bin WIN=1
 	cp    -t tmp/$(PROJECTFOLDER)   $^
 
