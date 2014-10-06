@@ -15,6 +15,7 @@ LDFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`
 # (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else
 OS_TARGET=linux
+PREFIX=/usr/local
 EXEC_CLI=fsqlf
 EXEC_GUI=wx_fsqlf
 CC=gcc
@@ -26,7 +27,7 @@ endif
 
 
 
-.PHONY: all  clean  zip  test  test-print  test-compare  clean_obj
+.PHONY: all  clean  zip  test  test-print  test-compare  clean_obj  install  uninstall
 
 
 
@@ -134,6 +135,31 @@ tmp_folder: LICENSE README.md
 prep_bin:   $(EXEC_CLI) $(EXEC_GUI) formatting.conf
 	mkdir -p tmp/$(PROJECTFOLDER)/$(OS_TARGET)
 	cp    -t tmp/$(PROJECTFOLDER)/$(OS_TARGET)    $^
+
+
+
+#
+# INSTALLATION
+#
+ifeq ($(OS_TARGET),linux)
+
+install: $(EXEC_CLI) $(EXEC_GUI) formatting.conf
+	install -d $(PREFIX)/bin
+	install $(EXEC_CLI) $(EXEC_GUI) $(PREFIX)/bin
+	install -d $(PREFIX)/share/fsqlf
+	install -m 644 formatting.conf $(PREFIX)/share/fsqlf/formatting.conf.example
+
+uninstall:
+ifdef EXEC_CLI
+	rm -vf $(PREFIX)/bin/$(EXEC_CLI)
+endif
+ifdef EXEC_GUI
+	rm -vf $(PREFIX)/bin/$(EXEC_GUI)
+endif
+	rm -vf $(PREFIX)/share/fsqlf/formatting.conf.example
+	rm -vfd $(PREFIX)/share/fsqlf
+
+endif
 
 
 
