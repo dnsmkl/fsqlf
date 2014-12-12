@@ -52,6 +52,11 @@ INTERSECT (?i:intersect)
 EXCEPT    (?i:except)
 MINUS     (?i:minus)
 
+CREATE  (?i:create)
+DROP    (?i:drop)
+TABLE   (?i:table)
+VIEW    (?i:view)
+IFEXISTS (?i:if{SPACE}+exists)
 SELECT  (?i:select|sel)
 AS      (?i:as)
 FROM    (?i:from)
@@ -116,6 +121,11 @@ END (?i:end)
 <stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);handle_kw(yyout,yytext,kw_set); }
 <stSET>{COMMA} { handle_kw(yyout,yytext,kw_comma_set); }
                 /* SET operations */
+{CREATE}     {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_create)   ; };
+{DROP}       {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_drop)     ; };
+{TABLE}      {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_table)    ; };
+{IFEXISTS}   {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_ifexists) ; };
+{VIEW}       {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_view)     ; };
 {UNION}      {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_union)    ; };
 {UNION_ALL}  {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_union_all); };
 {MINUS}      {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_minus);     };
