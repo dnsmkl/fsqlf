@@ -27,7 +27,7 @@ endif
 
 
 
-.PHONY: all  clean  zip  test  test-print  test-compare  clean_obj  install  uninstall
+.PHONY: all  clean  zip  test  test-print  test-gold  clean_obj  clean_test  install  uninstall
 
 
 
@@ -66,30 +66,25 @@ gui/license_text.h: LICENSE
 #
 # TESTING
 #
-TEST_SAMPLE=testing/bigquery.sql
-TEST_TMP_ORIGINAL=testing/tmp_test_original.txt
-TEST_TMP_FORMATED=testing/tmp_test_formated.txt
 
-test: test-print  test-compare
-testgold: testing/bigquery.output_lead.sql testing/bigquery.output_gold.sql
-	diff $+
-
-testing/bigquery.output_lead.sql: testing/bigquery.sql $(EXEC_CLI)
+# Simple regression testing - testing against gold (pre-saved correct output)
+# Given certain input to `fsqlf`, actual output (lead) is compared
+# against to it's predefined expected output (gold).
+TESTO_EXPECTED = $(wildcard testing/*.output_gold.sql)
+TESTO_ACTUAL = $(patsubst %.output_gold.sql,%.output_lead.sql,$(TESTO_EXPECTED))
+$(TESTO_ACTUAL):testing/%.output_lead.sql: testing/%.sql | testing/%.output_gold.sql
 	./fsqlf $< $@
+	diff $@ $|
+	rm $@
 
+test-gold: $(EXEC_CLI)  $(TESTO_ACTUAL)
+
+test: test-gold  test-print
+
+# Output for visual inspection
 test-print: $(EXEC_CLI)
-	./$(EXEC_CLI) $(TEST_SAMPLE) |  awk -F, '{ printf("%4d # ", NR) ; print}'
-
-test-compare: $(EXEC_CLI)  $(TEST_TMP_ORIGINAL)  $(TEST_TMP_FORMATED)
-	diff -i -E -b -w -B -q $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
-
-$(TEST_TMP_ORIGINAL):
-	cat        $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' \
-		| sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_ORIGINAL)
-
-$(TEST_TMP_FORMATED):
-	./$(EXEC_CLI) $(TEST_SAMPLE) |  tr '\n' ' ' | sed 's/[\t ]//g' \
-		| sed 's/outer//gi' | sed 's/inner//gi' > $(TEST_TMP_FORMATED)
+	./$(EXEC_CLI) testing/bigquery.sql \
+	|  awk -F, '{ printf("%4d # ", NR) ; print}'
 
 
 
@@ -98,7 +93,7 @@ $(TEST_TMP_FORMATED):
 #
 TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
 
-clean: clean_local  clean_win  clean_obj
+clean: clean_local  clean_win  clean_obj  clean_test
 
 clean_local:
 	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  \
@@ -109,6 +104,9 @@ clean_obj:
 
 clean_win:
 	make clean_local WIN=1
+
+clean_test:
+	rm -f $(TESTO_ACTUAL)
 
 
 

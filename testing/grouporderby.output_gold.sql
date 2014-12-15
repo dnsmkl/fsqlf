@@ -1,0 +1,8 @@
+
+SELECT
+  1
+, 2
+FROM x
+GROUP BY 1 , 2 , 3 , 4
+ORDER BY 1 , 2
+;
