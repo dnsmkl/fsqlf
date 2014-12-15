@@ -66,15 +66,15 @@ gui/license_text.h: LICENSE
 #
 # TESTING
 #
-TEST_SAMPLE=testing/sample_main.sql
+TEST_SAMPLE=testing/bigquery.sql
 TEST_TMP_ORIGINAL=testing/tmp_test_original.txt
 TEST_TMP_FORMATED=testing/tmp_test_formated.txt
 
 test: test-print  test-compare
-testgold: testing/sample_main_output_lead.sql testing/sample_main_output_gold.sql
+testgold: testing/bigquery.output_lead.sql testing/bigquery.output_gold.sql
 	diff $+
 
-testing/sample_main_output_lead.sql: testing/sample_main.sql $(EXEC_CLI)
+testing/bigquery.output_lead.sql: testing/bigquery.sql $(EXEC_CLI)
 	./fsqlf $< $@
 
 test-print: $(EXEC_CLI)

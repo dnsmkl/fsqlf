@@ -31,4 +31,4 @@ tmp
 tmp/*
 testing/tmp_test_original.txt
 testing/tmp_test_formated.txt
-testing/sample*lead.sql
+testing/*output_lead.sql
