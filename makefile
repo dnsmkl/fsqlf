@@ -70,21 +70,32 @@ gui/license_text.h: LICENSE
 # Simple regression testing - testing against gold (pre-saved correct output)
 # Given certain input to `fsqlf`, actual output (lead) is compared
 # against to it's predefined expected output (gold).
-TESTO_EXPECTED = $(wildcard testing/*.output_gold.sql)
-TESTO_ACTUAL = $(patsubst %.output_gold.sql,%.output_lead.sql,$(TESTO_EXPECTED))
-$(TESTO_ACTUAL):testing/%.output_lead.sql: testing/%.sql | testing/%.output_gold.sql
+# TF stands for "test file".
+TF_ALL = $(wildcard testing/*.sql)
+TF_SAVED_GOLD = $(wildcard testing/*.output_gold.sql)
+TF_LEAD = $(patsubst %.output_gold.sql,%.output_lead.sql,$(TF_SAVED_GOLD))
+TF_INPUT = $(filter-out $(TF_SAVED_GOLD) $(TF_LEAD),$(TF_ALL))
+$(TF_LEAD): %.output_lead.sql: %.sql | %.output_gold.sql
 	./fsqlf $< $@
 	diff $@ $|
 	rm $@
 
-test-gold: $(EXEC_CLI)  $(TESTO_ACTUAL)
+test-gold: $(EXEC_CLI)  $(TF_LEAD)
 
 test: test-gold  test-print
 
-# Output for visual inspection
+# Output for visual inspection.
 test-print: $(EXEC_CLI)
 	./$(EXEC_CLI) testing/bigquery.sql \
 	|  awk -F, '{ printf("%4d # ", NR) ; print}'
+
+# When adding new test cases %.sql files, auto-generate %.output_gold.sql files.
+TF_NEW_GOLD = $(patsubst %.sql,%.output_gold.sql,$(TF_INPUT))
+$(TF_NEW_GOLD): %.output_gold.sql: %.sql
+	./fsqlf $< $@
+
+generate-gold: $(TF_NEW_GOLD)
+	# Now please manualy add new gold files to git repo. Thanks.
 
 
 
@@ -106,7 +117,7 @@ clean_win:
 	make clean_local WIN=1
 
 clean_test:
-	rm -f $(TESTO_ACTUAL)
+	rm -f $(TF_LEAD)
 
 
 
