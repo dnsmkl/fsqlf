@@ -77,7 +77,7 @@ TF_LEAD = $(patsubst %.output_gold.sql,%.output_lead.sql,$(TF_SAVED_GOLD))
 TF_INPUT = $(filter-out $(TF_SAVED_GOLD) $(TF_LEAD),$(TF_ALL))
 $(TF_LEAD): %.output_lead.sql: %.sql | %.output_gold.sql
 	./fsqlf $< $@
-	diff $@ $|
+	diff -q $@ $|
 	rm $@
 
 test-gold: $(EXEC_CLI)  $(TF_LEAD)
