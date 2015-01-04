@@ -52,7 +52,8 @@ INTERSECT (?i:intersect)
 EXCEPT    (?i:except)
 MINUS     (?i:minus)
 
-CREATE  (?i:create)
+TABLE_OPT (?i:global|volatile|set|multiset|temporary)
+CREATE_TABLE (?i:create{SPACE}+({TABLE_OPT}{SPACE}+)*table)
 DROP    (?i:drop)
 TABLE   (?i:table)
 VIEW    (?i:view)
@@ -109,7 +110,7 @@ END (?i:end)
 
 %option noyywrap nounput noinput
 
-%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST
+%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST stCREATE_TABLE stTAB_COL_LIST
 %x stCOMMENTML stSTRING
 
 %%
@@ -121,7 +122,8 @@ END (?i:end)
 <stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);handle_kw(yyout,yytext,kw_set); }
 <stSET>{COMMA} { handle_kw(yyout,yytext,kw_comma_set); }
                 /* SET operations */
-{CREATE}     {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_create)   ; };
+
+{CREATE_TABLE} {BEGIN_STATE(stCREATE_TABLE);handle_kw(yyout,yytext,kw_create_table)   ; };
 {DROP}       {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_drop)     ; };
 {TABLE}      {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_table)    ; };
 {IFEXISTS}   {BEGIN_STATE(INITIAL);handle_kw(yyout,yytext,kw_ifexists) ; };
@@ -178,6 +180,10 @@ END (?i:end)
 <stINSERT>{LEFTP}        { PUSH_STATE(stINSCOLLIST); handle_kw(yyout,yytext,kw_left_p_ins ); };
 <stINSCOLLIST>{COMMA}    { handle_kw(yyout,yytext,kw_comma_ins ); }
 <stINSCOLLIST>{RIGHTP}   { POP_STATE();              handle_kw(yyout,yytext,kw_right_p_ins ); };
+
+<stCREATE_TABLE>{LEFTP}  { PUSH_STATE(stTAB_COL_LIST); handle_kw(yyout,yytext,kw_left_p_create_table ); };
+<stTAB_COL_LIST>{COMMA}    { handle_kw(yyout,yytext,kw_comma_create_table ); }
+<stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              handle_kw(yyout,yytext,kw_right_p_create_table ); };
 
 <stP_SUB>{LEFTP}                      { BEGIN_STATE(int_stack_peek(&state_stack)); handle_kw(yyout,yytext,kw_left_p    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
