@@ -1,54 +1,150 @@
+// Queue implementation.
+// QUEUE_ITEM_T macro has to be defined before inclusion.
+// QUEUE_INIT_CAPACITY macro can be defined to change initial capacity.
+//
+// Defines struct typedefed
+//  queue_t
+//
+// And following list of functions to operate on it:
+//  void queue_init(queue_t * q)
+//  void queue_clear(queue_t * q)
+//  void queue_push_back(queue_t * const q, QUEUE_ITEM_T item)
+//  void queue_drop_head(queue_t * q)
+//  QUEUE_ITEM_T queue_peek_n(const queue_t * q, const size_t n)
+//  int queue_empty(const queue_t * q)
+
+
 #ifndef token_queue_h
 #define token_queue_h
 
 
-#define KW_SETTING_T int // Temporary dummy definition replacement.
-#include "token.h"
-#include <stdio.h>
+#include <stdlib.h> // malloc, realloc
+#include <assert.h> // assert
 
 
+#ifndef QUEUE_ITEM_T
+#error `QUEUE_ITEM_T` must be defined before the: #include "token_queue.h"
+#endif
 
 
-// TODO: Implement actual queue
-// currently only interface is implemented,
-// actualy hold only 1 element.
+#ifndef QUEUE_INIT_CAPACITY // ability to override default value
+#define QUEUE_INIT_CAPACITY (100)
+#endif
 
 
 typedef struct
 {
-    token_t * token;
+    // Internal array for item storage.
+    // (see qpos_to_apos() for details about positions used for queue items)
+    QUEUE_ITEM_T * items;
+
+    // Position of first queue item in internal array.
+    size_t start;
+
+    // Size of the queue - number of elements currently in the queue.
     size_t length;
-} tqueue_t;
+
+    // Size of internal array- max number of elements possible without realloc.
+    size_t capacity;
+} queue_t;
 
 
-void tqueue_init(tqueue_t * q)
+// Helper function for converting between internal array and queue positions.
+size_t qpos_to_apos(size_t que_n, size_t que_start, size_t arr_capacity);
+
+
+void queue_init(queue_t * q)
 {
     q->length = 0;
+    q->start = 0;
+    q->capacity = QUEUE_INIT_CAPACITY;
+    q->items = (QUEUE_ITEM_T*) malloc(sizeof(QUEUE_ITEM_T) * q->capacity);
+    assert(q->items != NULL);
 }
 
 
-void tqueue_push_back(tqueue_t * q, const token_t * token)
+void queue_clear(queue_t * q)
 {
-    q->token = (token_t*) token;
+    q->length = 0;
+    q->start = 0;
+    q->capacity = 0;
+    free(q->items);
+}
+
+
+void queue_push_back(queue_t * const q, QUEUE_ITEM_T item)
+{
+    if(q->length == q->capacity)
+    {
+        size_t old_cap = q->capacity;
+        q->capacity = q->capacity*2;
+        q->items = (QUEUE_ITEM_T*) realloc(q->items, sizeof(QUEUE_ITEM_T) * (q->capacity));
+        assert(q->items != NULL);
+        // Copy elements that had to wrap past end,
+        // to new space available at the end.
+        size_t i, old_pos, new_pos;
+        for(i=0; i<(q->length); i++)
+        {
+            old_pos = qpos_to_apos(i, q->start, old_cap);
+            new_pos = qpos_to_apos(i, q->start, q->capacity);
+            q->items[new_pos] = q->items[old_pos];
+        }
+    }
+    assert(q->length < q->capacity);
+    size_t arr_pos = qpos_to_apos(q->length, q->start, q->capacity);
+    q->items[arr_pos] = item;
     q->length++;
 }
 
 
-void tqueue_drop_head(tqueue_t * q)
+void queue_drop_head(queue_t * q)
 {
-    if(q->length > 0) q->length--;
+    assert(q->length > 0);
+    q->start++;
+    q->length--;
 }
 
 
-token_t * tqueue_peek_n(const tqueue_t * q, const size_t n)
+QUEUE_ITEM_T queue_peek_n(const queue_t * q, const size_t n)
 {
-    return q->token;
+    assert(n < q->length);
+    assert(q->length <= q->capacity);
+    size_t arr_pos = qpos_to_apos(n, q->start, q->capacity);
+    return q->items[arr_pos];
 }
 
 
-int tqueue_empty(const tqueue_t * q)
+int queue_empty(const queue_t * q)
 {
     return q->length == 0;
+}
+
+
+// Helper function for converting between internal array and queue positions.
+// Queue is implemented in array, where queue can start not at zero
+// and elements can wrap past the end.
+// (without such wrapping capabilities
+// it would be needed to constantly re-order elements)
+///
+// Lets imagine internal array of capacity 5
+// and queue that starts at element 2 in internal array:
+//     0 1 2 3 4 <- internal array positions
+//     3 4 0 1 2 <- queue elements
+size_t qpos_to_apos(size_t que_n, size_t que_start, size_t arr_capacity)
+{
+    if(que_n < 0) assert(0);
+    if(que_n >= arr_capacity) assert(0);
+    if(arr_capacity == 0) assert(0);
+
+    size_t size_till_end = arr_capacity-que_start;
+    size_t r = que_n < size_till_end ?
+        que_n + que_start :     // If fits into remaining array.
+        que_n - size_till_end;  // If element wrapps past the end.
+
+    assert(r >= 0);
+    assert(r < arr_capacity);
+
+    return r;
 }
 
 
