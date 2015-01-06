@@ -56,6 +56,8 @@ typedef struct
 
 // Helper function for converting between internal array and queue positions.
 size_t qpos_to_apos(size_t que_n, size_t que_start, size_t arr_capacity);
+// Helper function for increasing capacity of internal array.
+void queue_increase_capacity(queue_t * q);
 
 
 void queue_init(queue_t * const q)
@@ -81,19 +83,7 @@ void queue_push_back(queue_t * const q, const QUEUE_ITEM_T item)
 {
     if(q->length == q->capacity)
     {
-        size_t old_cap = q->capacity;
-        q->capacity = q->capacity*2;
-        q->items = (QUEUE_ITEM_T*) realloc(q->items, sizeof(QUEUE_ITEM_T) * (q->capacity));
-        assert(q->items != NULL);
-        // Copy elements that had to wrap past end,
-        // to new space available at the end.
-        size_t i, old_pos, new_pos;
-        for(i=0; i<(q->length); i++)
-        {
-            old_pos = qpos_to_apos(i, q->start, old_cap);
-            new_pos = qpos_to_apos(i, q->start, q->capacity);
-            q->items[new_pos] = q->items[old_pos];
-        }
+        queue_increase_capacity(q);
     }
     assert(q->length < q->capacity);
     size_t arr_pos = qpos_to_apos(q->length, q->start, q->capacity);
@@ -135,7 +125,9 @@ int queue_empty(const queue_t * const q)
 // and queue that starts at element 2 in internal array:
 //     0 1 2 3 4 <- internal array positions
 //     3 4 0 1 2 <- queue elements
-size_t qpos_to_apos(const size_t que_n, const size_t que_start, const size_t arr_capacity)
+size_t qpos_to_apos(const size_t que_n,
+    const size_t que_start,
+    const size_t arr_capacity)
 {
     if(que_n < 0) assert(0);
     if(que_n >= arr_capacity) assert(0);
@@ -150,6 +142,26 @@ size_t qpos_to_apos(const size_t que_n, const size_t que_start, const size_t arr
     assert(r < arr_capacity);
 
     return r;
+}
+
+
+// Helper function for increasing capacity of internal array.
+void queue_increase_capacity(queue_t * const q)
+{
+    size_t old_cap = q->capacity;
+    q->capacity *= 2;
+    q->items = (QUEUE_ITEM_T*)
+        realloc(q->items, sizeof(QUEUE_ITEM_T) * q->capacity);
+    assert(q->items != NULL);
+    // Copy elements that had to wrap past end,
+    // to new space available at the end.
+    size_t i, old_pos, new_pos;
+    for(i=0; i<(q->length); i++)
+    {
+        old_pos = qpos_to_apos(i, q->start, old_cap);
+        new_pos = qpos_to_apos(i, q->start, q->capacity);
+        q->items[new_pos] = q->items[old_pos];
+    }
 }
 
 
