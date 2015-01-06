@@ -1,17 +1,22 @@
 // Queue implementation.
-// QUEUE_ITEM_T macro has to be defined before inclusion.
-// QUEUE_INIT_CAPACITY macro can be defined to change initial capacity.
-//
-// Defines struct typedefed
-//  queue_t
-//
-// And following list of functions to operate on it:
-//  void queue_init(queue_t * q)
-//  void queue_clear(queue_t * q)
-//  void queue_push_back(queue_t * const q, QUEUE_ITEM_T item)
-//  void queue_drop_head(queue_t * q)
-//  QUEUE_ITEM_T queue_peek_n(const queue_t * q, const size_t n)
-//  int queue_empty(const queue_t * q)
+///
+// Macros for configuration:
+//  QUEUE_ITEM_T - element type of the queue (required)
+//  QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
+///
+// Defined names for queue usage:
+//  queue_t - typedef of queue struct
+//  queue_t.length - number of items in the queue (size_t).
+//  void queue_init(queue_t*) - initialize queue.
+//  void queue_clear(queue_t*) - free resources, make queue unusable.
+//  void queue_push_back(queue_t*, QUEUE_ITEM_T) - Add item onto queue's back.
+//  void queue_drop_head(queue_t*) - Remove item from queue's head.
+//  QUEUE_ITEM_T queue_peek_n(queue_t*, size_t) - Return certain element.
+//  int queue_empty(queue_t*) - Check if queue is empty.
+///
+// Limitation:
+//  It is impossible to have two queues with distinct element datatypes.
+//  (but possible to have more then one queue with same element datatype)
 
 
 #ifndef token_queue_h
