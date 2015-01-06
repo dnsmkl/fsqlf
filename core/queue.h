@@ -96,6 +96,7 @@ void queue_drop_head(queue_t * const q)
 {
     assert(q->length > 0);
     q->start++;
+    if(q->start == q->capacity) q->start = 0; // wrap past the end
     q->length--;
 }
 

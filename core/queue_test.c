@@ -108,6 +108,50 @@ void test_queue()
 }
 
 
+
+void test_queue_internals()
+{
+    queue_t tq;
+    queue_init(&tq);
+
+    queue_push_back(&tq, 0);
+    queue_push_back(&tq, 1);
+
+    assert(tq.start == 0);
+    assert(tq.length == 2);
+    assert(tq.capacity == 2);
+    assert(queue_peek_n(&tq, 0) == 0);
+    assert(queue_peek_n(&tq, 1) == 1);
+
+    queue_drop_head(&tq);
+    queue_push_back(&tq, 2);
+
+    assert(tq.start == 1);
+    assert(tq.length == 2);
+    assert(tq.capacity == 2);
+    assert(queue_peek_n(&tq, 0) == 1);
+    assert(queue_peek_n(&tq, 1) == 2);
+
+    queue_drop_head(&tq);
+    queue_push_back(&tq, 3);
+
+    assert(tq.start == 0);
+    assert(tq.length == 2);
+    assert(tq.capacity == 2);
+    assert(queue_peek_n(&tq, 0) == 2);
+    assert(queue_peek_n(&tq, 1) == 3);
+
+    queue_drop_head(&tq);
+    queue_push_back(&tq, 4);
+
+    assert(tq.start == 1);
+    assert(tq.length == 2);
+    assert(tq.capacity == 2);
+    assert(queue_peek_n(&tq, 0) == 3);
+    assert(queue_peek_n(&tq, 1) == 4);
+}
+
+
 void test_qpos_to_apos()
 {
     size_t i;
@@ -129,6 +173,7 @@ int main()
 {
     test_queue();
     test_qpos_to_apos();
+    test_queue_internals();
     return 0;
 }
 
