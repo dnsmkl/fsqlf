@@ -87,10 +87,10 @@ void read_cli_options(int argc, char **argv)
             }
         } else if( ARGV_MATCH(i,"-i") ){
             if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
-	    if(  !(yyin=fopen(argv[i],"r"))  ) FAIL_WITH_ERROR(1,"Error opening input file: %s", argv[i]);
+        if(  !(yyin=fopen(argv[i],"r"))  ) FAIL_WITH_ERROR(1,"Error opening input file: %s", argv[i]);
         } else if( ARGV_MATCH(i,"-o") ){
             if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);
-	    if(  !(yyout=fopen(argv[i],"w+"))  ) FAIL_WITH_ERROR(1,"Error opening output file: %s", argv[i]);
+        if(  !(yyout=fopen(argv[i],"w+"))  ) FAIL_WITH_ERROR(1,"Error opening output file: %s", argv[i]);
         } else if( ARGV_MATCH(i,"--config-file") )
         {
             if( ++i >= argc) FAIL_WITH_ERROR(1,"Missing value for option : %s", argv[i-1]);

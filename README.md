@@ -89,9 +89,9 @@ If you use Linux and have installed same programs as I do (see section 2.1), the
 - paranthesis in restrictions (e.g. AND (a=1 OR b=1) )
 - improve GUI
 - make 3 configuration modes:
-	none-use-file-config
-	detailed-as-in-file
-	select-templates-of-configurations
+    none-use-file-config
+    detailed-as-in-file
+    select-templates-of-configurations
 - improve analytical function formatting
 - alignment of comments
 - in equality condition align all comparison signs ('=' , '<>', etc.)
