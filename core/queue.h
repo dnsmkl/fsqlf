@@ -5,6 +5,7 @@
 //  QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
 ///
 // Defined names for queue usage:
+// (other names should not be used)
 //  queue_t - typedef of queue struct
 //  queue_t.length - number of items in the queue (size_t).
 //  void queue_init(queue_t*) - initialize queue.
@@ -32,7 +33,7 @@
 #endif
 
 
-#ifndef QUEUE_INIT_CAPACITY // ability to override default value
+#ifndef QUEUE_INIT_CAPACITY
 #define QUEUE_INIT_CAPACITY (100)
 #endif
 
@@ -40,7 +41,7 @@
 typedef struct
 {
     // Internal array for item storage.
-    // (see queue_array_pos() for details about positions used for queue items)
+    // (see queue_array_pos() for info about positions used for queue items)
     QUEUE_ITEM_T * items;
 
     // Position of first queue item in internal array.
@@ -49,7 +50,7 @@ typedef struct
     // Size of the queue - number of elements currently in the queue.
     size_t length;
 
-    // Size of internal array- max number of elements possible without realloc.
+    // Size of internal array - max number of elements possible without realloc.
     size_t capacity;
 } queue_t;
 
@@ -96,7 +97,7 @@ void queue_drop_head(queue_t * const q)
 {
     assert(q->length > 0);
     q->start++;
-    if(q->start == q->capacity) q->start = 0; // wrap past the end
+    if(q->start == q->capacity) q->start = 0; // Wrap past the end.
     q->length--;
 }
 
