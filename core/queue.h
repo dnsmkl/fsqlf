@@ -58,7 +58,7 @@ typedef struct
 size_t qpos_to_apos(size_t que_n, size_t que_start, size_t arr_capacity);
 
 
-void queue_init(queue_t * q)
+void queue_init(queue_t * const q)
 {
     q->length = 0;
     q->start = 0;
@@ -68,7 +68,7 @@ void queue_init(queue_t * q)
 }
 
 
-void queue_clear(queue_t * q)
+void queue_clear(queue_t * const q)
 {
     q->length = 0;
     q->start = 0;
@@ -77,7 +77,7 @@ void queue_clear(queue_t * q)
 }
 
 
-void queue_push_back(queue_t * const q, QUEUE_ITEM_T item)
+void queue_push_back(queue_t * const q, const QUEUE_ITEM_T item)
 {
     if(q->length == q->capacity)
     {
@@ -102,7 +102,7 @@ void queue_push_back(queue_t * const q, QUEUE_ITEM_T item)
 }
 
 
-void queue_drop_head(queue_t * q)
+void queue_drop_head(queue_t * const q)
 {
     assert(q->length > 0);
     q->start++;
@@ -110,7 +110,7 @@ void queue_drop_head(queue_t * q)
 }
 
 
-QUEUE_ITEM_T queue_peek_n(const queue_t * q, const size_t n)
+QUEUE_ITEM_T queue_peek_n(const queue_t * const q, const size_t n)
 {
     assert(n < q->length);
     assert(q->length <= q->capacity);
@@ -119,7 +119,7 @@ QUEUE_ITEM_T queue_peek_n(const queue_t * q, const size_t n)
 }
 
 
-int queue_empty(const queue_t * q)
+int queue_empty(const queue_t * const q)
 {
     return q->length == 0;
 }
@@ -135,7 +135,7 @@ int queue_empty(const queue_t * q)
 // and queue that starts at element 2 in internal array:
 //     0 1 2 3 4 <- internal array positions
 //     3 4 0 1 2 <- queue elements
-size_t qpos_to_apos(size_t que_n, size_t que_start, size_t arr_capacity)
+size_t qpos_to_apos(const size_t que_n, const size_t que_start, const size_t arr_capacity)
 {
     if(que_n < 0) assert(0);
     if(que_n >= arr_capacity) assert(0);
