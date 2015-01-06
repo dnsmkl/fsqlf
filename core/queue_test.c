@@ -171,9 +171,9 @@ void test_queue_array_pos()
 
 int main()
 {
-    test_queue();
     test_queue_array_pos();
     test_queue_internals();
+    test_queue();
     return 0;
 }
 
