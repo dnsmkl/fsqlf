@@ -152,27 +152,27 @@ void test_queue_internals()
 }
 
 
-void test_qpos_to_apos()
+void test_queue_array_pos()
 {
     size_t i;
-    for(i=0; i<10; i++) assert(qpos_to_apos(i, 0, 10)==i);
+    for(i=0; i<10; i++) assert(queue_array_pos(i, 0, 10)==i);
 
     // Lets imagine internal array of capacity 5
     // and queue that starts at element 2 in internal array:
     //     0 1 2 3 4 <- internal array positions
     //     3 4 0 1 2 <- queue elements
-    assert(qpos_to_apos(0, 2, 5)==2);
-    assert(qpos_to_apos(1, 2, 5)==3);
-    assert(qpos_to_apos(2, 2, 5)==4);
-    assert(qpos_to_apos(3, 2, 5)==0);
-    assert(qpos_to_apos(4, 2, 5)==1);
+    assert(queue_array_pos(0, 2, 5)==2);
+    assert(queue_array_pos(1, 2, 5)==3);
+    assert(queue_array_pos(2, 2, 5)==4);
+    assert(queue_array_pos(3, 2, 5)==0);
+    assert(queue_array_pos(4, 2, 5)==1);
 }
 
 
 int main()
 {
     test_queue();
-    test_qpos_to_apos();
+    test_queue_array_pos();
     test_queue_internals();
     return 0;
 }

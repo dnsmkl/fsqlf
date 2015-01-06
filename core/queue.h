@@ -40,7 +40,7 @@
 typedef struct
 {
     // Internal array for item storage.
-    // (see qpos_to_apos() for details about positions used for queue items)
+    // (see queue_array_pos() for details about positions used for queue items)
     QUEUE_ITEM_T * items;
 
     // Position of first queue item in internal array.
@@ -54,8 +54,8 @@ typedef struct
 } queue_t;
 
 
-// Helper function for converting between internal array and queue positions.
-size_t qpos_to_apos(size_t que_n, size_t que_start, size_t arr_capacity);
+// Helper function for converting queue position to internal array position.
+size_t queue_array_pos(size_t que_n, size_t que_start, size_t arr_capacity);
 // Helper function for increasing capacity of internal array.
 void queue_increase_capacity(queue_t * q);
 
@@ -86,7 +86,7 @@ void queue_push_back(queue_t * const q, const QUEUE_ITEM_T item)
         queue_increase_capacity(q);
     }
     assert(q->length < q->capacity);
-    size_t arr_pos = qpos_to_apos(q->length, q->start, q->capacity);
+    size_t arr_pos = queue_array_pos(q->length, q->start, q->capacity);
     q->items[arr_pos] = item;
     q->length++;
 }
@@ -105,7 +105,7 @@ QUEUE_ITEM_T queue_peek_n(const queue_t * const q, const size_t n)
 {
     assert(n < q->length);
     assert(q->length <= q->capacity);
-    size_t arr_pos = qpos_to_apos(n, q->start, q->capacity);
+    size_t arr_pos = queue_array_pos(n, q->start, q->capacity);
     return q->items[arr_pos];
 }
 
@@ -116,7 +116,7 @@ int queue_empty(const queue_t * const q)
 }
 
 
-// Helper function for converting between internal array and queue positions.
+// Helper function for converting queue position to internal array position.
 // Queue is implemented in array, where queue can start not at zero
 // and elements can wrap past the end.
 // (without such wrapping capabilities
@@ -126,7 +126,7 @@ int queue_empty(const queue_t * const q)
 // and queue that starts at element 2 in internal array:
 //     0 1 2 3 4 <- internal array positions
 //     3 4 0 1 2 <- queue elements
-size_t qpos_to_apos(const size_t que_n,
+size_t queue_array_pos(const size_t que_n,
     const size_t que_start,
     const size_t arr_capacity)
 {
@@ -159,8 +159,8 @@ void queue_increase_capacity(queue_t * const q)
     size_t i, old_pos, new_pos;
     for(i=0; i<(q->length); i++)
     {
-        old_pos = qpos_to_apos(i, q->start, old_cap);
-        new_pos = qpos_to_apos(i, q->start, q->capacity);
+        old_pos = queue_array_pos(i, q->start, old_cap);
+        new_pos = queue_array_pos(i, q->start, q->capacity);
         q->items[new_pos] = q->items[old_pos];
     }
 }
