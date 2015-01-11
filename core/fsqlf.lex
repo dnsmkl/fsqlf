@@ -14,7 +14,7 @@ void debug_stchange(int);
 void debug_match(char*);
 
 #define ITEM_T int
-#include "stack.h"
+#include "../utils/stack/stack.h"
 int_stack state_stack;
 }
 

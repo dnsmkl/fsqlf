@@ -26,7 +26,7 @@ pair make_pair(int l, int r)
 
 
 #define ITEM_T pair
-#include "stack.h"
+#include "../utils/stack/stack.h"
 pair_stack sub_openings;
 
 
