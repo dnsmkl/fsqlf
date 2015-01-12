@@ -59,7 +59,7 @@ wx_fsqlf.o: gui/basic_notepad.hpp
 basic_notepad.o: gui/dnd_target.hpp  gui/license_text.h
 
 gui/license_text.h: LICENSE
-	tools/text_to_header.sh  $<  $@
+	buildtools/text_to_header.sh  $<  $@
 
 
 
