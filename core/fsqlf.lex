@@ -6,15 +6,15 @@ Helped to learn about flex a bit
 
 %top{
     /* This code goes at the "top" of the generated file. */
-#include <stdio.h>
-#include "global_variables.h"
-#include "print_keywords.h"
-#include "settings.h"
+#include <stdio.h>              // fprintf, stdin, stdout
+#include "global_variables.h"   // pair_stack sub_openings, currindent, left_p, right_p
+#include "print_keywords.h"     // handle_kw, handle_text
+#include "settings.h"           // All kw settings as global variables. init_all_settings
 void debug_stchange(int);
 void debug_match(char*);
 
 #define ITEM_T int
-#include "../utils/stack/stack.h"
+#include "../utils/stack/stack.h" // int_stack
 int_stack state_stack;
 }
 
@@ -258,17 +258,17 @@ END (?i:end)
 
 
 #include "debuging.h"
-#include "cli.h"
+#include "cli.h"        // read_configs, read_cli_options
 
 int main(int argc, char **argv)
 {
-    // initialise with STD I/O, later changed by command line options (if any)
+    // Initialise with STD I/O (later can be changed by command line options).
     yyin  = stdin;
     yyout = stdout;
 
-    init_all_settings();            // init default configs
-    read_configs();                 // read configs from file
-    read_cli_options(argc,argv);    // read configs from command line
+    init_all_settings();            // Init default configs.
+    read_configs();                 // Read configs from file.
+    read_cli_options(argc, argv);   // Read configs from command line.
 
     while (yylex () != 0) ;
 

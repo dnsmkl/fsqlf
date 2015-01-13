@@ -2,12 +2,12 @@
 #define CONF_FILE_READ_H
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>   // For stat().
+#include <stdio.h>      // fopen, fclose
+#include <stdlib.h>     // strtol
+#include <string.h>     // strcmp, strchr, strncat, strncpy
+#include <sys/stat.h>   // stat
 
-#include "settings.h"
+#include "settings.h"   // All kw settings as global variables.
 
 
 int file_exists(char *filename)
@@ -19,8 +19,8 @@ int file_exists(char *filename)
 
 void setting_value(char * setting_name, int * setting_values)
 {
-    #define T_KW_SETTINGS_MACRO( NAME, ... )    \
-    if( strcmp(#NAME,setting_name) == 0 ){      \
+    #define T_KW_SETTINGS_MACRO(NAME, ...)      \
+    if (strcmp(#NAME, setting_name) == 0) {      \
         NAME.before.new_line    = setting_values[0];  \
         NAME.before.indent      = setting_values[1];  \
         NAME.before.space       = setting_values[2];  \
@@ -33,41 +33,43 @@ void setting_value(char * setting_name, int * setting_values)
 }
 
 
-#define VALUE_NUMBER (6)
-#define BUFFER_SIZE (100)
-#define READ_SUCCESSFULL 0
-#define READ_FAILED 1
+#define READ_SUCCESSFULL (0)
+#define READ_FAILED (1)
 // Read specified config file
 int read_conf_file(const char* file_pathname)
 {
-    FILE * config_file;
-    char line[BUFFER_SIZE+1] , setting_name[BUFFER_SIZE+1];
-    int setting_values[VALUE_NUMBER];
-    char * chr_ptr1;
-    int i;
+    // TODO: increase line length, test for overrun.
+    const int BUFFER_SIZE = 100;
+    const int VALUE_COUNT = 6;
 
-    if(!(config_file=fopen(file_pathname,"r")))
-    {
+    FILE * config_file;
+    config_file = fopen(file_pathname, "r");
+    if (!config_file) {
         return READ_FAILED;
     }
 
-    while( fgets( line, BUFFER_SIZE, config_file ) )
-    {
+    char line[BUFFER_SIZE+1], setting_name[BUFFER_SIZE+1];
+    char *chr_ptr1;
+
+    while (fgets(line, BUFFER_SIZE, config_file)) {
         // Lines starting with '#' are comments.
-        if(line[0]=='#') continue;
+        if (line[0] == '#') continue;
 
         // Read setting name. It starts at line start and ends with space.
-        if( !(chr_ptr1=strchr(line,' ')) ) continue;
-        chr_ptr1[0]='\0';
-        strncpy( setting_name, line, BUFFER_SIZE );
+        chr_ptr1 = strchr(line, ' ');
+        if (!chr_ptr1) continue;
+        chr_ptr1[0] = '\0';
+        strncpy(setting_name, line, BUFFER_SIZE);
 
         // Read setting values.
-        for(i = 0; i < VALUE_NUMBER; i++){
+        int i;
+        int setting_values[VALUE_COUNT];
+        for (i = 0; i < VALUE_COUNT; i++) {
             setting_values[i] = strtol( chr_ptr1+1, &chr_ptr1, 10 );
         }
 
         // Assign read values to global variables.
-        setting_value(setting_name,setting_values);
+        setting_value(setting_name, setting_values);
     }
 
     fclose(config_file);
@@ -83,16 +85,17 @@ int read_conf_file(const char* file_pathname)
 // TODO: rename to read_default_conf_files
 int read_configs()
 {
-    if(file_exists(CONFIG_FILE)) // check file in working directory
-    {
+    // First try file in working directory
+    if (file_exists(CONFIG_FILE)) {
         return read_conf_file(CONFIG_FILE);
     }
     #ifndef _WIN32
         // in non-windows (unix/linux) also try folder in user-home directory
-        #define PATH_STRING_MAX_SIZE (200)
-        char full_path[PATH_STRING_MAX_SIZE+1];
-        strncpy(full_path, getenv("HOME") , PATH_STRING_MAX_SIZE);
-        strncat(full_path, "/.fsqlf/" CONFIG_FILE ,PATH_STRING_MAX_SIZE - strlen(full_path));
+        // TODO: increase length, check for overflow.
+        const size_t MAX_LEN = 200;
+        char full_path[MAX_LEN + 1];
+        strncpy(full_path, getenv("HOME"), MAX_LEN);
+        strncat(full_path, "/.fsqlf/" CONFIG_FILE, MAX_LEN - strlen(full_path));
         return read_conf_file(full_path);
     #endif
 }

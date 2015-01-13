@@ -1,7 +1,9 @@
 #ifndef debuging_h
 #define debuging_h
 
+
 #include "settings.h"
+
 
 #define DEBUGNONE (0)
 #define DEBUGSTATES (1)
@@ -14,23 +16,25 @@ int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 void debug_p()
 {
-    if(debug_level & DEBUGPARCOUNTS)
-        printf("\n\t***  '('=%d; ')'=%d; sub_openings.length=%d)  ***\n", left_p, right_p, sub_openings.length);
+    if (debug_level & DEBUGPARCOUNTS) {
+        printf("\n\t***  '('=%d; ')'=%d; sub_openings.length=%d)  ***\n",
+            left_p, right_p, sub_openings.length);
+    }
 }
 
 
 void debug_match(char * debugstring)
 {
-    if(debug_level & DEBUGMATCHES)
+    if (debug_level & DEBUGMATCHES) {
         printf("\n\t**   %s   **\n", debugstring);
+    }
 }
 
 
 char* state_to_char(int state)
 {
     char* state_str;
-    switch(state)
-    {
+    switch (state) {
         case INITIAL:   state_str="INITIAL"   ; break;
         case stSELECT:  state_str="stSELECT"  ; break;
         case stFROM:    state_str="stFROM"    ; break;
@@ -57,10 +61,12 @@ void debug_stchange(int newstate_int)
     char* currentstate;
     char* newstate;
 
-    currentstate=state_to_char(YY_START);
-    newstate=state_to_char(newstate_int);
+    currentstate = state_to_char(YY_START);
+    newstate = state_to_char(newstate_int);
 
-    if(debug_level & DEBUGSTATES) printf("\n\t*   %s->%s   *\n", currentstate,newstate);
+    if (debug_level & DEBUGSTATES) {
+        printf("\n\t*   %s->%s   *\n", currentstate,newstate);
+    }
 }
 
 
