@@ -37,7 +37,7 @@ typedef struct
 void debug_p(); // TODO : make separate .c and .h files
 
 
-// Initialize t_kw_settings variables.
+// Declase t_kw_settings variables.
 #define T_KW_SETTINGS_MACRO( NAME , ... ) \
     t_kw_settings NAME ;
 #include "t_kw_settings_list.def"
