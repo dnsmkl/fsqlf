@@ -40,16 +40,6 @@ typedef struct
 } t_kw_settings;
 
 
-void debug_kw_settings(t_kw_settings s)
-{
-    extern FILE * yyout;
-    fprintf(yyout, "\nspace_before %d , tab_before %d , nl_before %d , "
-        "space_after %d , tab_after %d , nl_after %d\n , text %s ",
-        s.before.space, s.before.indent, s.before.new_line, s.after.space,
-        s.after.indent, s.after.new_line, s.text);
-}
-
-
 void debug_p(); // TODO : make separate .c and .h files
 
 
