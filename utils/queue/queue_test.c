@@ -13,7 +13,7 @@ void test_queue()
 
     QUEUE_ITEM_T tmp;
 
-    queue_t tq;
+    struct queue tq;
 
     // At first
     queue_init(&tq);
@@ -25,7 +25,7 @@ void test_queue()
     // .. queue should become non-empty
     // .. and length should be 1.
     assert(!queue_empty(&tq));
-    assert((tq.length)==1);
+    assert((tq.length) == 1);
     assert(queue_peek_n(&tq, 0) == 11);
 
     // Push_back some more items
@@ -96,14 +96,14 @@ void test_queue()
     assert(queue_peek_n(&tq, 7) == 44);
 
     // Now dropp till it's empty.
-    queue_drop_head(&tq); assert(tq.length==7);
-    queue_drop_head(&tq); assert(tq.length==6);
-    queue_drop_head(&tq); assert(tq.length==5);
-    queue_drop_head(&tq); assert(tq.length==4);
-    queue_drop_head(&tq); assert(tq.length==3);
-    queue_drop_head(&tq); assert(tq.length==2);
-    queue_drop_head(&tq); assert(tq.length==1);
-    queue_drop_head(&tq); assert(tq.length==0);
+    queue_drop_head(&tq); assert(tq.length == 7);
+    queue_drop_head(&tq); assert(tq.length == 6);
+    queue_drop_head(&tq); assert(tq.length == 5);
+    queue_drop_head(&tq); assert(tq.length == 4);
+    queue_drop_head(&tq); assert(tq.length == 3);
+    queue_drop_head(&tq); assert(tq.length == 2);
+    queue_drop_head(&tq); assert(tq.length == 1);
+    queue_drop_head(&tq); assert(tq.length == 0);
     assert(queue_empty(&tq));
 }
 
@@ -111,7 +111,7 @@ void test_queue()
 
 void test_queue_internals()
 {
-    queue_t tq;
+    struct queue tq;
     queue_init(&tq);
 
     queue_push_back(&tq, 0);
@@ -155,17 +155,17 @@ void test_queue_internals()
 void test_queue_array_pos()
 {
     size_t i;
-    for(i=0; i<10; i++) assert(queue_array_pos(i, 0, 10)==i);
+    for (i = 0; i < 10; i++) assert(queue_array_pos(i, 0, 10) == i);
 
     // Lets imagine internal array of capacity 5
     // and queue that starts at element 2 in internal array:
     //     0 1 2 3 4 <- internal array positions
     //     3 4 0 1 2 <- queue elements
-    assert(queue_array_pos(0, 2, 5)==2);
-    assert(queue_array_pos(1, 2, 5)==3);
-    assert(queue_array_pos(2, 2, 5)==4);
-    assert(queue_array_pos(3, 2, 5)==0);
-    assert(queue_array_pos(4, 2, 5)==1);
+    assert(queue_array_pos(0, 2, 5) == 2);
+    assert(queue_array_pos(1, 2, 5) == 3);
+    assert(queue_array_pos(2, 2, 5) == 4);
+    assert(queue_array_pos(3, 2, 5) == 0);
+    assert(queue_array_pos(4, 2, 5) == 1);
 }
 
 

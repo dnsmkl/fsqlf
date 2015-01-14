@@ -15,7 +15,7 @@ void debug_match(char*);
 
 #define ITEM_T int
 #include "../utils/stack/stack.h" // int_stack
-int_stack state_stack;
+struct int_stack state_stack;
 }
 
 
@@ -189,8 +189,8 @@ END (?i:end)
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     handle_kw(yyout,"(",kw_left_p_sub); handle_kw(yyout,yytext,kw_select);};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
-    if( int_stack_peek(&state_stack) == stFROM
-        || int_stack_peek(&state_stack) == stJOIN )
+    if (int_stack_peek(&state_stack) == stFROM
+        || int_stack_peek(&state_stack) == stJOIN)
     { BEGIN_STATE(int_stack_peek(&state_stack)); handle_kw(yyout,"(",kw_left_p    ); handle_text(yyout,yytext);}
     else
     { BEGIN_STATE(stIN_CONSTLIST); handle_kw(yyout,"(",kw_left_p    ); handle_text(yyout,yytext); }
@@ -204,8 +204,8 @@ END (?i:end)
 
 {RIGHTP}    {
                 POP_STATE();
-                if(!pair_stack_empty(&sub_openings)
-                    && left_p - pair_stack_peek(&sub_openings).left == (right_p+1) - pair_stack_peek(&sub_openings).right - 1 ){
+                if (!pair_stack_empty(&sub_openings) &&
+                    left_p - pair_stack_peek(&sub_openings).left == (right_p+1) - pair_stack_peek(&sub_openings).right - 1) {
                     handle_kw(yyout,yytext,kw_right_p_sub);
                 } else {
                     debug_match("<wtf-leftp>");
@@ -243,7 +243,7 @@ END (?i:end)
 
 <<EOF>> {
             fprintf(yyout,"\n");
-            switch(YY_START){
+            switch (YY_START) {
                 case stCOMMENTML: fprintf(yyout,"--unterminated comment \n"); break;
                 case stSTRING: fprintf(yyout,"--unterminated  string\n"); break;
                 default: ;
@@ -270,7 +270,7 @@ int main(int argc, char **argv)
     read_configs();                 // Read configs from file.
     read_cli_options(argc, argv);   // Read configs from command line.
 
-    while (yylex () != 0) ;
+    while (yylex() != 0) ;
 
     return 0;
 }

@@ -35,7 +35,7 @@ pair make_pair(int l, int r)
 
 #define ITEM_T pair
 #include "../utils/stack/stack.h"
-pair_stack sub_openings;
+struct pair_stack sub_openings;
 
 
 void begin_SUB()

@@ -6,7 +6,8 @@
 #include "settings.h"   // All kw settings as global variables. calculate_spacing
 
 
-static void print_nlines(FILE * yyout, int count){
+static void print_nlines(FILE * yyout, int count)
+{
     int i;
     for (i = 0; i < count; i++) {
         fputs("\n", yyout);
@@ -14,7 +15,8 @@ static void print_nlines(FILE * yyout, int count){
 }
 
 
-static void print_tabs(FILE * yyout, int count){
+static void print_tabs(FILE * yyout, int count)
+{
     int i;
     for (i = 0; i < count; i++) {
         fputs(tab_string, yyout);
@@ -22,7 +24,8 @@ static void print_tabs(FILE * yyout, int count){
 }
 
 
-static void print_spaces(FILE * yyout, int count){
+static void print_spaces(FILE * yyout, int count)
+{
     int i;
     for (i = 0; i < count; i++) {
         fputs(" ", yyout);
@@ -30,7 +33,8 @@ static void print_spaces(FILE * yyout, int count){
 }
 
 
-static void print_struct_spacing_count(FILE * yyout, spacing_counts s){
+static void print_struct_spacing_count(FILE * yyout, spacing_counts s)
+{
     print_nlines(yyout, s.new_line);
     print_tabs(yyout, s.indent);
     print_spaces(yyout, s.space);

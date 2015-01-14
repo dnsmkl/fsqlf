@@ -6,14 +6,15 @@
 ///
 // Defined names for queue usage:
 // (other names should not be used)
-//  queue_t - typedef of queue struct
-//  queue_t.length - number of items in the queue (size_t).
-//  void queue_init(queue_t*) - initialize queue.
-//  void queue_clear(queue_t*) - free resources, make queue unusable.
-//  void queue_push_back(queue_t*, QUEUE_ITEM_T) - Add item onto queue's back.
-//  void queue_drop_head(queue_t*) - Remove item from queue's head.
-//  QUEUE_ITEM_T queue_peek_n(queue_t*, size_t) - Return certain element.
-//  int queue_empty(queue_t*) - Check if queue is empty.
+//  struct queue - queue struct
+//  struct queue.length - number of items in the queue (size_t).
+// Queue manipulation:
+//  void queue_init(struct queue*) - initialize queue.
+//  void queue_clear(struct queue*) - free resources, make queue unusable.
+//  void queue_push_back(struct queue*, QUEUE_ITEM_T) - Add item onto the back.
+//  void queue_drop_head(struct queue*) - Remove item from head.
+//  QUEUE_ITEM_T queue_peek_n(struct queue*, size_t) - Return certain element.
+//  int queue_empty(struct queue*) - Check if queue is empty.
 ///
 // Limitation:
 //  It is impossible to have two queues with distinct element datatypes.
@@ -38,7 +39,7 @@
 #endif
 
 
-typedef struct
+struct queue
 {
     // Internal array for item storage.
     // (see queue_array_pos() for info about positions used for queue items)
@@ -52,16 +53,16 @@ typedef struct
 
     // Size of internal array - max number of elements possible without realloc.
     size_t capacity;
-} queue_t;
+};
 
 
 // Helper function for converting queue position to internal array position.
 size_t queue_array_pos(size_t que_n, size_t que_start, size_t arr_capacity);
 // Helper function for increasing capacity of internal array.
-void queue_increase_capacity(queue_t * q);
+void queue_increase_capacity(struct queue * q);
 
 
-void queue_init(queue_t * const q)
+void queue_init(struct queue * const q)
 {
     q->length = 0;
     q->start = 0;
@@ -71,7 +72,7 @@ void queue_init(queue_t * const q)
 }
 
 
-void queue_clear(queue_t * const q)
+void queue_clear(struct queue * const q)
 {
     q->length = 0;
     q->start = 0;
@@ -80,10 +81,9 @@ void queue_clear(queue_t * const q)
 }
 
 
-void queue_push_back(queue_t * const q, const QUEUE_ITEM_T item)
+void queue_push_back(struct queue * const q, const QUEUE_ITEM_T item)
 {
-    if(q->length == q->capacity)
-    {
+    if (q->length == q->capacity) {
         queue_increase_capacity(q);
     }
     assert(q->length < q->capacity);
@@ -93,16 +93,16 @@ void queue_push_back(queue_t * const q, const QUEUE_ITEM_T item)
 }
 
 
-void queue_drop_head(queue_t * const q)
+void queue_drop_head(struct queue * const q)
 {
     assert(q->length > 0);
     q->start++;
-    if(q->start == q->capacity) q->start = 0; // Wrap past the end.
+    if (q->start == q->capacity) q->start = 0; // Wrap past the end.
     q->length--;
 }
 
 
-QUEUE_ITEM_T queue_peek_n(const queue_t * const q, const size_t n)
+QUEUE_ITEM_T queue_peek_n(const struct queue * const q, const size_t n)
 {
     assert(n < q->length);
     assert(q->length <= q->capacity);
@@ -111,7 +111,7 @@ QUEUE_ITEM_T queue_peek_n(const queue_t * const q, const size_t n)
 }
 
 
-int queue_empty(const queue_t * const q)
+int queue_empty(const struct queue * const q)
 {
     return q->length == 0;
 }
@@ -131,9 +131,9 @@ size_t queue_array_pos(const size_t que_n,
     const size_t que_start,
     const size_t arr_capacity)
 {
-    if(que_n < 0) assert(0);
-    if(que_n >= arr_capacity) assert(0);
-    if(arr_capacity == 0) assert(0);
+    if (que_n < 0) assert(0);
+    if (que_n >= arr_capacity) assert(0);
+    if (arr_capacity == 0) assert(0);
 
     size_t size_till_end = arr_capacity-que_start;
     size_t r = que_n < size_till_end ?
@@ -148,7 +148,7 @@ size_t queue_array_pos(const size_t que_n,
 
 
 // Helper function for increasing capacity of internal array.
-void queue_increase_capacity(queue_t * const q)
+void queue_increase_capacity(struct queue * const q)
 {
     size_t old_cap = q->capacity;
     q->capacity *= 2;
@@ -158,8 +158,7 @@ void queue_increase_capacity(queue_t * const q)
     // Copy elements that had to wrap past end,
     // to new space available at the end.
     size_t i, old_pos, new_pos;
-    for(i=0; i<(q->length); i++)
-    {
+    for (i = 0; i < (q->length); i++) {
         old_pos = queue_array_pos(i, q->start, old_cap);
         new_pos = queue_array_pos(i, q->start, q->capacity);
         q->items[new_pos] = q->items[old_pos];
