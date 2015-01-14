@@ -8,15 +8,15 @@
 
 enum EventIds
 {
-    idSave = wxID_HIGHEST
-    ,idOpen
-    ,idExit
-    ,idAbout
-    ,idCut
-    ,idCopy
-    ,idPaste
-    ,idSelectAll
-    ,idMaxLen
+    idSave = wxID_HIGHEST,
+    idOpen,
+    idExit,
+    idAbout,
+    idCut,
+    idCopy,
+    idPaste,
+    idSelectAll,
+    idMaxLen
 };
 
 
@@ -38,13 +38,13 @@ END_EVENT_TABLE()
 
 
 BasicNotepad::BasicNotepad(const wxString title):
-    wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(650,500))
-    ,text_area(new wxTextCtrl(this, wxID_ANY, _(""), wxDefaultPosition
-        , wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE))
-    ,dnd_target(new DndTarget(this->text_area))
-    ,file_menu(new wxMenu())
-    ,edit_menu(new wxMenu())
-    ,help_menu(new wxMenu())
+    wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(650,500)),
+    text_area(new wxTextCtrl(this, wxID_ANY, _(""), wxDefaultPosition,
+        wxDefaultSize, wxTE_PROCESS_ENTER | wxTE_MULTILINE)),
+    dnd_target(new DndTarget(this->text_area)),
+    file_menu(new wxMenu()),
+    edit_menu(new wxMenu()),
+    help_menu(new wxMenu())
 {
     SetIcon(wxIcon(fsqlf_right));
     this->create_menubar();
@@ -88,14 +88,14 @@ void BasicNotepad::create_menubar()
 void BasicNotepad::onSave( wxCommandEvent &event)
 {
     wxFileDialog *saveDialog = new wxFileDialog(this, _("Save File~"), _(""), _(""), _("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxSAVE);
-    if( wxID_OK == saveDialog->ShowModal() ) this->text_area->SaveFile(saveDialog->GetPath());
+    if (wxID_OK == saveDialog->ShowModal()) this->text_area->SaveFile(saveDialog->GetPath());
 }
 
 
 void BasicNotepad::onOpen( wxCommandEvent &event)
 {
     wxFileDialog *openDialog = new wxFileDialog(this, _("Open File~"), _(""), _(""), _("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxOPEN);
-    if( wxID_OK == openDialog->ShowModal() ) this->text_area->LoadFile(openDialog->GetPath());
+    if (wxID_OK == openDialog->ShowModal()) this->text_area->LoadFile(openDialog->GetPath());
 }
 
 

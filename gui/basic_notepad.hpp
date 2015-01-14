@@ -1,6 +1,7 @@
 #ifndef BASIC_NOTEPAD_HPP
 #define BASIC_NOTEPAD_HPP
 
+
 #include <wx/wx.h>
 
 #include "dnd_target.hpp"

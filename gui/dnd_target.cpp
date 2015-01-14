@@ -1,8 +1,8 @@
 #include "dnd_target.hpp"
 
 
-bool DndTarget::OnDropFiles(wxCoord x, wxCoord y
-    , const wxArrayString &filenames)
+bool DndTarget::OnDropFiles(wxCoord x, wxCoord y,
+	const wxArrayString &filenames)
 {
     this->text_area->LoadFile(filenames[0]);
 }

@@ -1,6 +1,7 @@
 #ifndef WX_FSQLF_HPP
 #define WX_FSQLF_HPP
 
+
 #include <wx/wx.h>
 #include <wx/dir.h>
 #include <wx/font.h>
@@ -42,7 +43,7 @@ private:
 class MainApp : public wxApp
 {
 public:
-    virtual bool OnInit(){
+    virtual bool OnInit() {
         FsqlfGui *main = new FsqlfGui();
         main->Show(true);
 

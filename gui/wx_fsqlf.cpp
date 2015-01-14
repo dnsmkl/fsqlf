@@ -9,9 +9,9 @@
 
 enum EventIds
 {
-    idFormat = wxID_HIGHEST
-    ,idUnformat
-    ,idUseConfigNlOther
+    idFormat = wxID_HIGHEST,
+    idUnformat,
+    idUseConfigNlOther
 };
 
 
@@ -72,15 +72,16 @@ void FsqlfGui::create_options(wxNotebook* nb)
 }
 
 
-void add_newcheckbox(wxCheckBox* &result_checkbox
-    , wxSizer* parent_sizer
-    , wxString title
-    , bool default_val
-    , bool enabled = true, int id = -1)
+void add_newcheckbox(wxCheckBox* &result_checkbox,
+    wxSizer* parent_sizer,
+    wxString title,
+    bool default_val,
+    bool enabled = true,
+    int id = -1)
 {
     result_checkbox = new wxCheckBox(parent_sizer->GetContainingWindow(), id, title);
     result_checkbox->SetValue(default_val);
-    if( !enabled ) result_checkbox->Disable();
+    if (!enabled) result_checkbox->Disable();
     parent_sizer->Add(result_checkbox, 0, 0, 0);
 }
 
@@ -106,13 +107,13 @@ void FsqlfGui::create_options_nl_comma(wxSizer* parent_sizer)
 void FsqlfGui::create_options_nl_keywords(wxSizer* parent_sizer)
 {
     // Check boxes for : OR , AND , SELECT
-    wxStaticBox * box = new wxStaticBox(parent_sizer->GetContainingWindow()
-        , wxID_ANY, _("New line:[other]"));
+    wxStaticBox * box = new wxStaticBox(parent_sizer->GetContainingWindow(),
+            wxID_ANY, _("New line:[other]"));
     wxStaticBoxSizer* sizer = new wxStaticBoxSizer(box, wxVERTICAL);
     parent_sizer->Add(sizer,0,0,0);
 
-    add_newcheckbox(nl_use_config  , sizer, _("Use config")    , true , true
-        , idUseConfigNlOther);
+    add_newcheckbox(nl_use_config  , sizer, _("Use config")    , true , true,
+        idUseConfigNlOther);
     add_newcheckbox(nl_after_select, sizer, _("[select] after"), true , false);
     add_newcheckbox(nl_before_or   , sizer, _("[or] before")   , false, false);
     add_newcheckbox(nl_after_or    , sizer, _("[or] after")    , false, false);
@@ -128,9 +129,9 @@ void FsqlfGui::create_options_nl_major_sections(wxSizer* parent_sizer)
     choices[0] = _("Use Config File");
     choices[1] = _("1 New Line");
     choices[2] = _("2 New Lines");
-    nl_major_sections = new wxRadioBox(parent_sizer->GetContainingWindow(), wxID_ANY
-        , _("Major sections"), wxDefaultPosition, wxDefaultSize
-        , NUM_CHOICES, choices, 1, wxRA_SPECIFY_COLS);
+    nl_major_sections = new wxRadioBox(parent_sizer->GetContainingWindow(),
+        wxID_ANY, _("Major sections"), wxDefaultPosition, wxDefaultSize,
+        NUM_CHOICES, choices, 1, wxRA_SPECIFY_COLS);
     nl_major_sections->SetSelection(0);
     parent_sizer->Add(nl_major_sections,0,0,0);
 }
@@ -146,9 +147,9 @@ void FsqlfGui::create_options_text(wxSizer* parent_sizer)
     choices[1] = _("Upper (ABC)");
     choices[2] = _("Lower (abc)");
     choices[3] = _("Init (Abc)");
-    case_all_kw = new wxRadioBox(parent_sizer->GetContainingWindow(), wxID_ANY
-        , _("Keyword case"), wxDefaultPosition, wxDefaultSize
-        , 4, choices, 1, wxRA_SPECIFY_COLS);
+    case_all_kw = new wxRadioBox(parent_sizer->GetContainingWindow(), wxID_ANY,
+        _("Keyword case"), wxDefaultPosition, wxDefaultSize,
+        4, choices, 1, wxRA_SPECIFY_COLS);
     case_all_kw->SetSelection(1);
     parent_sizer->Add(case_all_kw,0,0,0);
 }
@@ -170,60 +171,51 @@ void FsqlfGui::onFormat(wxCommandEvent &event)
 
     wxString cmd;
     cmd = _(EXEC_PREFIX EXEC_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE);
-    switch( this->sel_comma_nl->GetSelection() ){
+    switch (this->sel_comma_nl->GetSelection()) {
         case 1: cmd << _("  --select-comma-newline before") ; break;
         case 2: cmd << _("  --select-comma-newline after")  ; break;
         case 3: cmd << _("  --select-comma-newline none")   ; break;
     }
 
-    if( this->nl_use_config->GetValue() == 0 )
-    {
-        switch( this->nl_after_select->GetValue() )
-        {
+    if (this->nl_use_config->GetValue() == 0) {
+        switch (this->nl_after_select->GetValue()) {
             case 0: cmd << _("  --select-newline-after 0") ; break;
             case 1: cmd << _("  --select-newline-after 1") ; break;
         }
 
-        switch( this->nl_before_or->GetValue() )
-        {
+        switch (this->nl_before_or->GetValue()) {
             case 0: cmd << _("  --newline-or-before 0") ; break;
             case 1: cmd << _("  --newline-or-before 1") ; break;
         }
 
-        switch( this->nl_after_or->GetValue() )
-        {
+        switch (this->nl_after_or->GetValue()) {
             case 0: cmd << _("  --newline-or-after 0") ; break;
             case 1: cmd << _("  --newline-or-after 1") ; break;
         }
 
-        switch( this->nl_before_and->GetValue() )
-        {
+        switch (this->nl_before_and->GetValue()) {
             case 0: cmd << _("  --newline-and-before 0") ; break;
             case 1: cmd << _("  --newline-and-before 1") ; break;
         }
 
-        switch( this->nl_after_and->GetValue() )
-        {
+        switch (this->nl_after_and->GetValue()) {
             case 0: cmd << _("  --newline-and-after 0") ; break;
             case 1: cmd << _("  --newline-and-after 1") ; break;
         }
     }
 
-    switch( this->nl_major_sections->GetSelection() )
-    {
+    switch (this->nl_major_sections->GetSelection()) {
         case 0: break;
         case 1: cmd << _("  --newline-major-sections 1") ; break;
         case 2: cmd << _("  --newline-major-sections 2")  ; break;
     }
 
-    switch( this->use_original_text->GetValue() )
-    {
+    switch (this->use_original_text->GetValue()) {
         case 0: cmd << _("  --keyword-text default")  ; break;
         case 1: cmd << _("  --keyword-text original") ; break;
     }
 
-    switch( this->case_all_kw->GetSelection() )
-    {
+    switch (this->case_all_kw->GetSelection()) {
         case 0: cmd << _("  --keyword-case none")    ; break;
         case 1: cmd << _("  --keyword-case upper")   ; break;
         case 2: cmd << _("  --keyword-case lower")   ; break;
@@ -231,8 +223,7 @@ void FsqlfGui::onFormat(wxCommandEvent &event)
     }
 
     wxDir dir(wxGetCwd());
-    if( !dir.HasFiles(_(EXEC_FILE)) )
-    {
+    if (!dir.HasFiles(_(EXEC_FILE))) {
         wxMessageBox(_("Formatter executable file not found: " EXEC_FILE)
             , _("Error")
             , wxOK | wxICON_INFORMATION, this);
@@ -241,29 +232,30 @@ void FsqlfGui::onFormat(wxCommandEvent &event)
 
     this->text_area->SaveFile(_(TMP_INPUT_FILE));
 
-    if( system(cmd.mb_str()) )
-    {   // non zero status
-        wxMessageBox(cmd << _("\n returned non zero code")
-            , _("Error")
-            , wxOK | wxICON_INFORMATION, this);
+    if (system(cmd.mb_str())) {   // non zero status
+        wxMessageBox(cmd << _("\n returned non zero code"),
+            _("Error"),
+            wxOK | wxICON_INFORMATION, this);
         return;
     }
     this->text_area->LoadFile(_(TMP_OUTPUT_FILE));
 
-    if( !wxRemoveFile(_(TMP_INPUT_FILE))  )
-        wxMessageBox(_("Failed to remove temporary file " TMP_INPUT_FILE)
-            ,_("Error")
-            , wxOK | wxICON_INFORMATION, this);
-    if( !wxRemoveFile(_(TMP_OUTPUT_FILE)) )
-        wxMessageBox(_("Failed to remove temporary file " TMP_OUTPUT_FILE)
-            , _("Error")
-            , wxOK | wxICON_INFORMATION, this);
+    if (!wxRemoveFile(_(TMP_INPUT_FILE))) {
+        wxMessageBox(_("Failed to remove temporary file " TMP_INPUT_FILE),
+            _("Error"),
+            wxOK | wxICON_INFORMATION, this);
+    }
+    if (!wxRemoveFile(_(TMP_OUTPUT_FILE))) {
+        wxMessageBox(_("Failed to remove temporary file " TMP_OUTPUT_FILE),
+            _("Error"),
+            wxOK | wxICON_INFORMATION, this);
+    }
 }
 
 
 void FsqlfGui::onUnformat(wxCommandEvent &event)
 {
-    if(this->original_text.IsEmpty()) return; // prevent deletion of everything
+    if (this->original_text.IsEmpty()) return; // prevent deletion of everything
     this->text_area->Clear();
     this->text_area->SetValue(this->original_text);
 }
@@ -271,16 +263,13 @@ void FsqlfGui::onUnformat(wxCommandEvent &event)
 
 void FsqlfGui::onUseConfigNlOther(wxCommandEvent &event)
 {
-    if(event.IsChecked())
-    {
+    if (event.IsChecked()) {
         this->nl_after_select->Disable();
         this->nl_before_or->Disable();
         this->nl_after_or->Disable();
         this->nl_before_and->Disable();
         this->nl_after_and->Disable();
-    }
-    else
-    {
+    } else {
         this->nl_after_select->Enable();
         this->nl_before_or->Enable();
         this->nl_after_or->Enable();
