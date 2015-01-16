@@ -38,7 +38,7 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 # BUILD
 #
-$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o
+$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o
 	$(CC) $(CCFLAGS)  $^   -o $@
 	strip $@
 
@@ -46,6 +46,8 @@ core/lex.yy.o: core/lex.yy.c
 	$(CC) $(CCFLAGS)  -c $<  -o $@
 
 core/kw/kw.o: core/kw/kw.c
+	$(CC) $(CCFLAGS)  -c $<  -o $@
+core/print_keywords.o: core/print_keywords.c
 	$(CC) $(CCFLAGS)  -c $<  -o $@
 
 core/kw/kwall_init.o: core/kw/kwall_init.c
