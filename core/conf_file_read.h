@@ -7,7 +7,7 @@
 #include <string.h>     // strcmp, strchr, strncat, strncpy
 #include <sys/stat.h>   // stat
 
-#include "settings.h"   // All kw settings as global variables.
+#include "kw/kw.h"   // All kw settings as global variables.
 
 
 int file_exists(char *filename)

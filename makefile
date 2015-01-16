@@ -38,9 +38,15 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 # BUILD
 #
-$(EXEC_CLI): core/lex.yy.c
-	$(CC) $(CCFLAGS)  $<   -o $@
+$(EXEC_CLI): core/lex.yy.o core/kw/kw.o
+	$(CC) $(CCFLAGS)  $^   -o $@
 	strip $@
+
+core/lex.yy.o: core/lex.yy.c
+	$(CC) $(CCFLAGS)  -c $<  -o $@
+
+core/kw/kw.o: core/kw/kw.c
+	$(CC) $(CCFLAGS)  -c $<  -o $@
 
 core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.h core/*.def)
 	flex  -o $@  $< # options (i.e. `-o`) has to be before input file
@@ -107,7 +113,7 @@ TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMA
 clean: clean_local  clean_win  clean_obj  clean_test
 
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS)  \
+	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS) core/*/*.o \
 		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE)
 
 clean_obj:

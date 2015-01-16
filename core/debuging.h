@@ -2,7 +2,7 @@
 #define debuging_h
 
 
-#include "settings.h"
+#include "kw/kw.h"
 
 
 #define DEBUGNONE (0)

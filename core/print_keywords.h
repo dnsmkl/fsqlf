@@ -2,8 +2,13 @@
 #define print_keywords_h
 
 
+#include <string.h>     // strlen
+#include <ctype.h>      // tolower, toupper
 #include <stdio.h>      // fprintf, fputs
-#include "settings.h"   // All kw settings as global variables. calculate_spacing
+#include "kw/kw.h"      // All kw settings as global variables
+
+
+const char * tab_string = "    "; //indentation is done with 4 spaces
 
 
 // Return max argument.

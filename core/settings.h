@@ -2,69 +2,7 @@
 #define settings_h
 
 
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>  // malloc
-
-
-#include "../utils/map/uthash.h"
-
-
-const char * tab_string = "    "; //indentation is done with 4 spaces
-
-
-// struture to store text keyword text  space,tab,newline, function to execute  before/after printig the keyword
-typedef struct
-{
-    int new_line;
-    int indent;
-    int space;
-} spacing_counts;
-
-
-#define KW_FUNCT_ARRAY_SIZE (3)
-typedef struct kw_conf
-{
-    spacing_counts before;
-    spacing_counts after;
-
-    unsigned short int print_original_text;
-    unsigned short int print_case;
-    unsigned short int is_word; // two adjacent words MUST be separated by some spacing
-    char *text;
-
-    void (*funct_before[KW_FUNCT_ARRAY_SIZE])();
-    void (*funct_after [KW_FUNCT_ARRAY_SIZE])();
-
-    const char *name;
-    UT_hash_handle hh;  // makes this structure hashable
-} t_kw_settings;
-
-
-
-// Global map and its manipulation functions.
-// map it self should not be accessed directly.
-struct kw_conf *g_keyword_config = NULL;
-
-
-struct kw_conf* kw_add(const char *name)
-{
-    struct kw_conf *tmp;
-    tmp = (struct kw_conf*) malloc(sizeof(struct kw_conf));
-    assert(tmp);
-    tmp->name = name;
-    HASH_ADD_KEYPTR(hh, g_keyword_config, tmp->name, strlen(tmp->name), tmp);
-    return tmp;
-}
-
-
-struct kw_conf* kw(const char *name)
-{
-    struct kw_conf *match;
-    HASH_FIND_STR(g_keyword_config, name, match);
-    assert(match != NULL);
-    return match;
-}
+#include "kw/kw.h"
 
 
 void debug_p(); // TODO : make separate .c and .h files
@@ -86,9 +24,6 @@ void set_text_original(unsigned short int ind_original)
     #include "t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
 }
-
-
-enum {CASE_none, CASE_lower, CASE_UPPER, CASE_Initcap};
 
 
 void init_all_settings()
