@@ -116,7 +116,7 @@ TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMA
 clean: clean_local  clean_win  clean_obj  clean_test
 
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  $(LEX_OUTPUT)  $(TMP_BAKUPS) core/*/*.o \
+	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  core/lex.yy.c  $(TMP_BAKUPS) core/*/*.o \
 		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE)
 
 clean_obj:
