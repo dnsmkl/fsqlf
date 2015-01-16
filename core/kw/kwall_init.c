@@ -1,18 +1,18 @@
-#ifndef settings_h
-#define settings_h
+#include "kwall_init.h"
 
 
-#include "kw/kw.h"
-
-
-void debug_p(); // TODO : make separate .c and .h files
+// TODO: remove these from here (use include instead)
+extern void inc_LEFTP();
+extern void inc_RIGHTP();
+extern void begin_SUB();
+extern void end_SUB();
 
 
 void set_case(unsigned short int keyword_case)
 {
     #define T_KW_SETTINGS_MACRO( NAME , ... )   \
         kw(#NAME)->print_case = keyword_case;
-    #include "t_kw_settings_list.def"
+    #include "../t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
 }
 
@@ -21,7 +21,7 @@ void set_text_original(unsigned short int ind_original)
 {
     #define T_KW_SETTINGS_MACRO( NAME , ... )           \
         kw(#NAME)->print_original_text = ind_original;
-    #include "t_kw_settings_list.def"
+    #include "../t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
 }
 
@@ -49,9 +49,6 @@ void init_all_settings()
         kw(#NAME)->funct_after [1] = fa2;             \
         kw(#NAME)->funct_after [2] = fa3;             \
     } while (0);
-    #include "t_kw_settings_list.def"
+    #include "../t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
 }
-
-
-#endif

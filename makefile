@@ -38,7 +38,7 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 # BUILD
 #
-$(EXEC_CLI): core/lex.yy.o core/kw/kw.o
+$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o
 	$(CC) $(CCFLAGS)  $^   -o $@
 	strip $@
 
@@ -46,6 +46,9 @@ core/lex.yy.o: core/lex.yy.c
 	$(CC) $(CCFLAGS)  -c $<  -o $@
 
 core/kw/kw.o: core/kw/kw.c
+	$(CC) $(CCFLAGS)  -c $<  -o $@
+
+core/kw/kwall_init.o: core/kw/kwall_init.c
 	$(CC) $(CCFLAGS)  -c $<  -o $@
 
 core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.h core/*.def)
