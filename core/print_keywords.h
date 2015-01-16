@@ -221,9 +221,9 @@ void echo_print(FILE *yyout, char *txt)
 }
 
 
-void handle_kw(FILE *yyout, char *yytext, t_kw_settings s)
+void handle_kw(FILE *yyout, char *yytext, struct kw_conf *s)
 {
-    kw_print(yyout, yytext, s);
+    kw_print(yyout, yytext, *s);
 }
 
 
