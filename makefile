@@ -53,7 +53,7 @@ core/print_keywords.o: core/print_keywords.c
 core/kw/kwall_init.o: core/kw/kwall_init.c
 	$(CC) $(CCFLAGS)  -c $<  -o $@
 
-core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.h core/*.def)
+core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.def core/*.h core/*/*.h)
 	flex  -o $@  $< # options (i.e. `-o`) has to be before input file
 
 $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
