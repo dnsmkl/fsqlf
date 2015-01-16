@@ -33,15 +33,25 @@ spacing_counts calculate_spacing(
     unsigned short int isword_of_current,
     int global_indent_level)
 {
-    /* Combine previous and current words adjacent spacings.
-        Combination is done by using MAX or just using current words settings.
-        Decision is made so:
-            There are 3 types of spacings and have ranks: space-1, indentation-2, new line-3.
-            if current word's has active spacing setting (not 0),
-            then all spacings of lower ranks, must be used from current word
+    /* Combine spacings of adjacent words (previous and current).
+        Combinations are done in two ways:
+            - take MAX
+            - use only current words settings
+            (one more option could be to
+            first print previous word's 'after' spacing,
+            then print current word's 'before' spacing, but this could/would
+            result in trailing spaces on a line)
+        Decision, which of them to use, is made so:
+            There are 3 types of spacings.
+            They are ranked this way: space-1, indentation-2, new line-3.
+            If current word has some non-zero spacing setting,
+            then for spacings of lower ranks use conf only from current word.
         Rationale for such logic:
-            if word has in its settings, new-line=1 and indent/spaces=0,
-            then there is expectation of keyword being at the start of the line (not counting global indent level because of subselect)
+            If word has in its settings new-line=1 and indent/spaces=0,
+            then there is expectation that keyword will be
+            at the start of the line, no matter what previous kw setting
+            for indentation after it was.
+            (except for global indent level, because of subselect)
     */
     spacing_counts r; // result to be built
 
