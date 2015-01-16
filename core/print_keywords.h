@@ -6,7 +6,10 @@
 #include "settings.h"   // All kw settings as global variables. calculate_spacing
 
 
-inline int max(int a, int b)
+// Return max argument.
+// Strange name is chosen just to make it unique,
+// so it would not clash with some compiler/platform specific macros.
+inline int max_2args_(int a, int b)
 {
     return a > b ? a : b;
 }
@@ -18,7 +21,7 @@ int max_or_current(int prev_count, int curr_count, char use_only_curr_ind)
         return curr_count;
     }
     else{
-        return max(prev_count, curr_count);
+        return max_2args_(prev_count, curr_count);
     }
 }
 
@@ -43,7 +46,7 @@ spacing_counts calculate_spacing(
     spacing_counts r; // result to be built
 
 
-    r.new_line = max(afterspacing_of_prev.new_line, beforespacing_of_current.new_line);
+    r.new_line = max_2args_(afterspacing_of_prev.new_line, beforespacing_of_current.new_line);
 
     r.indent = max_or_current(
             afterspacing_of_prev.indent
