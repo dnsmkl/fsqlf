@@ -36,7 +36,7 @@ int create_config_file(char* config_file_name)
     #define T_KW_SETTINGS_MACRO(NAME, nlb, tb, sb, nla, ta, sa, ... )   \
         fprintf(config_file, "%-24s %s %6s %6s %6s %6s %6s\n",          \
             QQ(NAME), QQ(nlb), QQ(tb), QQ(sb), QQ(nla), QQ(ta), QQ(sa));
-    #include "t_kw_settings_list.def"
+    #include "../t_kw_settings_list.def"
     #undef T_KW_SETTINGS_MACRO
     #undef QQ
 
