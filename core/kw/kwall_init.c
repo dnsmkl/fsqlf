@@ -1,4 +1,5 @@
 #include "kwall_init.h"
+#include "kw.h"
 
 
 // TODO: remove these from here (use include instead)

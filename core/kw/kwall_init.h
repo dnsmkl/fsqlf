@@ -2,9 +2,6 @@
 #define KWALL_INIT
 
 
-#include "kw.h"
-
-
 void debug_p(); // TODO : make separate .c and .h files
 
 
