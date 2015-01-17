@@ -1,3 +1,6 @@
+#include <string.h>     // strlen
+#include <ctype.h>      // tolower, toupper
+#include <stdio.h>      // fprintf, fputs
 #include "print_keywords.h"
 
 
