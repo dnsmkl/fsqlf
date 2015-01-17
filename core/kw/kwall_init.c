@@ -11,25 +11,25 @@ extern void end_SUB();
 
 void set_case(unsigned short int keyword_case)
 {
-    #define T_KW_SETTINGS_MACRO( NAME , ... )   \
+    #define XMACRO( NAME , ... )   \
         kw(#NAME)->print_case = keyword_case;
-    #include "../t_kw_settings_list.def"
-    #undef T_KW_SETTINGS_MACRO
+    #include "kw_default_settings.def"
+    #undef XMACRO
 }
 
 
 void set_text_original(unsigned short int ind_original)
 {
-    #define T_KW_SETTINGS_MACRO( NAME , ... )           \
+    #define XMACRO( NAME , ... )           \
         kw(#NAME)->print_original_text = ind_original;
-    #include "../t_kw_settings_list.def"
-    #undef T_KW_SETTINGS_MACRO
+    #include "kw_default_settings.def"
+    #undef XMACRO
 }
 
 
 void init_all_settings()
 {
-    #define T_KW_SETTINGS_MACRO(NAME, nlb, tb, sb, nla, ta, sa, TEXT, \
+    #define XMACRO(NAME, nlb, tb, sb, nla, ta, sa, TEXT, \
         fb1, fb2, fb3, fa1, fa2, fa3)           \
     do {                                        \
         kw_add(#NAME);                                \
@@ -50,6 +50,6 @@ void init_all_settings()
         kw(#NAME)->funct_after [1] = fa2;             \
         kw(#NAME)->funct_after [2] = fa3;             \
     } while (0);
-    #include "../t_kw_settings_list.def"
-    #undef T_KW_SETTINGS_MACRO
+    #include "kw_default_settings.def"
+    #undef XMACRO
 }

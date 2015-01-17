@@ -19,7 +19,7 @@ int file_exists(char *filename)
 
 void setting_value(char * setting_name, int * setting_values)
 {
-    #define T_KW_SETTINGS_MACRO(NAME, ...)      \
+    #define XMACRO(NAME, ...)      \
     if (strcmp(#NAME, setting_name) == 0) {      \
         kw(#NAME)->before.new_line    = setting_values[0];  \
         kw(#NAME)->before.indent      = setting_values[1];  \
@@ -28,8 +28,8 @@ void setting_value(char * setting_name, int * setting_values)
         kw(#NAME)->after.indent       = setting_values[4];  \
         kw(#NAME)->after.space        = setting_values[5];  \
     }
-    #include "../t_kw_settings_list.def"
-    #undef T_KW_SETTINGS_MACRO
+    #include "../kw/kw_default_settings.def"
+    #undef XMACRO
 }
 
 
