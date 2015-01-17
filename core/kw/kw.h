@@ -2,11 +2,7 @@
 #define KW_H
 
 
-#include <stdlib.h>  // malloc
-#include <assert.h>  // assert
-
-
-#include "../../utils/map/uthash.h"
+#include "../../utils/map/uthash.h" // UT_hash_handle, HASH_ADD_KEYPTR, HASH_FIND_STR
 
 
 struct spacing

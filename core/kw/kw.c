@@ -1,4 +1,6 @@
-#include "kw.h"
+#include <stdlib.h>  // malloc
+#include <assert.h>  // assert
+#include "kw.h" // struct kw_conf
 
 
 // Global map variable. should not be accessed directly.
