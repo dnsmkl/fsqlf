@@ -31,7 +31,7 @@ void debug_match(char * debugstring)
 }
 
 
-char* state_to_char(int state)
+char *state_to_char(int state)
 {
     char* state_str;
     switch (state) {
@@ -46,7 +46,7 @@ char* state_to_char(int state)
         case stCOMMA:   state_str="stCOMMA"   ; break;
         case stIN:      state_str="stIN"      ; break;
         case stINLIST:  state_str="stINLIST"  ; break;
-        case stP_SUB:  state_str="stP_SUB"    ; break;
+        case stP_SUB:   state_str="stP_SUB"    ; break;
         case stCOMMENTML:  state_str="stCOMMENTML"  ; break;
         case stSTRING:     state_str="stSTRING"     ; break;
         case stFROM_LEFTP: state_str="stFROM_LEFTP" ; break;
