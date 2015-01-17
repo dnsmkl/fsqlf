@@ -17,7 +17,7 @@ int file_exists(char *filename)
 }
 
 
-void setting_value(char * setting_name, int * setting_values)
+void setting_value(char *setting_name, int *setting_values)
 {
     #define XMACRO(NAME, ...)      \
     if (strcmp(#NAME, setting_name) == 0) {      \
@@ -36,7 +36,7 @@ void setting_value(char * setting_name, int * setting_values)
 #define READ_SUCCESSFULL (0)
 #define READ_FAILED (1)
 // Read specified config file
-int read_conf_file(const char* file_pathname)
+int read_conf_file(const char *file_pathname)
 {
     // TODO: increase line length, test for overrun.
     const int BUFFER_SIZE = 100;

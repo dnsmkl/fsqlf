@@ -7,7 +7,7 @@
 struct kw_conf *g_keyword_config = NULL;
 
 
-struct kw_conf* kw_add(const char *name)
+struct kw_conf *kw_add(const char *name)
 {
     struct kw_conf *tmp;
     tmp = (struct kw_conf*) malloc(sizeof(struct kw_conf));
@@ -18,7 +18,7 @@ struct kw_conf* kw_add(const char *name)
 }
 
 
-struct kw_conf* kw(const char *name)
+struct kw_conf *kw(const char *name)
 {
     struct kw_conf *match;
     HASH_FIND_STR(g_keyword_config, name, match);

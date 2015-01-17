@@ -42,9 +42,9 @@ enum
 
 
 // Create new struct kw_cont and add it to global map.
-struct kw_conf* kw_add(const char *name);
+struct kw_conf *kw_add(const char *name);
 // Retrieve struct kw_cont from global map.
-struct kw_conf* kw(const char *name);
+struct kw_conf *kw(const char *name);
 
 
 #endif

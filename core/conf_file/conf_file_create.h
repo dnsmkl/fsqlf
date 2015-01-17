@@ -7,9 +7,9 @@
 //  0 on success
 //  1 on failure to open
 //  2 on failure to close
-int create_config_file(char* config_file_name)
+int create_config_file(char *config_file_name)
 {
-    FILE * config_file;
+    FILE *config_file;
     config_file = fopen(config_file_name, "w");
 
     if (!config_file) {

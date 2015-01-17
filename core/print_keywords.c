@@ -14,7 +14,7 @@ extern void end_SUB();
 extern int currindent;
 
 
-const char * tab_string = "    "; //indentation is done with 4 spaces
+const char *tab_string = "    "; //indentation is done with 4 spaces
 
 
 // Return max argument.
