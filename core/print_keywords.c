@@ -20,13 +20,13 @@ const char * tab_string = "    "; //indentation is done with 4 spaces
 // Return max argument.
 // Strange name is chosen just to make it unique,
 // so it would not clash with some compiler/platform specific macros.
-inline int max_2args_(int a, int b)
+static int max_2args_(int a, int b)
 {
     return a > b ? a : b;
 }
 
 
-int max_or_current(int prev_count, int curr_count, char use_only_curr_ind)
+static int max_or_current(int prev_count, int curr_count, char use_only_curr_ind)
 {
     if (use_only_curr_ind) {
         return curr_count;
@@ -37,7 +37,7 @@ int max_or_current(int prev_count, int curr_count, char use_only_curr_ind)
 }
 
 
-struct spacing calculate_spacing(
+static struct spacing calculate_spacing(
     struct spacing afterspacing_of_prev,
     unsigned short int isword_of_prev,
     struct spacing beforespacing_of_current,
@@ -188,7 +188,7 @@ static void print_spacing(
 }
 
 
-void kw_print(FILE *yyout, char *yytext, struct kw_conf s)
+static void kw_print(FILE *yyout, const char *yytext, struct kw_conf s)
 {
     int i = 0;
     // Call keyword specific functions, before printing.
@@ -214,7 +214,7 @@ void kw_print(FILE *yyout, char *yytext, struct kw_conf s)
 }
 
 
-void echo_print(FILE *yyout, char *txt)
+static void echo_print(FILE *yyout, char *txt)
 {
     int length; // length of the input text string
     length = strlen(txt);
@@ -245,7 +245,7 @@ void echo_print(FILE *yyout, char *txt)
 }
 
 
-void handle_kw(FILE *yyout, char *yytext, struct kw_conf *s)
+void handle_kw(FILE *yyout, const char *yytext, const struct kw_conf *s)
 {
     kw_print(yyout, yytext, *s);
 }
