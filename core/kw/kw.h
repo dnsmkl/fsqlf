@@ -9,19 +9,19 @@
 #include "../../utils/map/uthash.h"
 
 
-typedef struct
+struct spacing
 {
     int new_line;
     int indent;
     int space;
-} spacing_counts;
+};
 
 
 #define KW_FUNCT_ARRAY_SIZE (3)
-typedef struct kw_conf
+struct kw_conf
 {
-    spacing_counts before;
-    spacing_counts after;
+    struct spacing before;
+    struct spacing after;
 
     unsigned short int print_original_text;
     unsigned short int print_case;
@@ -33,7 +33,7 @@ typedef struct kw_conf
 
     const char *name;
     UT_hash_handle hh;  // makes this structure hashable
-} t_kw_settings;
+};
 
 
 enum

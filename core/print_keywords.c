@@ -34,10 +34,10 @@ int max_or_current(int prev_count, int curr_count, char use_only_curr_ind)
 }
 
 
-spacing_counts calculate_spacing(
-    spacing_counts afterspacing_of_prev,
+struct spacing calculate_spacing(
+    struct spacing afterspacing_of_prev,
     unsigned short int isword_of_prev,
-    spacing_counts beforespacing_of_current,
+    struct spacing beforespacing_of_current,
     unsigned short int isword_of_current,
     int global_indent_level)
 {
@@ -61,7 +61,7 @@ spacing_counts calculate_spacing(
             for indentation after it was.
             (except for global indent level, because of subselect)
     */
-    spacing_counts r; // result to be built
+    struct spacing r; // result to be built
 
 
     r.new_line = max_2args_(afterspacing_of_prev.new_line, beforespacing_of_current.new_line);
@@ -146,7 +146,7 @@ static void print_spaces(FILE * yyout, int count)
 }
 
 
-static void print_struct_spacing_count(FILE * yyout, spacing_counts s)
+static void print_struct_spacing_count(FILE * yyout, struct spacing s)
 {
     print_nlines(yyout, s.new_line);
     print_tabs(yyout, s.indent);
@@ -160,15 +160,15 @@ static void print_struct_spacing_count(FILE * yyout, spacing_counts s)
 // ('spacing' means new lines, tabs and spaces)
 static void print_spacing(
     FILE *yyout,
-    t_kw_settings current_settings,
+    struct kw_conf current_settings,
     int global_indent_level)
 {
     // keep track of 'after' spacing from previous call
-    static spacing_counts from_previous__scounts = {0, 0, 0};
+    static struct spacing from_previous__scounts = {0, 0, 0};
     // keep track of previous 'is_word'
     static unsigned short int from_previous__isword = 0;
 
-    spacing_counts spacing =
+    struct spacing spacing =
         calculate_spacing(
             from_previous__scounts,
             from_previous__isword,
@@ -185,7 +185,7 @@ static void print_spacing(
 }
 
 
-void kw_print(FILE *yyout, char *yytext, t_kw_settings s)
+void kw_print(FILE *yyout, char *yytext, struct kw_conf s)
 {
     int i = 0;
     // Call keyword specific functions, before printing.
@@ -221,8 +221,8 @@ void echo_print(FILE *yyout, char *txt)
     int pos_last_char = length - 1; // position of last character
 
     // Printing of spacing is delegated to print_spacing(),
-    // which requires as input t_kw_settings.
-    t_kw_settings s = {{0, 0, 0}, {0, 0, 0}, 0, 0, 0, 0};
+    // which requires as input struct kw_conf.
+    struct kw_conf s = {{0, 0, 0}, {0, 0, 0}, 0, 0, 0, 0};
 
     // Delegate to print_spacing() printing of the new line.
     if (txt[pos_last_char] == '\n') {
