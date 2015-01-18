@@ -1,6 +1,7 @@
 #include <string.h>     // strlen
 #include <ctype.h>      // tolower, toupper
 #include <stdio.h>      // fprintf, fputs
+#include <assert.h>      // assert
 #include "print_keywords.h"
 
 
@@ -94,6 +95,7 @@ static struct spacing calculate_spacing(
 #define MAX_KEYWORD_SIZE (50)
 const char *stocase(const char* s_text, unsigned short int s_case)
 {
+    assert(strlen(s_text) < MAX_KEYWORD_SIZE);
     static char formatted_result[MAX_KEYWORD_SIZE];
     int i;
 
