@@ -92,7 +92,7 @@ static struct spacing calculate_spacing(
 }
 
 
-#define MAX_KEYWORD_SIZE (50)
+#define MAX_KEYWORD_SIZE (200)
 const char *stocase(const char* s_text, unsigned short int s_case)
 {
     assert(strlen(s_text) < MAX_KEYWORD_SIZE);
