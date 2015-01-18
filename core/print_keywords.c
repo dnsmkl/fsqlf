@@ -92,7 +92,7 @@ static struct spacing calculate_spacing(
 
 
 #define MAX_KEYWORD_SIZE (50)
-char *stocase(char* s_text, unsigned short int s_case)
+const char *stocase(const char* s_text, unsigned short int s_case)
 {
     static char formatted_result[MAX_KEYWORD_SIZE];
     int i;
@@ -201,9 +201,9 @@ static void kw_print(FILE *yyout, const char *yytext, struct kw_conf s)
 
     // Print text:
     // .. first decide what text to use (original or default)
-    char *text_nocase = s.print_original_text ? yytext : s.text;
+    const char *text_nocase = s.print_original_text ? yytext : s.text;
     // .. then handle its case
-    char *text = stocase(text_nocase, s.print_case);
+    const char *text = stocase(text_nocase, s.print_case);
     // .. then print the text.
     fprintf(yyout, "%s", text);
 
