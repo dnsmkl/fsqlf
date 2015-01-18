@@ -1,6 +1,8 @@
 PROJECTFOLDER=fsqlf
 
-CFLAGS+=-DVERSION=\"$(VERSION)\"
+CFLAGS+=-std=c99
+CFLAGS+=-Wall
+# CFLAGS+=-pedantic-errors
 CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 
 ifdef WIN
@@ -19,7 +21,7 @@ PREFIX=/usr/local
 EXEC_CLI=fsqlf
 EXEC_GUI=wx_fsqlf
 CC=gcc
-CCFLAGS=-m32 -Wall
+CFLAGS+=-m32
 CXX=g++
 CXXFLAGS+= `wx-config --cxxflags`
 LDFLAGS+= `wx-config --libs`
@@ -39,19 +41,19 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 # BUILD
 #
 $(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o
-	$(CC) $(CCFLAGS)  $^   -o $@
+	$(CC) $(CFLAGS)  $^   -o $@
 	strip $@
 
 core/lex.yy.o: core/lex.yy.c
-	$(CC) $(CCFLAGS)  -c $<  -o $@
+	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/kw/kw.o: core/kw/kw.c
-	$(CC) $(CCFLAGS)  -c $<  -o $@
+	$(CC) $(CFLAGS)  -c $<  -o $@
 core/print_keywords.o: core/print_keywords.c
-	$(CC) $(CCFLAGS)  -c $<  -o $@
+	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/kw/kwall_init.o: core/kw/kwall_init.c
-	$(CC) $(CCFLAGS)  -c $<  -o $@
+	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.def core/*.h core/*/*.h)
 	flex  -o $@  $< # options (i.e. `-o`) has to be before input file
