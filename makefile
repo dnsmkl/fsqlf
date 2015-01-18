@@ -121,13 +121,13 @@ clean: clean_local  clean_win  clean_obj  clean_test
 clean_local:
 	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  core/lex.yy.c  $(TMP_BAKUPS) \
 		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE) \
-		core/*.o  core/*/*.o
-
-clean_obj:
-	rm -f *.o
+	make clean_obj
 
 clean_win:
 	make clean_local WIN=1
+
+clean_obj:
+	rm -f *.o core/*.o core/*/*.o
 
 clean_test:
 	rm -f $(TF_LEAD)
@@ -137,13 +137,13 @@ clean_test:
 #
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
-formatting.conf: core/kw/kw_default_settings.def core/conf_file_create.h $(EXEC_CLI)
+formatting.conf: core/kw/kw_default_settings.def core/conf_file/conf_file_create.h $(EXEC_CLI)
 	./$(EXEC_CLI) --create-config-file
 
 VERSION:=$(shell git describe master)
 ZIP_NAME:=$(PROJECTFOLDER).$(VERSION).zip
 
-zip: tmp_folder formatting.conf
+zip: tmp_folder
 	rm -f $(ZIP_NAME)
 	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PROJECTFOLDER)/source/'
 	cd tmp/ &&   zip -r ../$(ZIP_NAME)  $(PROJECTFOLDER)
