@@ -15,9 +15,6 @@ extern void end_SUB();
 extern int currindent;
 
 
-const char *tab_string = "    "; //indentation is done with 4 spaces
-
-
 // Return max argument.
 // Strange name is chosen just to make it unique,
 // so it would not clash with some compiler/platform specific macros.
@@ -124,38 +121,23 @@ const char *stocase(const char* s_text, unsigned short int s_case)
 }
 
 
-static void print_nlines(FILE * yyout, int count)
+static void print_ntimes(FILE *yyout, const char *txt, int count)
 {
     int i;
     for (i = 0; i < count; i++) {
-        fputs("\n", yyout);
+        fputs(txt, yyout);
     }
 }
 
 
-static void print_tabs(FILE * yyout, int count)
+static void print_struct_spacing_count(FILE * yyout, struct spacing cnt)
 {
-    int i;
-    for (i = 0; i < count; i++) {
-        fputs(tab_string, yyout);
-    }
-}
-
-
-static void print_spaces(FILE * yyout, int count)
-{
-    int i;
-    for (i = 0; i < count; i++) {
-        fputs(" ", yyout);
-    }
-}
-
-
-static void print_struct_spacing_count(FILE * yyout, struct spacing s)
-{
-    print_nlines(yyout, s.new_line);
-    print_tabs(yyout, s.indent);
-    print_spaces(yyout, s.space);
+    const char *newline_char = "\n";
+    const char *indent_chars = "    "; // 4 spaces.
+    const char *simple_space = " ";
+    print_ntimes(yyout, newline_char, cnt.new_line);
+    print_ntimes(yyout, indent_chars, cnt.indent);
+    print_ntimes(yyout, simple_space, cnt.space);
 }
 
 
