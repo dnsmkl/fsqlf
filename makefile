@@ -2,7 +2,8 @@ PROJECTFOLDER=fsqlf
 
 CFLAGS+=-std=c99
 CFLAGS+=-Wall
-# CFLAGS+=-pedantic-errors
+CFLAGS+=-pedantic-errors
+
 CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 
 ifdef WIN
