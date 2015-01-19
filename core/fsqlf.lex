@@ -110,6 +110,12 @@ END (?i:end)
 
 %option noyywrap nounput noinput
 
+/* always-interactive - removes usage of fileno, isatty (not C99 compliant).
+ * See details at:
+ *     http://flex.sourceforge.net/manual/Why-do-flex-scanners-call-fileno-if-it-is-not-ANSI-compatible_003f.html
+ */
+%option always-interactive
+
 %s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST stCREATE_TABLE stTAB_COL_LIST
 %x stCOMMENTML stSTRING
 
