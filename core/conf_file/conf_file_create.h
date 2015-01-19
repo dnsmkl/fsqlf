@@ -36,7 +36,7 @@ int create_config_file(char *config_file_name)
     #define XMACRO(NAME, nlb, tb, sb, nla, ta, sa, ... )   \
         fprintf(config_file, "%-24s %s %6s %6s %6s %6s %6s\n",          \
             QQ(NAME), QQ(nlb), QQ(tb), QQ(sb), QQ(nla), QQ(ta), QQ(sa));
-    #include "../kw/kw_default_settings.def"
+    #include "../kw/kw_defaults.def"
     #undef XMACRO
     #undef QQ
 

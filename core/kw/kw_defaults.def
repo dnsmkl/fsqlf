@@ -1,0 +1,67 @@
+// This file contains compile time (default) configuration of fsqlf
+
+//
+//  text                -------------------------+
+//  after: spaces       ----------------------+  |
+//  after: indentation  --------------------+ |  |
+//  after: new line     ------------------+ | |  |
+//  before: spaces      ----------------+ | | |  |
+//  before: indentation --------------+ | | | |  |
+//  before: new line    ------------+ | | | | |  |
+//  variable name  --+              | | | | | |  |
+//                   |              | | | | | |  |           /*   function pointers       */
+//
+XMACRO( kw_comma      ,1,0,0,0,0,1,","          )
+XMACRO( kw_select     ,1,0,0,1,0,2,"SELECT"     )
+XMACRO( kw_inner_join ,1,0,0,0,0,1,"JOIN"       )
+XMACRO( kw_left_join  ,1,0,0,0,0,1,"LEFT JOIN"  )
+XMACRO( kw_right_join ,1,0,0,0,0,1,"RIGHT JOIN" )
+XMACRO( kw_full_join  ,1,0,0,0,0,1,"FULL JOIN"  )
+XMACRO( kw_cross_join ,1,0,0,0,0,1,"CROSS JOIN" )
+XMACRO( kw_from       ,1,0,0,0,0,1,"FROM"       )
+XMACRO( kw_on         ,1,0,1,0,0,1,"ON"         )
+XMACRO( kw_where      ,1,0,0,0,0,1,"WHERE"      )
+XMACRO( kw_and        ,1,0,0,0,0,1,"AND"        )
+XMACRO( kw_or         ,1,0,0,0,0,1,"OR"         )
+XMACRO( kw_exists     ,0,0,0,0,0,1,"exists"     )
+XMACRO( kw_in         ,0,0,0,0,0,1,"in"         )
+XMACRO( kw_from_2     ,0,0,1,0,0,1,"from"       )
+XMACRO( kw_as         ,0,0,1,0,0,1,"as"         )
+XMACRO( kw_left_p     ,0,0,0,0,0,0,"("          )
+XMACRO( kw_right_p    ,0,0,0,0,0,0,")"          )
+XMACRO( kw_left_p_sub ,1,0,0,0,0,0,"("          )
+XMACRO( kw_right_p_sub,1,0,0,1,0,0,")"          )
+XMACRO( kw_create_table,2,0,0,0,0,0,"CREATE TABLE")
+XMACRO( kw_left_p_create_table,1,0,0,1,0,0,"("  )
+XMACRO( kw_right_p_create_table,1,0,0,1,0,0,")" )
+XMACRO( kw_comma_create_table,1,0,0,0,0,0,","   )
+XMACRO( kw_drop       ,2,0,0,0,0,0,"DROP"       )
+XMACRO( kw_table      ,2,0,0,0,0,0,"TABLE"      )
+XMACRO( kw_ifexists   ,0,0,0,0,0,0,"IF EXISTS"  )
+XMACRO( kw_view       ,0,0,0,0,0,0,"VIEW"       )
+XMACRO( kw_union      ,2,1,0,1,0,0,"UNION"      )
+XMACRO( kw_minus      ,2,1,0,1,0,0,"MINUS"      )
+XMACRO( kw_union_all  ,2,1,0,1,0,0,"UNION ALL"  )
+XMACRO( kw_intersect  ,2,1,0,1,0,0,"INTERSECT"  )
+XMACRO( kw_except     ,2,1,0,1,0,0,"EXCEPT"     )
+XMACRO( kw_groupby    ,1,0,0,0,0,0,"GROUP BY"   )
+XMACRO( kw_orderby    ,1,0,0,0,0,0,"ORDER BY"   )
+XMACRO( kw_semicolon  ,1,0,0,5,0,0,";"          )
+XMACRO( kw_having     ,1,0,0,0,0,0,"HAVING"     )
+XMACRO( kw_qualify    ,1,0,0,0,0,0,"QUALIFY"    )
+XMACRO( kw_insertinto ,1,0,0,0,0,0,"INSERT INTO")
+XMACRO( kw_left_p_ins ,1,0,0,1,0,2,"("          )
+XMACRO( kw_right_p_ins,1,0,0,0,0,0,")"          )
+XMACRO( kw_comma_ins  ,1,0,0,0,0,1,","          )
+XMACRO( kw_comma_grpby,0,0,0,0,0,1,","          )
+XMACRO( kw_comma_ordby,0,0,0,0,0,1,","          )
+XMACRO( kw_comma_join ,1,0,0,0,0,1,","          )
+XMACRO( kw_update     ,1,0,0,0,0,1,"UPDATE"     )
+XMACRO( kw_set        ,1,0,0,1,0,2,"SET"        )
+XMACRO( kw_comma_set  ,1,0,0,0,0,1,","          )
+XMACRO( kw_deletefrom ,1,0,0,0,0,0,"DELETE FROM")
+XMACRO( kw_case       ,0,0,0,0,0,0,"CASE"       )
+XMACRO( kw_end        ,1,0,0,0,0,0,"END"        )
+XMACRO( kw_when       ,1,0,0,0,0,0,"WHEN"       )
+XMACRO( kw_then       ,1,0,0,0,0,0,"THEN"       )
+XMACRO( kw_else       ,1,0,0,0,0,0,"ELSE"       )

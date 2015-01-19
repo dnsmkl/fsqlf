@@ -28,7 +28,7 @@ void setting_value(char *setting_name, int *setting_values)
         kw(#NAME)->after.indent       = setting_values[4];  \
         kw(#NAME)->after.space        = setting_values[5];  \
     }
-    #include "../kw/kw_default_settings.def"
+    #include "../kw/kw_defaults.def"
     #undef XMACRO
 }
 
