@@ -22,6 +22,5 @@ struct kw_conf *kw(const char *name)
 {
     struct kw_conf *match;
     HASH_FIND_STR(g_keyword_config, name, match);
-    assert(match != NULL);
     return match;
 }

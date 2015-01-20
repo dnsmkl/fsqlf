@@ -5,6 +5,7 @@
 #include <stdio.h>      // fopen, fclose
 #include <stdlib.h>     // strtol
 #include <string.h>     // strcmp, strchr, strncat, strncpy
+#include <assert.h>     // assert
 #include <sys/stat.h>   // stat
 
 #include "../kw/kw.h"   // All kw settings as global variables.
@@ -19,17 +20,16 @@ int file_exists(const char *filename)
 
 void setting_value(const char *setting_name, const int *setting_values)
 {
-    #define XMACRO(NAME, ...)      \
-    if (strcmp(#NAME, setting_name) == 0) {      \
-        kw(#NAME)->before.new_line    = setting_values[0];  \
-        kw(#NAME)->before.indent      = setting_values[1];  \
-        kw(#NAME)->before.space       = setting_values[2];  \
-        kw(#NAME)->after.new_line     = setting_values[3];  \
-        kw(#NAME)->after.indent       = setting_values[4];  \
-        kw(#NAME)->after.space        = setting_values[5];  \
+    struct kw_conf *k;
+    k = kw(setting_name);
+    if (k != NULL) {
+        k->before.new_line  = setting_values[0];
+        k->before.indent    = setting_values[1];
+        k->before.space     = setting_values[2];
+        k->after.new_line   = setting_values[3];
+        k->after.indent     = setting_values[4];
+        k->after.space      = setting_values[5];
     }
-    #include "../kw/kw_defaults.def"
-    #undef XMACRO
 }
 
 
