@@ -10,14 +10,14 @@
 #include "../kw/kw.h"   // All kw settings as global variables.
 
 
-int file_exists(char *filename)
+int file_exists(const char *filename)
 {
     struct stat buffer;
     return stat(filename, &buffer) == 0;
 }
 
 
-void setting_value(char *setting_name, int *setting_values)
+void setting_value(const char *setting_name, const int *setting_values)
 {
     #define XMACRO(NAME, ...)      \
     if (strcmp(#NAME, setting_name) == 0) {      \
