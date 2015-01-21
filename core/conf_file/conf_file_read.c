@@ -8,14 +8,14 @@
 #include "../kw/kw.h"   // All kw settings as global variables.
 
 
-int file_exists(const char *filename)
+static int file_exists(const char *filename)
 {
     struct stat buffer;
     return stat(filename, &buffer) == 0;
 }
 
 
-void setting_value(const char *setting_name, const int *setting_values)
+static void setting_value(const char *setting_name, const int *setting_values)
 {
     struct kw_conf *k;
     k = kw(setting_name);
