@@ -35,37 +35,38 @@ static void setting_value(const char *setting_name, const int *setting_values)
 // Read specified config file
 int read_conf_file(const char *file_pathname)
 {
-    // TODO: increase line length, test for overrun.
-    const int BUFFER_SIZE = 100;
-    const int VALUE_COUNT = 6;
-
-    FILE * config_file;
-    config_file = fopen(file_pathname, "r");
+    FILE *config_file = fopen(file_pathname, "r");
     if (!config_file) {
         return READ_FAILED;
     }
 
+    const int BUFFER_SIZE = 100;
     char line[BUFFER_SIZE+1], setting_name[BUFFER_SIZE+1];
-    char *chr_ptr1;
 
     while (fgets(line, BUFFER_SIZE, config_file)) {
         // Lines starting with '#' are comments.
         if (line[0] == '#') continue;
 
-        // Read setting name. It starts at line start and ends with space.
-        chr_ptr1 = strchr(line, ' ');
-        if (!chr_ptr1) continue;
-        chr_ptr1[0] = '\0';
+        // Read kw name. Eat all characters until first space.
+        // TODO: Improve handling of name not fitting into the buffer.
+        //     At the moment first BUFFER_SIZE chars will be ingored
+        //     and the rest would be treated as kw name.
+        char *space_ptr = strchr(line, ' ');
+        if (!space_ptr) continue;
+        space_ptr[0] = '\0';
         strncpy(setting_name, line, BUFFER_SIZE);
 
-        // Read setting values.
-        int i;
+        // Read numeric values.
+        char *search_start = space_ptr + 1; // Skip \0 char.
+        const int VALUE_COUNT = 6;
         int setting_values[VALUE_COUNT];
-        for (i = 0; i < VALUE_COUNT; i++) {
-            setting_values[i] = strtol( chr_ptr1+1, &chr_ptr1, 10 );
+        for (int i = 0; i < VALUE_COUNT; i++) {
+            setting_values[i] = strtol(search_start, &search_start, 10);
+            // TODO: check if strtol conversion failed.
+            // It returns 0L, which means we have to check string manualy.
+            // Also check for case when not all settings fit into the buffer.
         }
 
-        // Assign read values to global variables.
         setting_value(setting_name, setting_values);
     }
 
