@@ -32,13 +32,11 @@ int create_config_file(char *config_file_name)
 
     // Define macro to print one line containing config of single keyword
     // and run it (via #include) for each keyword.
-    #define QQ(name) #name
     #define XMACRO(NAME, nlb, tb, sb, nla, ta, sa, ... )   \
         fprintf(config_file, "%-24s %s %6s %6s %6s %6s %6s\n",          \
-            QQ(NAME), QQ(nlb), QQ(tb), QQ(sb), QQ(nla), QQ(ta), QQ(sa));
+            #NAME, #nlb, #tb, #sb, #nla, #ta, #sa);
     #include "../kw/kw_defaults.def"
     #undef XMACRO
-    #undef QQ
 
     fputs("\n\n", config_file);
     fputs("# Some explanations regarding names (shortenings) used above:\n", config_file);
