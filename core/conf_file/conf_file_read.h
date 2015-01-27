@@ -12,8 +12,7 @@ int read_conf_file(const char *file_pathname);
 // Read configuration file from default conf file
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
-// TODO: rename to read_default_conf_files
-int read_configs();
+int read_default_conf_file();
 
 
 #endif

@@ -273,7 +273,7 @@ int main(int argc, char **argv)
     yyout = stdout;
 
     init_all_settings();            // Init default configs.
-    read_configs();                 // Read configs from file.
+    read_default_conf_file();                 // Read configs from file.
     read_cli_options(argc, argv);   // Read configs from command line.
 
     while (yylex() != 0) ;

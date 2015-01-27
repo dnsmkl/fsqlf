@@ -67,7 +67,7 @@ void read_cli_options(int argc, char **argv)
     if (argc == 1) return; // use stdin and stdout
 
     if (argc == 2 && strcmp(argv[1], "--create-config-file") == 0) {
-        if (create_config_file(CONFIG_FILE) != 0) {
+        if (create_conf_file(CONFIG_FILE) != 0) {
             exit(1);
         } else {
             fprintf(stderr, "File '%s' (re)created.\n", CONFIG_FILE);
