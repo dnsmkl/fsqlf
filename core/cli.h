@@ -5,6 +5,7 @@
 #include <ctype.h> // isdigit
 #include "conf_file/conf_file_read.h"
 #include "conf_file/conf_file_create.h"
+#include "conf_file/conf_file_constants.h"
 
 
 #define FAIL_WITH_ERROR( CODE , MESSAGE , ... )         \

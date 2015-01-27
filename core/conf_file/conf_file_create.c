@@ -1,5 +1,6 @@
 #include <stdio.h>  // FILE, fprintf, fputs, fclose
 #include "conf_file_read.h"
+#include "conf_file_constants.h"
 
 
 // Create formatting configuration file with default content.
@@ -19,7 +20,7 @@ int create_conf_file(char *config_file_name)
 
     fputs("# This file contains formatting (spacing) settings wich can be used to override the default formatting style used by FSQLF\n", config_file);
     fputs("# Lines starting with '#' are comments.  Comments and empty lines are ignored\n", config_file);
-    fputs("# Line length is limited to 99 characters. Longer lines are treated as invalid and are ignored.\n", config_file);
+    fprintf(config_file, "# Line length is limited to %d characters. Longer lines are treated as invalid and are ignored.\n", FSQLF_CONFFILE_LINELENGTH);
     fputs("# If there are couple of lines with same setting_name, then only the last one has effect\n\n" , config_file);
 
     fputs("# space_after ----------------------------------------------+\n", config_file);

@@ -1,0 +1,9 @@
+#ifndef CONF_FILE_CONSTANTS_H
+#define CONF_FILE_CONSTANTS_H
+
+
+#define FSQLF_CONFIG_FILE_NAME "formatting.conf"
+#define FSQLF_CONFFILE_LINELENGTH (100)
+
+
+#endif
