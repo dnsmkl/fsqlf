@@ -76,7 +76,7 @@ int read_conf_file(const char *file_pathname)
 
 
 
-#define CONFIG_FILE "formatting.conf"
+#define FSQLF_CONFIG_FILE_NAME "formatting.conf"
 // Read configuration file from default conf file
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
@@ -84,8 +84,8 @@ int read_conf_file(const char *file_pathname)
 int read_default_conf_file()
 {
     // First try file in working directory
-    if (file_exists(CONFIG_FILE)) {
-        return read_conf_file(CONFIG_FILE);
+    if (file_exists(FSQLF_CONFIG_FILE_NAME)) {
+        return read_conf_file(FSQLF_CONFIG_FILE_NAME);
     }
     #ifndef _WIN32
         // in non-windows (unix/linux) also try folder in user-home directory
@@ -93,7 +93,7 @@ int read_default_conf_file()
         const size_t MAX_LEN = 200;
         char full_path[MAX_LEN + 1];
         strncpy(full_path, getenv("HOME"), MAX_LEN);
-        strncat(full_path, "/.fsqlf/" CONFIG_FILE, MAX_LEN - strlen(full_path));
+        strncat(full_path, "/.fsqlf/" FSQLF_CONFIG_FILE_NAME, MAX_LEN - strlen(full_path));
         return read_conf_file(full_path);
     #endif
 }

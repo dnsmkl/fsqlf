@@ -28,7 +28,7 @@ void usage_info(int argc, char **argv)
         "Read from <input_file> and write formatted output to <output_file> (use std I/O if missing)\n"
         "        If there are overlaping options set, then the last one (overflapping setting) wins.\n"
         "        e.g. If config file is set 2 times, then from 1st file use only configs that don't exist in the 2nd file.");
-    PRINT_OPTION_INFO( "fsqlf --create-config-file", "(Re)create '" CONFIG_FILE "' config file.");
+    PRINT_OPTION_INFO( "fsqlf --create-config-file", "(Re)create '" FSQLF_CONFIG_FILE_NAME "' config file.");
     fprintf(stderr, "options:\n");
     PRINT_OPTION_INFO( "-i <input_file>" , "Use <input_file> as input");
     PRINT_OPTION_INFO( "-o <output_file>" , "Use  <output_file> as output");
@@ -67,10 +67,10 @@ void read_cli_options(int argc, char **argv)
     if (argc == 1) return; // use stdin and stdout
 
     if (argc == 2 && strcmp(argv[1], "--create-config-file") == 0) {
-        if (create_conf_file(CONFIG_FILE) != 0) {
+        if (create_conf_file(FSQLF_CONFIG_FILE_NAME) != 0) {
             exit(1);
         } else {
-            fprintf(stderr, "File '%s' (re)created.\n", CONFIG_FILE);
+            fprintf(stderr, "File '%s' (re)created.\n", FSQLF_CONFIG_FILE_NAME);
             exit(0);
         }
     }
