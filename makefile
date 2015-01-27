@@ -147,7 +147,7 @@ clean_test:
 #
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
-formatting.conf: core/kw/kw_default_settings.def core/conf_file/conf_file_create.h $(EXEC_CLI)
+formatting.conf: core/kw/kw_defaults.def core/conf_file/conf_file_create.h $(EXEC_CLI)
 	./$(EXEC_CLI) --create-config-file
 
 VERSION:=$(shell git describe master)
