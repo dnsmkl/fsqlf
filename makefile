@@ -51,10 +51,10 @@ core/lex.yy.o: core/lex.yy.c
 core/kw/kw.o: core/kw/kw.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/conf_file/conf_file_create.o: core/conf_file/conf_file_create.c
+core/conf_file/conf_file_create.o: core/conf_file/conf_file_create.c core/conf_file/conf_file_constants.h
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/conf_file/conf_file_read.o: core/conf_file/conf_file_read.c
+core/conf_file/conf_file_read.o: core/conf_file/conf_file_read.c core/conf_file/conf_file_constants.h
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/print_keywords.o: core/print_keywords.c
