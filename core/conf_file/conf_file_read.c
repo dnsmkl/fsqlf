@@ -44,13 +44,11 @@ int read_conf_file(const char *file_pathname)
     char line[BUFFER_SIZE+1], setting_name[BUFFER_SIZE+1];
 
     while (fgets(line, BUFFER_SIZE, config_file)) {
-        // Lines starting with '#' are comments.
+        // Lines starting with '#' are comments: skip them.
         if (line[0] == '#') continue;
+        // If line doesn't fit into buffer, it is invalid: skip it.
+        if (!strchr(line, '\n')) continue;
 
-        // Read kw name. Eat all characters until first space.
-        // TODO: Improve handling of name not fitting into the buffer.
-        //     At the moment first BUFFER_SIZE chars will be ingored
-        //     and the rest would be treated as kw name.
         char *space_ptr = strchr(line, ' ');
         if (!space_ptr) continue;
         space_ptr[0] = '\0';

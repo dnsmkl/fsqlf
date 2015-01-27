@@ -19,6 +19,7 @@ int create_conf_file(char *config_file_name)
 
     fputs("# This file contains formatting (spacing) settings wich can be used to override the default formatting style used by FSQLF\n", config_file);
     fputs("# Lines starting with '#' are comments.  Comments and empty lines are ignored\n", config_file);
+    fputs("# Line length is limited to 99 characters. Longer lines are treated as invalid and are ignored.\n", config_file);
     fputs("# If there are couple of lines with same setting_name, then only the last one has effect\n\n" , config_file);
 
     fputs("# space_after ----------------------------------------------+\n", config_file);
