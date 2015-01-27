@@ -18,10 +18,17 @@ int create_conf_file(char *config_file_name)
         return 1;
     }
 
-    fputs("# This file contains formatting (spacing) settings, which can be used to override the default formatting style used by FSQLF\n", config_file);
-    fputs("# Lines starting with '#' are comments.  Comments and empty lines are ignored\n", config_file);
-    fprintf(config_file, "# Line length is limited to %d characters. Longer lines are treated as invalid and are ignored.\n", FSQLF_CONFFILE_LINELENGTH);
-    fputs("# If there are couple of lines with same setting_name, then only the last one has effect\n\n" , config_file);
+    fputs("# This file contains formatting (spacing) settings,\n", config_file);
+    fputs("# which can be used to override the default formatting style used by FSQLF.\n", config_file);
+    fputs("#\n", config_file);
+    fputs("# Lines that are ignored (in this file):\n", config_file);
+    fputs("# - Lines starting with '#' are treated as comments, thus ignored.\n", config_file);
+    fputs("# - Empty lines are ignored.\n", config_file);
+    fprintf(config_file, "# - Lines longer then %d characters are treated as invalid and are ignored.\n", FSQLF_CONFFILE_LINELENGTH);
+    fputs("#\n", config_file);
+    fputs("# If there are couple of lines with same setting_name, then only the last one has effect\n" , config_file);
+    fputs("\n", config_file);
+    fputs("\n", config_file);
 
     fputs("# space_after ----------------------------------------------+\n", config_file);
     fputs("# tab_after -----------------------------------------+      |\n", config_file);
@@ -31,6 +38,7 @@ int create_conf_file(char *config_file_name)
     fputs("# new_line_before -------+      |      |      |      |      |\n", config_file);
     fputs("#                        |      |      |      |      |      |\n", config_file);
     fputs("# setting_name\n", config_file);
+    fputs("\n", config_file);
 
     // Define macro to print one line containing config of single keyword
     // and run it (via #include) for each keyword.
