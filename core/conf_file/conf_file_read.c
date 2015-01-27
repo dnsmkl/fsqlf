@@ -76,7 +76,6 @@ int read_conf_file(const char *file_pathname)
 
 
 
-#define FSQLF_CONFIG_FILE_NAME "formatting.conf"
 // Read configuration file from default conf file
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
