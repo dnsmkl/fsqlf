@@ -18,7 +18,7 @@ int create_conf_file(char *config_file_name)
         return 1;
     }
 
-    fputs("# This file contains formatting (spacing) settings wich can be used to override the default formatting style used by FSQLF\n", config_file);
+    fputs("# This file contains formatting (spacing) settings, which can be used to override the default formatting style used by FSQLF\n", config_file);
     fputs("# Lines starting with '#' are comments.  Comments and empty lines are ignored\n", config_file);
     fprintf(config_file, "# Line length is limited to %d characters. Longer lines are treated as invalid and are ignored.\n", FSQLF_CONFFILE_LINELENGTH);
     fputs("# If there are couple of lines with same setting_name, then only the last one has effect\n\n" , config_file);
