@@ -37,6 +37,12 @@ int main()
 	assert(cnt == 2);
 	assert(r == 1);
 
+	// Number too big to fit into int
+	r = 7789;
+	cnt = read_int("9234567890123456789012345678901234567890", 1000, &r);
+	assert(cnt == 40);
+	assert(r == INT_MAX);
+
 
 	// Demo: incrementaly read numbers from string.
 	const char *txt = "12 345  6789";

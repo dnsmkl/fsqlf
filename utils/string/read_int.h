@@ -1,11 +1,14 @@
-#include <stddef.h>
-#include <ctype.h>
+#include <stddef.h> // NULL
+#include <ctype.h>  // isdigit
+#include <limits.h> // INT_MAX
 
 
 // Parse positive integer. Skip leading spaces.
+// Only leading spaces and adjacent digits are read.
 // @text - text from which we want to extract integer
 // @lim - limit characters of text length
-// @result - output param where parsed integer goes
+// @result - output param for parsed integer
+//      (if value in string is too large to fit into int, then INT_MAX is set)
 // return value - number of chars read (on error 0 is returned)
 int read_int(const char *text, size_t lim, int *result)
 {
@@ -33,8 +36,20 @@ int read_int(const char *text, size_t lim, int *result)
                 // Read the digits number
                 int digit = c - '0';
                 assert(digit < 10);
-                tmp_res *= 10;
-                tmp_res += digit;
+                assert(digit >= 0);
+
+                if (tmp_res <= INT_MAX / 10) {
+                    tmp_res *= 10;
+                } else {
+                    tmp_res = INT_MAX;
+                }
+
+                if (tmp_res < INT_MAX - digit) {
+                    tmp_res += digit;
+                } else {
+                    tmp_res = INT_MAX;
+                }
+
                 ++chars_read;
                 ++digits_read;
             } else {
