@@ -2,6 +2,11 @@
 #include <ctype.h>
 
 
+// Parse positive integer. Skip leading spaces.
+// @text - text from which we want to extract integer
+// @lim - limit characters of text length
+// @result - output param where parsed integer goes
+// return value - number of chars read (on error 0 is returned)
 int read_int(const char *text, size_t lim, int *result)
 {
     assert(text != NULL);
