@@ -2,7 +2,7 @@
 #define READ_INT_H
 
 
-int read_int(const char *text, size_t lim, int *result);
+size_t read_int(const char *text, size_t lim, int *result);
 
 
 #endif

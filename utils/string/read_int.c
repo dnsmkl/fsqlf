@@ -17,13 +17,13 @@
 // Q. Why not just use strtol?
 // A. strtol returns 0 on failure to parse.
 //      This makes it impossible to distinguish between parsed 0 and failure.
-int read_int(const char *text, size_t lim, int *result)
+size_t read_int(const char *text, size_t lim, int *result)
 {
     assert(text != NULL);
     assert(result != NULL);
 
-    int chars_read = 0;
-    int digits_read = 0;
+    size_t chars_read = 0;
+    size_t digits_read = 0;
     int tmp_res = 0;
 
     char no_digit_yet = 1; // bool - no digits found yet?
