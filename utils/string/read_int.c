@@ -72,3 +72,19 @@ size_t read_int(const char *text, size_t lim, int *result)
         return 0;
     }
 }
+
+
+size_t read_int_array(const char *text, size_t lim, size_t n, int *result)
+{
+    size_t total_cnt = 0; // Cumulative char count.
+    for (int i = 0; i < n; ++i) {
+        size_t cnt = read_int(text + total_cnt, lim - total_cnt, result + i);
+        if (cnt > 0) {
+            total_cnt += cnt;
+        } else {
+            return 0;
+        }
+    }
+
+    return total_cnt;
+}

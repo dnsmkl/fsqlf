@@ -1,4 +1,5 @@
 #include <assert.h> // assert
+#include <limits.h> // INT_MAX
 #include "read_int.h"
 
 
@@ -65,4 +66,31 @@ int main()
     cnt = read_int(txt, 6, &r); // txt = ""
     assert(cnt == 0); // 2 space + 4 digits
     assert(r == 6789);
+
+
+    // Tests for read_int_array
+    int rs[10];
+
+    // Valid input
+    cnt = read_int_array("1 2 3", 5, 3, rs);
+    assert(cnt == 5);
+    assert(rs[0] == 1);
+    assert(rs[1] == 2);
+    assert(rs[2] == 3);
+
+    // One of numbers is invalid
+    cnt = read_int_array("1 a 3", 5, 3, rs);
+    assert(cnt == 0);
+
+    // Less values exist in string then requested
+    cnt = read_int_array("1 2  ", 5, 3, rs);
+    assert(cnt == 0);
+
+    // String contains more value then requested
+    cnt = read_int_array("1 2 3 4", 20, 3, rs);
+    assert(cnt == 5);
+
+    // String contains enough values, but limit is set too low
+    cnt = read_int_array("1 2 3 4", 3, 3, rs);
+    assert(cnt == 0);
 }
