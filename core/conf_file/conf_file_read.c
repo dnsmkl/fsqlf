@@ -1,12 +1,12 @@
 #include <stdio.h>      // fopen, fclose
-#include <stdlib.h>     // strtol
-#include <string.h>     // strcmp, strchr, strncat, strncpy
+#include <string.h>     // strcmp, strchr, strncat, strncpy, strlen
 #include <assert.h>     // assert
 #include <sys/stat.h>   // stat
 
 #include "conf_file_read.h"
 #include "conf_file_constants.h"
 #include "../kw/kw.h"   // All kw settings as global variables.
+#include "../../utils/string/read_int.h"
 
 
 static int file_exists(const char *filename)
@@ -50,23 +50,33 @@ int read_conf_file(const char *file_pathname)
         // If line doesn't fit into buffer, it is invalid: skip it.
         if (!strchr(line, '\n')) continue;
 
+        size_t llen = strlen(line);
+
+        // Read setting name.
         char *space_ptr = strchr(line, ' ');
         if (!space_ptr) continue;
         space_ptr[0] = '\0';
         strncpy(setting_name, line, FSQLF_CONFFILE_LINELENGTH);
 
-        // Read numeric values.
-        char *search_start = space_ptr + 1; // Skip \0 char.
+        // Read numeric setting values.
+        // nl before, tab before, space before, nl after, tab after, space after
+        char *pos = space_ptr + 1; // Skip \0 char.
+        llen -= space_ptr - line;
         const int VALUE_COUNT = 6;
         int setting_values[VALUE_COUNT];
         for (int i = 0; i < VALUE_COUNT; i++) {
-            setting_values[i] = strtol(search_start, &search_start, 10);
-            // TODO: check if strtol conversion failed.
-            // It returns 0L, which means we have to check string manualy.
-            // Also check for case when not all settings fit into the buffer.
+            char cnt = read_int(pos, llen, setting_values + i);
+            assert(cnt >= 0);
+            if (cnt == 0) {
+                goto CONTINUE_NEXT_LINE;
+            } else {
+                pos += cnt;
+                llen -= cnt;
+            }
         }
-
         setting_value(setting_name, setting_values);
+        CONTINUE_NEXT_LINE:
+        continue;
     }
 
     fclose(config_file);
