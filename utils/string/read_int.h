@@ -10,6 +10,11 @@
 // @result - output param for parsed integer
 //      (if value in string is too large to fit into int, then INT_MAX is set)
 // return value - number of chars read (on error 0 is returned)
+//
+// Rationale for existance.
+// Q. Why not just use strtol?
+// A. strtol returns 0 on failure to parse.
+//      This makes it impossible to distinguish between parsed 0 and failure.
 int read_int(const char *text, size_t lim, int *result)
 {
     assert(text != NULL);
