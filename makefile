@@ -41,7 +41,7 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 # BUILD
 #
-$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o
+$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o
 	$(CC) $(CFLAGS)  $^   -o $@
 	strip $@
 
@@ -54,13 +54,16 @@ core/kw/kw.o: core/kw/kw.c
 core/conf_file/conf_file_create.o: core/conf_file/conf_file_create.c core/conf_file/conf_file_constants.h
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/conf_file/conf_file_read.o: core/conf_file/conf_file_read.c core/conf_file/conf_file_constants.h
+core/conf_file/conf_file_read.o: core/conf_file/conf_file_read.c core/conf_file/conf_file_constants.h utils/string/read_int.h
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/print_keywords.o: core/print_keywords.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/kw/kwall_init.o: core/kw/kwall_init.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
+
+utils/string/read_int.o: utils/string/read_int.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.def core/*.h core/*/*.h)
