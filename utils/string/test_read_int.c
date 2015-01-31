@@ -94,3 +94,5 @@ int main()
     cnt = read_int_array("1 2 3 4", 3, 3, rs);
     assert(cnt == 0);
 }
+
+// gcc read_int.c -std=c99 -c -o read_int.o && gcc test_read_int.c -std=c99 -c -o test_read_int.o && gcc *.o && ./a.out
