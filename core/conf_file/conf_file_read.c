@@ -46,9 +46,16 @@ int read_conf_file(const char *file_pathname)
 
     while (fgets(line, FSQLF_CONFFILE_LINELENGTH, config_file)) {
         // Lines starting with '#' are comments: skip them.
-        if (line[0] == '#') continue;
         // If line doesn't fit into buffer, it is invalid: skip it.
-        if (!strchr(line, '\n')) continue;
+        if (line[0] == '#' || !strchr(line, '\n')) {
+            do {
+                // Skip chunks until new line is found
+                if (!fgets(line, FSQLF_CONFFILE_LINELENGTH, config_file)) break;
+            } while (!strchr(line, '\n'));
+            // Skip that also, as it is continuation
+            // of same line that we want to skip
+            continue;
+        }
 
         size_t llen = strlen(line);
 
