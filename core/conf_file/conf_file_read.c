@@ -61,22 +61,14 @@ int read_conf_file(const char *file_pathname)
         // Read numeric setting values.
         // nl before, tab before, space before, nl after, tab after, space after
         char *pos = space_ptr + 1; // Skip \0 char.
-        llen -= space_ptr - line;
+        llen -= pos - line;
         const int VALUE_COUNT = 6;
         int setting_values[VALUE_COUNT];
-        for (int i = 0; i < VALUE_COUNT; i++) {
-            char cnt = read_int(pos, llen, setting_values + i);
-            assert(cnt >= 0);
-            if (cnt == 0) {
-                goto CONTINUE_NEXT_LINE;
-            } else {
-                pos += cnt;
-                llen -= cnt;
-            }
+        size_t cnt = read_int_array(pos, llen, VALUE_COUNT, setting_values);
+        if (cnt == 0) {
+            continue;
         }
         setting_value(setting_name, setting_values);
-        CONTINUE_NEXT_LINE:
-        continue;
     }
 
     fclose(config_file);

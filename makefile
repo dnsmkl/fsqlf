@@ -140,7 +140,7 @@ clean_win:
 	make clean_local WIN=1
 
 clean_obj:
-	rm -f *.o core/*.o core/*/*.o
+	rm -f *.o core/*.o core/*/*.o utils/*/*.o
 
 clean_test:
 	rm -f $(TF_LEAD)
