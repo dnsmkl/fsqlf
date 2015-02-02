@@ -19,7 +19,7 @@ int create_conf_file(char *config_file_name)
     }
 
     fputs("# This file contains formatting (spacing) settings,\n", config_file);
-    fputs("# which can be used to override the default formatting style used by FSQLF.\n", config_file);
+    fputs("# which can be used to override the default formatting style of FSQLF.\n", config_file);
     fputs("#\n", config_file);
     fputs("# Lines that are ignored (in this file):\n", config_file);
     fputs("# - Lines starting with '#' are treated as comments, thus ignored.\n", config_file);
