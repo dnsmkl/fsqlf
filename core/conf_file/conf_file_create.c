@@ -23,10 +23,20 @@ int create_conf_file(char *config_file_name)
     fputs("#\n", config_file);
     fputs("# Lines that are ignored (in this file):\n", config_file);
     fputs("# - Lines starting with '#' are treated as comments, thus ignored.\n", config_file);
-    fputs("# - Empty lines are ignored.\n", config_file);
-    fprintf(config_file, "# - Lines longer then %d characters are treated as invalid and are ignored.\n", FSQLF_CONFFILE_LINELENGTH);
+    fputs("# - Last line is ignored (blank line or comment at the end of file is needed).\n", config_file);
+    fputs("# - Empty lines are ignored (they fall into invalid line category).\n", config_file);
+    fputs("# - Invalid config lines are ignored (see below for details).\n", config_file);
     fputs("#\n", config_file);
-    fputs("# If there are couple of lines with same setting_name, then only the last one has effect\n" , config_file);
+    fputs("# Valid config lines satisfy following criteria:\n", config_file);
+    fputs("# - Contains `setting name` followed by 6 integer values.\n", config_file);
+    fputs("# - Line begins with `setting name` (no leading spacing).\n", config_file);
+    fputs("# - Values are separated by spaces (not tabs, not commas, not anything else).\n", config_file);
+    fputs("# - `Setting name` should match one of predefined FSQLF setting names.\n", config_file);
+    fprintf(config_file, "# - Line limit is %d characters (longer lines are ignored).\n", FSQLF_CONFFILE_LINELENGTH);
+    fputs("# (if some criteria is violated, then line is invalid - thus ignored).\n", config_file);
+    fputs("#\n", config_file);
+    fputs("# If there are couple of valid lines with same setting_name,\n" , config_file);
+    fputs("# then only the last one has effect.\n" , config_file);
     fputs("\n", config_file);
     fputs("\n", config_file);
 
