@@ -57,7 +57,7 @@ void end_SUB()
 
 char *dump_paranthesis_counts()
 {
-    char buffer[1000];
+    static char buffer[1000];
     sprintf(buffer, "'('=%d; ')'=%d; sub_openings.length=%d",
         left_p, right_p, sub_openings.length);
     return buffer;
