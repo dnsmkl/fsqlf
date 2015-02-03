@@ -7,16 +7,9 @@ int left_p  = 0;
 int right_p = 0;
 
 
-void inc_LEFTP()
-{
-    left_p++;
-}
+void inc_LEFTP();
+void inc_RIGHTP();
 
-
-void inc_RIGHTP()
-{
-    right_p++;
-}
 
 
 typedef struct
