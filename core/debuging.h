@@ -14,11 +14,12 @@
 int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 
+// extern char *dump_paranthesis_counts();
+
 void debug_p()
 {
     if (debug_level & DEBUGPARCOUNTS) {
-        printf("\n\t***  '('=%d; ')'=%d; sub_openings.length=%d)  ***\n",
-            left_p, right_p, sub_openings.length);
+        printf("\n\t***  %s  ***\n", dump_paranthesis_counts());
     }
 }
 
