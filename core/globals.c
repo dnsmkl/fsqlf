@@ -1,5 +1,5 @@
 #include <stdio.h>  // sprintf
-// #include "global_variables.h"
+// #include "globals.h"
 
 
 extern int left_p;

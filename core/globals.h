@@ -1,5 +1,5 @@
-#ifndef global_variables_h
-#define global_variables_h
+#ifndef globals_h
+#define globals_h
 
 
 int currindent = 0;
