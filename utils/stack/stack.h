@@ -10,6 +10,7 @@
 
 
 #include <assert.h>
+#include <stdlib.h> // malloc, realloc
 
 
 #define STATE_STACK_SIZE (100)
@@ -31,13 +32,19 @@ struct STACK_T
     // first item => items[0]
     // stack empty => length=0
     size_t length;
-    ITEM_T items[STATE_STACK_SIZE];
+    size_t item_size;
+    size_t capacity;
+    void *items;
 };
 
 
-void P(ITEM_T, _stack_init)(struct STACK_T *stk)
+void P(ITEM_T, _stack_init)(struct STACK_T *stk, size_t item_size)
 {
     stk->length = 0;
+    stk->item_size = 0;
+    stk->capacity = 100;
+    stk->items = malloc(stk->item_size * q->capacity);
+    assert(stk->items);
 }
 
 
@@ -52,7 +59,7 @@ void P(ITEM_T, _stack_push)(struct STACK_T *stk, ITEM_T newitem)
 ITEM_T P(ITEM_T, _stack_pop)(struct STACK_T *stk)
 {
     stk->length--;
-    assert(stk->length >= 0 && stk->length < STATE_STACK_SIZE);
+    assert(stk->length >= 0 && stk->length < stk->capacity);
     return stk->items[stk->length];
 }
 
