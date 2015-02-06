@@ -1,41 +1,53 @@
 #include <stdio.h>
-
-#define ITEM_T int
+#include <assert.h>
 #include "stack.h"
 
 
-void int_stack_testing_suite()
+void print_stack_struct(const struct stack *stk)
+{
+    int i;
+    printf("Dump: %d %d", stk->length, stk->isize);
+    for (i = 0; i < stk->length * stk->isize; ++i) {
+        if (i % stk->isize == 0) printf("\n");
+        printf("%d ", ((char*)stk->items)[i]);
+    }
+    puts("\n");
+    fflush(stdout);
+}
+
+
+void stack_testing_suite()
 {
     puts("stack_testing_suite:start");
 
-    struct int_stack t; // t=test
-    int_stack_init(&t);
-    assert(int_stack_empty(&t));
+    struct stack t; // t=test
+    stack_init(&t, sizeof(int));
+    assert(stack_empty(&t));
 
-    int_stack_push(&t, 1);
-    assert(!int_stack_empty(&t));
-    assert(int_stack_peek(&t) == 1);
-    int_stack_push(&t, 3);
-    assert(int_stack_peek(&t) == 3);
-    int_stack_push(&t, 9);
-    assert(int_stack_peek(&t) == 9);
-    int_stack_push(&t, 41);
-    assert(int_stack_peek(&t) == 41);
+    stack_push(&t, &(int){1});
+    assert(!stack_empty(&t));
+    assert(*(int*) stack_peek(&t) == 1);
+    stack_push(&t, &(int){3});
+    assert(*(int*) stack_peek(&t) == 3);
+    stack_push(&t, &(int){9});
+    assert(*(int*) stack_peek(&t) == 9);
+    stack_push(&t, &(int){41});
+    assert(*(int*) stack_peek(&t) == 41);
 
-    assert(int_stack_pop(&t) == 41);
-    assert(int_stack_peek(&t) == 9);
-    assert(int_stack_pop(&t) == 9);
-    assert(int_stack_peek(&t) == 3);
-    assert(int_stack_pop(&t) == 3);
+    assert(*(int*) stack_pop(&t) == 41);
+    assert(*(int*) stack_peek(&t) == 9);
+    assert(*(int*) stack_pop(&t) == 9);
+    assert(*(int*) stack_peek(&t) == 3);
+    assert(*(int*) stack_pop(&t) == 3);
 
-    int_stack_push(&t, 123);
-    assert(int_stack_peek(&t) == 123);
+    stack_push(&t, &(int){123});
+    assert(*(int*) stack_peek(&t) == 123);
 
-    assert(int_stack_pop(&t) == 123);
-    assert(int_stack_peek(&t) == 1);
-    assert(int_stack_pop(&t) == 1);
+    assert(*(int*) stack_pop(&t) == 123);
+    assert(*(int*) stack_peek(&t) == 1);
+    assert(*(int*) stack_pop(&t) == 1);
 
-    assert(int_stack_empty(&t));
+    assert(stack_empty(&t));
 
     puts("stack_testing_suite:success\n");
 }
@@ -43,5 +55,5 @@ void int_stack_testing_suite()
 
 void main()
 {
-    int_stack_testing_suite();
+    stack_testing_suite();
 }

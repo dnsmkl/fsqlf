@@ -25,31 +25,32 @@ pair make_pair(int l, int r)
     return tmp;
 }
 
+pair *make_pair_ptr(int l, int r)
+{
+    static pair tmp;
+    tmp = (pair){l, r};
+    return &tmp;
+}
 
 
 
-#define ITEM_T pair
+
 #include "../utils/stack/stack.h"
-//  void <t>_stack_init(<t>_stack* stk)
-//  void <t>_stack_push(<t>_stack* stk, <t> newitem)
-//  <t> <t>_stack_pop(<t>_stack* stk)
-//  <t> <t>_stack_peek(const <t>_stack* stk)
-//  int <t>_stack_empty(const <t>_stack* stk)
 
 
-struct pair_stack sub_openings;
+struct stack sub_openings;
 
 
 void begin_SUB()
 {
-    pair_stack_push(&sub_openings, make_pair(left_p, right_p));
+    stack_push(&sub_openings, make_pair_ptr(left_p, right_p));
     currindent++;
 }
 
 
 void end_SUB()
 {
-    pair_stack_pop(&sub_openings);
+    stack_pop(&sub_openings);
     currindent--;
 }
 

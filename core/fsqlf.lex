@@ -13,9 +13,9 @@ Helped to learn about flex a bit
 void debug_stchange(int);
 void debug_match(char*);
 
-#define ITEM_T int
-#include "../utils/stack/stack.h" // int_stack
-struct int_stack state_stack;
+
+#include "../utils/stack/stack.h"
+struct stack state_stack;
 }
 
 
@@ -26,13 +26,13 @@ char * state_to_char(int);
 
 
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
-#define PUSH_STATE(NEWSTATE)  int_stack_push(&state_stack, YY_START); BEGIN_STATE(NEWSTATE);
-#define POP_STATE(); BEGIN_STATE(int_stack_peek(&state_stack)); int_stack_pop(&state_stack);
+#define PUSH_STATE(NEWSTATE)  stack_push(&state_stack, &(int){YY_START}); BEGIN_STATE(NEWSTATE);
+#define POP_STATE(); BEGIN_STATE(*(int*)stack_peek(&state_stack)); stack_pop(&state_stack);
 
 // YY_USER_INIT is lex macro executed before initialising parser
 #define YY_USER_INIT \
-    int_stack_init(&state_stack); \
-    pair_stack_init(&sub_openings);
+    stack_init(&state_stack, sizeof(int)); \
+    stack_init(&sub_openings, sizeof(pair));
 %}
 
 
@@ -191,13 +191,13 @@ END (?i:end)
 <stTAB_COL_LIST>{COMMA}    { handle_kw(yyout,yytext,kw("kw_comma_create_table") ); }
 <stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              handle_kw(yyout,yytext,kw("kw_right_p_create_table") ); };
 
-<stP_SUB>{LEFTP}                      { BEGIN_STATE(int_stack_peek(&state_stack)); handle_kw(yyout,yytext,kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
+<stP_SUB>{LEFTP}                      { BEGIN_STATE(*(int*)stack_peek(&state_stack)); handle_kw(yyout,yytext,kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT);     handle_kw(yyout,"(",kw("kw_left_p_sub")); handle_kw(yyout,yytext,kw("kw_select"));};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
-    if (int_stack_peek(&state_stack) == stFROM
-        || int_stack_peek(&state_stack) == stJOIN)
-    { BEGIN_STATE(int_stack_peek(&state_stack)); handle_kw(yyout,"(",kw("kw_left_p")    ); handle_text(yyout,yytext);}
+    if (*(int*)stack_peek(&state_stack) == stFROM
+        || *(int*)stack_peek(&state_stack) == stJOIN)
+    { BEGIN_STATE(*(int*)stack_peek(&state_stack)); handle_kw(yyout,"(",kw("kw_left_p")    ); handle_text(yyout,yytext);}
     else
     { BEGIN_STATE(stIN_CONSTLIST); handle_kw(yyout,"(",kw("kw_left_p")    ); handle_text(yyout,yytext); }
     };
@@ -206,12 +206,12 @@ END (?i:end)
 <stP_SUB>{COMMENT_ONE_LINE}           { handle_text(yyout,""); handle_text(yyout,yytext);};
 <stP_SUB>{SPACE}                      { handle_text(yyout,""); };
 <stP_SUB>{RIGHTP}                     { handle_kw(yyout,"(",kw("kw_left_p")    ); POP_STATE(); handle_kw(yyout,yytext,kw("kw_right_p")); }
-<stP_SUB>.                            { BEGIN_STATE(int_stack_peek(&state_stack)); handle_kw(yyout,"(",kw("kw_left_p")    ); handle_text(yyout,yytext); };
+<stP_SUB>.                            { BEGIN_STATE(*(int*)stack_peek(&state_stack)); handle_kw(yyout,"(",kw("kw_left_p")    ); handle_text(yyout,yytext); };
 
 {RIGHTP}    {
                 POP_STATE();
-                if (!pair_stack_empty(&sub_openings) &&
-                    left_p - pair_stack_peek(&sub_openings).left == (right_p+1) - pair_stack_peek(&sub_openings).right - 1) {
+                if (!stack_empty(&sub_openings) &&
+                    left_p -(*(pair*)stack_peek(&sub_openings)).left == (right_p+1) -(*(pair*)stack_peek(&sub_openings)).right - 1) {
                     handle_kw(yyout,yytext,kw("kw_right_p_sub"));
                 } else {
                     debug_match("<wtf-leftp>");
