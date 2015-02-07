@@ -12,10 +12,6 @@ Helped to learn about flex a bit
 #include "kw/kwall_init.h"      // All kw settings as global variables. init_all_settings
 void debug_stchange(int);
 void debug_match(char*);
-
-
-#include "../utils/stack/stack.h"
-struct stack state_stack;
 }
 
 

@@ -32,6 +32,7 @@ pair *make_pair_ptr(int l, int r)
 #include "../utils/stack/stack.h"
 
 
+struct stack state_stack;
 struct stack sub_openings;
 
 
