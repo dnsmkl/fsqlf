@@ -21,18 +21,9 @@ void inc_RIGHTP()
 }
 
 
-
-pair *make_pair_ptr(int l, int r)
-{
-    static pair tmp;
-    tmp = (pair){l, r};
-    return &tmp;
-}
-
-
 void begin_SUB()
 {
-    stack_push(&sub_openings, make_pair_ptr(left_p, right_p));
+    stack_push(&sub_openings, &(pair){left_p, right_p});
     currindent++;
 }
 
