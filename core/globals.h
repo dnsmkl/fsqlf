@@ -19,12 +19,6 @@ typedef struct
 } pair;
 
 
-pair make_pair(int l, int r)
-{
-    pair tmp = {l, r};
-    return tmp;
-}
-
 pair *make_pair_ptr(int l, int r)
 {
     static pair tmp;
