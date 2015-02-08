@@ -10,6 +10,7 @@ wx_fsqlf.exe
 
 # Generated files
 core/lex.yy.c
+core/lex.yy.h
 gui/license_text.h
 *.o
 formatting.conf
