@@ -41,11 +41,14 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 # BUILD
 #
-$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o core/globals.o utils/stack/stack.o core/cli.o core/debuging.o
+$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o core/globals.o utils/stack/stack.o core/cli.o core/debuging.o core/main.o
 	$(CC) $(CFLAGS)  $^   -o $@
 	strip $@
 
 utils/stack/stack.o: utils/stack/stack.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
+
+core/main.o: core/main.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/debuging.o: core/debuging.c
