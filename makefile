@@ -41,11 +41,17 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 # BUILD
 #
-$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o core/globals.o utils/stack/stack.o
+$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o core/globals.o utils/stack/stack.o core/cli.o core/debuging.o
 	$(CC) $(CFLAGS)  $^   -o $@
 	strip $@
 
 utils/stack/stack.o: utils/stack/stack.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
+
+core/debuging.o: core/debuging.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
+
+core/cli.o: core/cli.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/lex.yy.o: core/lex.yy.c
@@ -73,7 +79,9 @@ utils/string/read_int.o: utils/string/read_int.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.def core/*.h core/*/*.h)
-	flex  -o $@  $< # options (i.e. `-o`) has to be before input file
+	flex  -o $@ --header-file=core/lex.yy.h $< # options (i.e. `-o`) has to be before input file
+
+
 
 $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
 	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)
