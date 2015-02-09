@@ -30,10 +30,8 @@ LEFT JOIN
             EXCEPT
         SELECT
           2
-    )
-    T
-)
-baba
+    ) T
+) baba
  ON 1 IN  ( 1,2,3 )
 OR x<>1
 AND 1=1
