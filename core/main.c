@@ -3,6 +3,9 @@
 #include "lex.yy.h"	// yyin, yyout
 
 
+// TODO: Make formatter lib separate from cli.
+// 		 Extract function  "void format_sql_file(FILE in, FILE out, conf)"
+// Prereq: change cli.c, so it would not access yyin, yyout directly.
 int main(int argc, char **argv)
 {
     // Initialise with STD I/O (later can be changed by command line options).
