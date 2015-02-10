@@ -63,7 +63,8 @@ int get_int_arg(int i, int argc, char **argv)
 }
 
 
-void read_cli_options(int argc, char **argv)
+void read_cli_options(int argc, char **argv,
+                        struct kw_conf * (*kw)(const char *))
 {
     int i;
     if (argc == 1) return; // use stdin and stdout
