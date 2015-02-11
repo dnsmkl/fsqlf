@@ -5,8 +5,11 @@
 #include "conf_file/conf_file_read.h"
 #include "conf_file/conf_file_create.h"
 #include "conf_file/conf_file_constants.h"
+#include "kw/kwall_init.h"  // set_case, set_text_original
 #include "lex.yy.h"
 #include "debuging.h"
+
+
 
 
 #define FAIL_WITH_ERROR( CODE , MESSAGE , ... )         \

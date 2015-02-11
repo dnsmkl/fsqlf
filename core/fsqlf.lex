@@ -9,7 +9,6 @@ Helped to learn about flex a bit
 #include <stdio.h>              // fprintf, stdin, stdout
 #include "globals.h"   // pair_stack sub_openings, currindent, left_p, right_p
 #include "print_keywords.h"     // handle_kw, handle_text
-#include "kw/kwall_init.h"      // All kw settings as global variables. init_all_settings
 void debug_stchange(int);
 void debug_match(char*);
 }
