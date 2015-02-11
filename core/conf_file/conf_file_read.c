@@ -2,10 +2,8 @@
 #include <string.h>     // strcmp, strchr, strncat, strncpy, strlen
 #include <assert.h>     // assert
 #include <sys/stat.h>   // stat
-
 #include "conf_file_read.h"
 #include "conf_file_constants.h"
-#include "../kw/kw.h"   // All kw settings as global variables.
 #include "../../utils/string/read_int.h"
 
 
@@ -34,7 +32,8 @@ static void setting_value(const char *setting_name, const int *setting_values)
 #define READ_SUCCESSFULL (0)
 #define READ_FAILED (1)
 // Read specified config file
-int read_conf_file(const char *file_pathname)
+int read_conf_file(const char *file_pathname,
+                    struct kw_conf * (*kw)(const char *))
 {
     FILE *config_file = fopen(file_pathname, "r");
     if (!config_file) {
@@ -88,11 +87,11 @@ int read_conf_file(const char *file_pathname)
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
 // TODO: rename to read_default_conf_files
-int read_default_conf_file()
+int read_default_conf_file(struct kw_conf * (*kw)(const char *))
 {
     // First try file in working directory
     if (file_exists(FSQLF_CONFFILE_NAME)) {
-        return read_conf_file(FSQLF_CONFFILE_NAME);
+        return read_conf_file(FSQLF_CONFFILE_NAME, kw);
     }
     #ifndef _WIN32
         // in non-windows (unix/linux) also try folder in user-home directory
@@ -101,6 +100,6 @@ int read_default_conf_file()
         char full_path[MAX_LEN + 1];
         strncpy(full_path, getenv("HOME"), MAX_LEN);
         strncat(full_path, "/.fsqlf/" FSQLF_CONFFILE_NAME, MAX_LEN - strlen(full_path));
-        return read_conf_file(full_path);
+        return read_conf_file(full_path, kw);
     #endif
 }

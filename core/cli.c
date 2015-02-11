@@ -101,7 +101,7 @@ void read_cli_options(int argc, char **argv,
             if (!yyout) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
         } else if (ARGV_MATCH(i, "--config-file")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
-            if (read_conf_file(argv[i]) == READ_FAILED ) {
+            if (read_conf_file(argv[i], kw) == READ_FAILED) {
                 FAIL_WITH_ERROR(1, "Error reading configureation file: %s", argv[i]);
             }
         } else if (ARGV_MATCH(i, "--select-comma-newline")) {
