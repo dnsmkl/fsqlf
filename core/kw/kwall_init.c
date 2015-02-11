@@ -1,5 +1,4 @@
 #include "kwall_init.h"
-#include "kw.h"
 
 
 // TODO: remove these from here (use include instead)
@@ -27,7 +26,7 @@ void set_text_original(unsigned short int ind_original)
 }
 
 
-void init_all_settings()
+void init_all_settings(struct kw_conf * (*kw)(const char *))
 {
     #define XMACRO(NAME, nlb, tb, sb, nla, ta, sa, TEXT)    \
     do {                                              \
