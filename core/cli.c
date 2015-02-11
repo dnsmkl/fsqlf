@@ -23,7 +23,7 @@ do {                                                    \
 #define ARGV_MATCH(INDEX, TEXT) (strcmp(argv[INDEX], TEXT) == 0)
 
 
-void usage_info(int argc, char **argv)
+static void usage_info(int argc, char **argv)
 {
     fprintf(stderr, "usage:\n" );
     PRINT_OPTION_INFO( "fsqlf [<input_file>] [<output_file>] [options]",
@@ -50,7 +50,7 @@ void usage_info(int argc, char **argv)
 
 
 // Get argument and convert it to integer
-int get_int_arg(int i, int argc, char **argv)
+static int get_int_arg(int i, int argc, char **argv)
 {
     // TODO:
     // actualy check whether argument is a number.
