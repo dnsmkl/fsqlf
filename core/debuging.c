@@ -7,8 +7,6 @@
 int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 
 
-// extern char *dump_paranthesis_counts();
-
 void debug_p()
 {
     if (debug_level & DEBUGPARCOUNTS) {
