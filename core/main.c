@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
     init_all_settings(&kw);        		// Init default configs.
     read_default_conf_file(&kw);       	// Read configs from file.
-    read_cli_options(argc, argv, &kw);  // Read configs from command line.
+    read_cli_options(argc, argv, &kw, &yyin, &yyout);  // Read configs from command line.
 
     while (yylex() != 0) ;
 

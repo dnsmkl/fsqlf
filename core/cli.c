@@ -1,5 +1,4 @@
 #include <ctype.h> // isdigit
-#include <stdio.h> // fprintf
 #include <stdlib.h> // exit
 #include "cli.h"
 #include "conf_file/conf_file_read.h"
@@ -67,7 +66,7 @@ static int get_int_arg(int i, int argc, char **argv)
 
 
 void read_cli_options(int argc, char **argv,
-                        struct kw_conf * (*kw)(const char *))
+                        struct kw_conf * (*kw)(const char *), FILE ** fin, FILE ** fout)
 {
     int i;
     if (argc == 1) return; // use stdin and stdout
@@ -83,25 +82,25 @@ void read_cli_options(int argc, char **argv,
 
     for (i = 1; i < argc; i++) {
         if (argv[i][0] != '-') {
-            if (yyin == stdin) {
+            if ((*fin) == stdin) {
                 //try to openinig INPUT file
-                yyin = fopen(argv[1], "r");
-                if (!yyin) {
+                (*fin) = fopen(argv[1], "r");
+                if (!(*fin)) {
                     FAIL_WITH_ERROR(1, "Error opening input file: %s", argv[i]);
                 }
             }
-            else if (yyout == stdout) {   //try to openinig OUTPUT file (only if INPUT file is set)
-                yyout = fopen(argv[2], "w+");
-                if (!yyout) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
+            else if ((*fout) == stdout) {   //try to openinig OUTPUT file (only if INPUT file is set)
+                (*fout) = fopen(argv[2], "w+");
+                if (!(*fout)) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
             }
         } else if (ARGV_MATCH(i, "-i")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
-            yyin = fopen(argv[i], "r");
-            if (!yyin) FAIL_WITH_ERROR(1, "Error opening input file: %s", argv[i]);
+            (*fin) = fopen(argv[i], "r");
+            if (!(*fin)) FAIL_WITH_ERROR(1, "Error opening input file: %s", argv[i]);
         } else if (ARGV_MATCH(i, "-o")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
-            yyout = fopen(argv[i], "w+");
-            if (!yyout) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
+            (*fout) = fopen(argv[i], "w+");
+            if (!(*fout)) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
         } else if (ARGV_MATCH(i, "--config-file")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (read_conf_file(argv[i], kw) == READ_FAILED) {
