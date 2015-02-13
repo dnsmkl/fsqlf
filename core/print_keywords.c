@@ -3,16 +3,8 @@
 #include <stdio.h>      // fprintf, fputs
 #include <assert.h>      // assert
 #include "print_keywords.h"
+#include "globals.h"
 
-
-// TODO: remove these (use include instead).
-extern void inc_LEFTP();
-extern void inc_RIGHTP();
-extern void begin_SUB();
-extern void end_SUB();
-
-
-extern int currindent;
 
 
 // Return max argument.
