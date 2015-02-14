@@ -34,10 +34,10 @@ struct kw_conf
 
 enum
 {
-	CASE_none,
-	CASE_lower,
-	CASE_UPPER,
-	CASE_Initcap
+    CASE_none,
+    CASE_lower,
+    CASE_UPPER,
+    CASE_Initcap
 };
 
 

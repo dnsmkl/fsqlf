@@ -11,8 +11,8 @@ int main(int argc, char **argv)
     yyin  = stdin;
     yyout = stdout;
 
-    init_all_settings(&kw);        		// Init default configs.
-    read_default_conf_file(&kw);       	// Read configs from file.
+    init_all_settings(&kw);             // Init default configs.
+    read_default_conf_file(&kw);        // Read configs from file.
     read_cli_options(argc, argv, &kw, &yyin, &yyout);  // Read configs from command line.
 
     while (yylex() != 0) ;

@@ -2,14 +2,14 @@
 #define CONF_FILE_READ_H
 
 
-#include "../kw/kw.h"	// kw_conf
+#include "../kw/kw.h"   // kw_conf
 
 
 #define READ_SUCCESSFULL (0)
 #define READ_FAILED (1)
 // Read specified config file
 int read_conf_file(const char *file_pathname,
-					struct kw_conf * (*kw)(const char *));
+                    struct kw_conf * (*kw)(const char *));
 
 
 // Read configuration file from default conf file

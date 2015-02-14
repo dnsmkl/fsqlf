@@ -2,7 +2,7 @@
 
 
 bool DndTarget::OnDropFiles(wxCoord x, wxCoord y,
-	const wxArrayString &filenames)
+    const wxArrayString &filenames)
 {
     this->text_area->LoadFile(filenames[0]);
 }
