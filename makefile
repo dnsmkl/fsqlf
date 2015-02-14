@@ -151,6 +151,7 @@ clean: clean_local  clean_win  clean_obj  clean_test
 
 clean_local:
 	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  core/formatter/lex.yy.c  $(TMP_BAKUPS) \
+		core/formatter/lex.yy.h \
 		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE) \
 	make clean_obj
 
