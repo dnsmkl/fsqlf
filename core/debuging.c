@@ -1,7 +1,7 @@
 #include "debuging.h"
 #include "kw/kw.h"
 #define YY_HEADER_EXPORT_START_CONDITIONS
-#include "lex.yy.h"
+#include "formatter/lex.yy.h"
 
 
 int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;

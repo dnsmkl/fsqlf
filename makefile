@@ -41,7 +41,7 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 # BUILD
 #
-$(EXEC_CLI): core/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o core/globals.o utils/stack/stack.o core/cli.o core/debuging.o core/main.o
+$(EXEC_CLI): core/formatter/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/formatter/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o core/formatter/globals.o utils/stack/stack.o core/cli.o core/debuging.o core/main.o
 	$(CC) $(CFLAGS)  $^   -o $@
 	strip $@
 
@@ -57,13 +57,13 @@ core/debuging.o: core/debuging.c
 core/cli.o: core/cli.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/lex.yy.o: core/lex.yy.c
+core/formatter/lex.yy.o: core/formatter/lex.yy.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/kw/kw.o: core/kw/kw.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/globals.o: core/globals.c
+core/formatter/globals.o: core/formatter/globals.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/conf_file/conf_file_create.o: core/conf_file/conf_file_create.c core/conf_file/conf_file_constants.h
@@ -72,7 +72,7 @@ core/conf_file/conf_file_create.o: core/conf_file/conf_file_create.c core/conf_f
 core/conf_file/conf_file_read.o: core/conf_file/conf_file_read.c core/conf_file/conf_file_constants.h utils/string/read_int.h
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/print_keywords.o: core/print_keywords.c
+core/formatter/print_keywords.o: core/formatter/print_keywords.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
 core/kw/kwall_init.o: core/kw/kwall_init.c
@@ -81,8 +81,9 @@ core/kw/kwall_init.o: core/kw/kwall_init.c
 utils/string/read_int.o: utils/string/read_int.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/lex.yy.c: core/fsqlf.lex  $(wildcard core/*.def core/*.h core/*/*.h)
-	flex  -o $@ --header-file=core/lex.yy.h $< # options (i.e. `-o`) has to be before input file
+core/formatter/lex.yy.c: core/formatter/fsqlf.lex  $(wildcard core/*.def core/*.h core/*/*.h)
+	# flex options (e.g. `-o`) has to be before input file
+	flex  -o $@ --header-file=core/formatter/lex.yy.h $<
 
 
 
@@ -149,7 +150,7 @@ TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMA
 clean: clean_local  clean_win  clean_obj  clean_test
 
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  core/lex.yy.c  $(TMP_BAKUPS) \
+	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  core/formatter/lex.yy.c  $(TMP_BAKUPS) \
 		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE) \
 	make clean_obj
 

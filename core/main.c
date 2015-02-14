@@ -2,7 +2,7 @@
 #include "kw/kwall_init.h"  // init_all_settings
 #include "kw/kw.h"  // init_all_settings
 #include "cli.h"    // read_cli_options
-#include "lex.yy.h"	// yyin, yyout
+#include "formatter/lex.yy.h" // yyin, yyout
 
 
 int main(int argc, char **argv)

@@ -2,7 +2,7 @@
 #define globals_h
 
 
-#include "../utils/stack/stack.h"
+#include "../../utils/stack/stack.h"
 
 
 // Global variables defined in globals.c file
