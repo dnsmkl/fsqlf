@@ -7,6 +7,7 @@
 #include "kw/kwall_init.h"  // set_case, set_text_original
 #include "formatter/lex.yy.h"
 #include "debuging.h"
+#include "../utils/string/read_int.h"   // read_int
 
 
 
@@ -54,14 +55,11 @@ static void usage_info(int argc, char **argv)
 // Get argument and convert it to integer
 static int get_int_arg(int i, int argc, char **argv)
 {
-    // TODO:
-    // actualy check whether argument is a number.
-    // `atoi` has no defined behaviour when parse does not succeed
-    // (but usualy returns 0)
-    if (i >= argc || !isdigit(argv[i][0])) {
+    int r;
+    if (!read_int(argv[i], 1000, &r)) {
         FAIL_WITH_ERROR(1, "Missing or invalid value for option : %s", argv[i-1]);
     }
-    return atoi(argv[i]);
+    return r;
 }
 
 
