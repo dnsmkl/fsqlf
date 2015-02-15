@@ -51,19 +51,19 @@ int main()
     cnt = read_int(txt, 6, &r);
     assert(cnt == 2);
     assert(r == 12);
-    txt += cnt;
+    txt += cnt; // txt = " 345  6789"
 
-    cnt = read_int(txt, 6, &r); // txt = " 345  6789"
+    cnt = read_int(txt, 6, &r);
     assert(cnt == 4); // 1 space + 3 digits
     assert(r == 345);
-    txt += cnt;
+    txt += cnt; // txt = "  6789"
 
-    cnt = read_int(txt, 6, &r); // txt = "  6789"
+    cnt = read_int(txt, 6, &r);
     assert(cnt == 6); // 2 space + 4 digits
     assert(r == 6789);
-    txt += cnt;
+    txt += cnt; // txt = ""
 
-    cnt = read_int(txt, 6, &r); // txt = ""
+    cnt = read_int(txt, 6, &r);
     assert(cnt == 0); // 2 space + 4 digits
     assert(r == 6789);
 
