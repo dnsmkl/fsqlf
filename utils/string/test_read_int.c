@@ -40,7 +40,7 @@ int main()
 
     // Number too big to fit into int
     r = 7789;
-    cnt = read_int("9234567890123456789012345678901234567890", 1000, &r);
+    cnt = read_int("9234567890123456789012345678901234567890 1", 1000, &r);
     assert(cnt == 40);
     assert(r == INT_MAX);
 
