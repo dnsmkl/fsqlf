@@ -1,6 +1,4 @@
 #include <stdio.h>
-
-#define TOKEN_KW_SETTING_T int
 #include "token.h"
 
 
