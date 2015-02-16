@@ -2,7 +2,7 @@
 #define token_h
 
 
-#include "kw/kw.h"  // kw_conf
+#include "../kw/kw.h"  // kw_conf
 
 
 typedef int token_class_t;
