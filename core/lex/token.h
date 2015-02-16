@@ -11,16 +11,16 @@ typedef int token_class_t;
 #define TC_CMT 3
 
 
-typedef struct
+struct token
 {
     token_class_t token_class;
     const char * yytext;
     int yyleng;
     const struct kw_conf *kw_setting;
-} token_t;
+};
 
 
-token_t * make_token(
+struct token *make_token(
     const token_class_t token_class,
     const char * yytext,
     const int yyleng,
