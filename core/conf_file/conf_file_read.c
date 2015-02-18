@@ -93,13 +93,30 @@ int read_default_conf_file(struct kw_conf * (*kw)(const char *))
     if (file_exists(FSQLF_CONFFILE_NAME)) {
         return read_conf_file(FSQLF_CONFFILE_NAME, kw);
     }
+
+    // In non-windows (unix/linux) also try folder in user-home directory
     #ifndef _WIN32
-        // in non-windows (unix/linux) also try folder in user-home directory
-        // TODO: increase length, check for overflow.
-        const size_t MAX_LEN = 200;
-        char full_path[MAX_LEN + 1];
-        strncpy(full_path, getenv("HOME"), MAX_LEN);
-        strncat(full_path, "/.fsqlf/" FSQLF_CONFFILE_NAME, MAX_LEN - strlen(full_path));
-        return read_conf_file(full_path, kw);
+        // Get all the ingredients
+        const char *home_dir = getenv("HOME");
+        if (home_dir == NULL) return READ_FAILED; // TODO: Log it.
+        const char *fsqlf_sub = "/.fsqlf/";
+        const char *conf_file = FSQLF_CONFFILE_NAME;
+
+        // Mix the ingredients - get complete path till conf file.
+        size_t full_len = strlen(home_dir) + strlen(fsqlf_sub)
+                        + strlen(conf_file) + 1;
+        char * full_path = malloc(full_len);
+        if (full_path == NULL) return READ_FAILED; // TODO: Log it.
+        strncpy(full_path, home_dir, full_len);
+        strncat(full_path, fsqlf_sub, full_len - strlen(full_path));
+        strncat(full_path, conf_file, full_len - strlen(full_path));
+
+        // Read the file
+        int ret_code = read_conf_file(full_path, kw);
+
+        // Cleanup
+        free(full_path);
+
+        return ret_code;
     #endif
 }
