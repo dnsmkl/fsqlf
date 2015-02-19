@@ -1,13 +1,6 @@
 #include "kwall_init.h"
 
 
-// TODO: remove these from here (use include instead)
-extern void inc_LEFTP();
-extern void inc_RIGHTP();
-extern void begin_SUB();
-extern void end_SUB();
-
-
 void set_case(unsigned short int keyword_case)
 {
     #define XMACRO( NAME , ... )   \
