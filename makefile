@@ -45,6 +45,8 @@ $(EXEC_CLI): core/formatter/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/form
 	$(CC) $(CFLAGS)  $^   -o $@
 	strip $@
 
+# TODO: generalize these.
+
 utils/stack/stack.o: utils/stack/stack.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
