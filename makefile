@@ -39,56 +39,41 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 
 
 #
-# BUILD
+# BUILD CLI
 #
-$(EXEC_CLI): core/formatter/lex.yy.o core/kw/kw.o core/kw/kwall_init.o core/formatter/print_keywords.o core/conf_file/conf_file_read.o core/conf_file/conf_file_create.o utils/string/read_int.o core/formatter/globals.o utils/stack/stack.o core/cli.o core/debuging.o core/main.o
+COBJ += core/main.o
+COBJ += core/cli.o
+COBJ += core/conf_file/conf_file_create.o
+COBJ += core/conf_file/conf_file_read.o
+COBJ += core/debuging.o
+COBJ += core/formatter/globals.o
+COBJ += core/formatter/lex.yy.o
+COBJ += core/formatter/print_keywords.o
+COBJ += core/kw/kw.o
+COBJ += core/kw/kwall_init.o
+COBJ += utils/stack/stack.o
+COBJ += utils/string/read_int.o
+
+$(COBJ): %.o: %.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
+
+core/conf_file/conf_file_create.o: core/conf_file/conf_file_constants.h
+core/conf_file/conf_file_read.o: core/conf_file/conf_file_constants.h utils/string/read_int.h
+core/main.o: core/formatter/lex.yy.h
+
+$(EXEC_CLI): $(COBJ)
 	$(CC) $(CFLAGS)  $^   -o $@
 	strip $@
 
-# TODO: generalize these.
-
-utils/stack/stack.o: utils/stack/stack.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/main.o: core/main.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/debuging.o: core/debuging.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/cli.o: core/cli.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/formatter/lex.yy.o: core/formatter/lex.yy.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/kw/kw.o: core/kw/kw.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/formatter/globals.o: core/formatter/globals.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/conf_file/conf_file_create.o: core/conf_file/conf_file_create.c core/conf_file/conf_file_constants.h
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/conf_file/conf_file_read.o: core/conf_file/conf_file_read.c core/conf_file/conf_file_constants.h utils/string/read_int.h
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/formatter/print_keywords.o: core/formatter/print_keywords.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/kw/kwall_init.o: core/kw/kwall_init.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-utils/string/read_int.o: utils/string/read_int.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
-
-core/formatter/lex.yy.c: core/formatter/fsqlf.lex  $(wildcard core/*.def core/*.h core/*/*.h)
+core/formatter/lex.yy.h: core/formatter/lex.yy.c
+core/formatter/lex.yy.c: core/formatter/fsqlf.lex core/formatter/globals.h core/formatter/print_keywords.h
 	# flex options (e.g. `-o`) has to be before input file
 	flex  -o $@ --header-file=core/formatter/lex.yy.h $<
 
 
-
+#
+# BUILD GUI
+#
 $(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
 	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)
 	strip $@
