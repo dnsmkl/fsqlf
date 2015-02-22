@@ -55,7 +55,7 @@ typedef int token_class_t;
 struct token
 {
     token_class_t token_class;
-    const char * yytext;
+    const char *yytext;
     int yyleng;
     const struct kw_conf *kw_setting;
 };
@@ -63,7 +63,7 @@ struct token
 
 struct token *make_token(
     const token_class_t token_class,
-    const char * yytext,
+    const char *yytext,
     const int yyleng,
     const struct kw_conf *kw_setting);
 
