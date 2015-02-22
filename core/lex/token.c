@@ -1,4 +1,5 @@
 #include <stdlib.h>   // malloc
+#include <assert.h>   // assert
 #include "token.h"
 
 
@@ -10,6 +11,7 @@ struct token *make_token(
 {
     struct token *token;
     token = malloc(sizeof(struct token));
+    assert(token);
     token->token_class = token_class;
     // TODO: Allocate space for string and copy it.
     token->yytext = yytext;
