@@ -56,6 +56,7 @@ IFEXISTS (?i:if{SPACE}+exists)
 SELECT  (?i:select|sel)
 AS      (?i:as)
 FROM    (?i:from)
+USING   (?i:using)
 
 IJOIN   (?i:(inner{SPACE}+)?JOIN)
 LJOIN   (?i:left{SPACE}+(OUTER{SPACE}+)?JOIN)
@@ -221,6 +222,7 @@ END (?i:end)
 {ELSE}  { handle_kw(yyout,yytext,kw("kw_else")); }
 {END}   { currindent--; handle_kw(yyout,yytext,kw("kw_end")); }
 
+{USING} { handle_kw(yyout,yytext,kw("kw_using")); }
 
 
 {COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); handle_text(yyout,yytext);};
