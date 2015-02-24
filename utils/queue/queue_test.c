@@ -16,84 +16,84 @@ void test_queue()
     struct queue tq;
 
     // At first
-    queue_init(&tq);
+    queue_init(&tq, sizeof(int));
     // ..queue should be empty.
     assert(queue_empty(&tq));
 
     // After adding one item
-    queue_push_back(&tq, item1);
+    queue_push_back(&tq, &item1);
     // .. queue should become non-empty
     // .. and length should be 1.
     assert(!queue_empty(&tq));
     assert((tq.length) == 1);
-    assert(queue_peek_n(&tq, 0) == 11);
+    assert(*(int*)queue_peek_n(&tq, 0) == 11);
 
     // Push_back some more items
-    queue_push_back(&tq, item2);
-    queue_push_back(&tq, item3);
-    queue_push_back(&tq, item4);
+    queue_push_back(&tq, &item2);
+    queue_push_back(&tq, &item3);
+    queue_push_back(&tq, &item4);
     // .. and do the checks again.
     assert(!queue_empty(&tq));
     assert(tq.length==4);
-    assert(queue_peek_n(&tq, 0) == 11);
-    assert(queue_peek_n(&tq, 1) == 22);
-    assert(queue_peek_n(&tq, 2) == 33);
-    assert(queue_peek_n(&tq, 3) == 44);
+    assert(*(int*)queue_peek_n(&tq, 0) == 11);
+    assert(*(int*)queue_peek_n(&tq, 1) == 22);
+    assert(*(int*)queue_peek_n(&tq, 2) == 33);
+    assert(*(int*)queue_peek_n(&tq, 3) == 44);
 
     // Now drop_head and push_back couple of times repeatedly.
     // (to check if wrapping works correctly)
     queue_drop_head(&tq);
     assert(tq.length==3);
-    assert(queue_peek_n(&tq, 0) == 22);
-    assert(queue_peek_n(&tq, 1) == 33);
-    assert(queue_peek_n(&tq, 2) == 44);
+    assert(*(int*)queue_peek_n(&tq, 0) == 22);
+    assert(*(int*)queue_peek_n(&tq, 1) == 33);
+    assert(*(int*)queue_peek_n(&tq, 2) == 44);
 
-    queue_push_back(&tq, item3);
+    queue_push_back(&tq, &item3);
     assert(tq.length==4);
-    assert(queue_peek_n(&tq, 0) == 22);
-    assert(queue_peek_n(&tq, 1) == 33);
-    assert(queue_peek_n(&tq, 2) == 44);
-    assert(queue_peek_n(&tq, 3) == 33);
+    assert(*(int*)queue_peek_n(&tq, 0) == 22);
+    assert(*(int*)queue_peek_n(&tq, 1) == 33);
+    assert(*(int*)queue_peek_n(&tq, 2) == 44);
+    assert(*(int*)queue_peek_n(&tq, 3) == 33);
 
     queue_drop_head(&tq);
-    assert(queue_peek_n(&tq, 0) == 33);
-    assert(queue_peek_n(&tq, 1) == 44);
-    assert(queue_peek_n(&tq, 2) == 33);
+    assert(*(int*)queue_peek_n(&tq, 0) == 33);
+    assert(*(int*)queue_peek_n(&tq, 1) == 44);
+    assert(*(int*)queue_peek_n(&tq, 2) == 33);
 
-    queue_push_back(&tq, item2);
+    queue_push_back(&tq, &item2);
     assert(tq.length==4);
-    assert(queue_peek_n(&tq, 0) == 33);
-    assert(queue_peek_n(&tq, 1) == 44);
-    assert(queue_peek_n(&tq, 2) == 33);
-    assert(queue_peek_n(&tq, 3) == 22);
+    assert(*(int*)queue_peek_n(&tq, 0) == 33);
+    assert(*(int*)queue_peek_n(&tq, 1) == 44);
+    assert(*(int*)queue_peek_n(&tq, 2) == 33);
+    assert(*(int*)queue_peek_n(&tq, 3) == 22);
 
     queue_drop_head(&tq);
     assert(tq.length==3);
-    assert(queue_peek_n(&tq, 0) == 44);
-    assert(queue_peek_n(&tq, 1) == 33);
-    assert(queue_peek_n(&tq, 2) == 22);
+    assert(*(int*)queue_peek_n(&tq, 0) == 44);
+    assert(*(int*)queue_peek_n(&tq, 1) == 33);
+    assert(*(int*)queue_peek_n(&tq, 2) == 22);
 
-    queue_push_back(&tq, item1);
+    queue_push_back(&tq, &item1);
     assert(tq.length==4);
-    assert(queue_peek_n(&tq, 0) == 44);
-    assert(queue_peek_n(&tq, 1) == 33);
-    assert(queue_peek_n(&tq, 2) == 22);
-    assert(queue_peek_n(&tq, 3) == 11);
+    assert(*(int*)queue_peek_n(&tq, 0) == 44);
+    assert(*(int*)queue_peek_n(&tq, 1) == 33);
+    assert(*(int*)queue_peek_n(&tq, 2) == 22);
+    assert(*(int*)queue_peek_n(&tq, 3) == 11);
 
-    queue_push_back(&tq, item2);
-    queue_push_back(&tq, item1);
-    queue_push_back(&tq, item3);
-    queue_push_back(&tq, item4);
+    queue_push_back(&tq, &item2);
+    queue_push_back(&tq, &item1);
+    queue_push_back(&tq, &item3);
+    queue_push_back(&tq, &item4);
 
     assert(tq.length==8);
-    assert(queue_peek_n(&tq, 0) == 44);
-    assert(queue_peek_n(&tq, 1) == 33);
-    assert(queue_peek_n(&tq, 2) == 22);
-    assert(queue_peek_n(&tq, 3) == 11);
-    assert(queue_peek_n(&tq, 4) == 22);
-    assert(queue_peek_n(&tq, 5) == 11);
-    assert(queue_peek_n(&tq, 6) == 33);
-    assert(queue_peek_n(&tq, 7) == 44);
+    assert(*(int*)queue_peek_n(&tq, 0) == 44);
+    assert(*(int*)queue_peek_n(&tq, 1) == 33);
+    assert(*(int*)queue_peek_n(&tq, 2) == 22);
+    assert(*(int*)queue_peek_n(&tq, 3) == 11);
+    assert(*(int*)queue_peek_n(&tq, 4) == 22);
+    assert(*(int*)queue_peek_n(&tq, 5) == 11);
+    assert(*(int*)queue_peek_n(&tq, 6) == 33);
+    assert(*(int*)queue_peek_n(&tq, 7) == 44);
 
     // Now dropp till it's empty.
     queue_drop_head(&tq); assert(tq.length == 7);
@@ -107,48 +107,51 @@ void test_queue()
     assert(queue_empty(&tq));
 }
 
-
+#include <stdio.h>
 
 void test_queue_internals()
 {
     struct queue tq;
-    queue_init(&tq);
+    queue_init(&tq, sizeof(int));
 
-    queue_push_back(&tq, 0);
-    queue_push_back(&tq, 1);
-
-    assert(tq.start == 0);
-    assert(tq.length == 2);
-    assert(tq.capacity == 2);
-    assert(queue_peek_n(&tq, 0) == 0);
-    assert(queue_peek_n(&tq, 1) == 1);
-
-    queue_drop_head(&tq);
-    queue_push_back(&tq, 2);
-
-    assert(tq.start == 1);
-    assert(tq.length == 2);
-    assert(tq.capacity == 2);
-    assert(queue_peek_n(&tq, 0) == 1);
-    assert(queue_peek_n(&tq, 1) == 2);
-
-    queue_drop_head(&tq);
-    queue_push_back(&tq, 3);
+    queue_push_back(&tq, &(int){0});
+    queue_push_back(&tq, &(int){1});
 
     assert(tq.start == 0);
     assert(tq.length == 2);
     assert(tq.capacity == 2);
-    assert(queue_peek_n(&tq, 0) == 2);
-    assert(queue_peek_n(&tq, 1) == 3);
+    assert(*(int*)queue_peek_n(&tq, 0) == 0);
+
+    // printf("%d\n\n", *(int*)queue_peek_n(&tq, 1));
+
+    assert(*(int*)queue_peek_n(&tq, 1) == 1);
 
     queue_drop_head(&tq);
-    queue_push_back(&tq, 4);
+    queue_push_back(&tq, &(int){2});
 
     assert(tq.start == 1);
     assert(tq.length == 2);
     assert(tq.capacity == 2);
-    assert(queue_peek_n(&tq, 0) == 3);
-    assert(queue_peek_n(&tq, 1) == 4);
+    assert(*(int*)queue_peek_n(&tq, 0) == 1);
+    assert(*(int*)queue_peek_n(&tq, 1) == 2);
+
+    queue_drop_head(&tq);
+    queue_push_back(&tq, &(int){3});
+
+    assert(tq.start == 0);
+    assert(tq.length == 2);
+    assert(tq.capacity == 2);
+    assert(*(int*)queue_peek_n(&tq, 0) == 2);
+    assert(*(int*)queue_peek_n(&tq, 1) == 3);
+
+    queue_drop_head(&tq);
+    queue_push_back(&tq, &(int){4});
+
+    assert(tq.start == 1);
+    assert(tq.length == 2);
+    assert(tq.capacity == 2);
+    assert(*(int*)queue_peek_n(&tq, 0) == 3);
+    assert(*(int*)queue_peek_n(&tq, 1) == 4);
 }
 
 

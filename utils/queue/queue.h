@@ -1,7 +1,6 @@
 // Queue implementation.
 ///
 // Macros for configuration:
-//  QUEUE_ITEM_T - element type of the queue (required)
 //  QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
 ///
 // Defined names for queue usage:
@@ -11,14 +10,10 @@
 // Queue manipulation:
 //  void queue_init(struct queue*) - initialize queue.
 //  void queue_clear(struct queue*) - free resources, make queue unusable.
-//  void queue_push_back(struct queue*, QUEUE_ITEM_T) - Add item onto the back.
+//  void queue_push_back(struct queue*, void*) - Add item onto the back.
 //  void queue_drop_head(struct queue*) - Remove item from head.
-//  QUEUE_ITEM_T queue_peek_n(struct queue*, size_t) - Return certain element.
+//  void *queue_peek_n(struct queue*, size_t) - Return certain element.
 //  int queue_empty(struct queue*) - Check if queue is empty.
-///
-// Limitation:
-//  It is impossible to have two queues with distinct element datatypes.
-//  (but possible to have more then one queue with same element datatype)
 
 
 #ifndef token_queue_h
@@ -26,12 +21,8 @@
 
 
 #include <stdlib.h> // malloc, realloc
+#include <string.h> // memcpy
 #include <assert.h> // assert
-
-
-#ifndef QUEUE_ITEM_T
-#error `QUEUE_ITEM_T` must be defined before the: #include "token_queue.h"
-#endif
 
 
 #ifndef QUEUE_INIT_CAPACITY
@@ -43,7 +34,7 @@ struct queue
 {
     // Internal array for item storage.
     // (see queue_array_pos() for info about positions used for queue items)
-    QUEUE_ITEM_T * items;
+    char *items;
 
     // Position of first queue item in internal array.
     size_t start;
@@ -53,6 +44,9 @@ struct queue
 
     // Size of internal array - max number of elements possible without realloc.
     size_t capacity;
+
+    // Size of individual item.
+    size_t isize;
 };
 
 
@@ -62,12 +56,13 @@ size_t queue_array_pos(size_t que_n, size_t que_start, size_t arr_capacity);
 void queue_increase_capacity(struct queue * q);
 
 
-void queue_init(struct queue * const q)
+void queue_init(struct queue * const q, size_t isize)
 {
     q->length = 0;
     q->start = 0;
     q->capacity = QUEUE_INIT_CAPACITY;
-    q->items = (QUEUE_ITEM_T*) malloc(sizeof(QUEUE_ITEM_T) * q->capacity);
+    q->isize = isize;
+    q->items = (char*) malloc(q->isize * q->capacity);
     assert(q->items != NULL);
 }
 
@@ -81,14 +76,14 @@ void queue_clear(struct queue * const q)
 }
 
 
-void queue_push_back(struct queue * const q, const QUEUE_ITEM_T item)
+void queue_push_back(struct queue * const q, const void * const item)
 {
     if (q->length == q->capacity) {
         queue_increase_capacity(q);
     }
     assert(q->length < q->capacity);
     size_t arr_pos = queue_array_pos(q->length, q->start, q->capacity);
-    q->items[arr_pos] = item;
+    memcpy(q->items + arr_pos * q->isize, item, q->isize);
     q->length++;
 }
 
@@ -102,12 +97,12 @@ void queue_drop_head(struct queue * const q)
 }
 
 
-QUEUE_ITEM_T queue_peek_n(const struct queue * const q, const size_t n)
+void *queue_peek_n(const struct queue * const q, const size_t n)
 {
     assert(n < q->length);
     assert(q->length <= q->capacity);
     size_t arr_pos = queue_array_pos(n, q->start, q->capacity);
-    return q->items[arr_pos];
+    return q->items + arr_pos * q->isize;
 }
 
 
@@ -152,8 +147,7 @@ void queue_increase_capacity(struct queue * const q)
 {
     size_t old_cap = q->capacity;
     q->capacity *= 2;
-    q->items = (QUEUE_ITEM_T*)
-        realloc(q->items, sizeof(QUEUE_ITEM_T) * q->capacity);
+    q->items = (char*) realloc(q->items, q->isize * q->capacity);
     assert(q->items != NULL);
     // Copy elements that had to wrap past end,
     // to new space available at the end.
@@ -161,7 +155,8 @@ void queue_increase_capacity(struct queue * const q)
     for (i = 0; i < (q->length); i++) {
         old_pos = queue_array_pos(i, q->start, old_cap);
         new_pos = queue_array_pos(i, q->start, q->capacity);
-        q->items[new_pos] = q->items[old_pos];
+        memcpy(q->items + new_pos * q->isize,
+                q->items + old_pos * q->isize, q->isize);
     }
 }
 
