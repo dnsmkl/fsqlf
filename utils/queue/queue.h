@@ -7,7 +7,6 @@
 // (other names should not be used)
 //  struct queue - queue struct
 //  struct queue.length - number of items in the queue (size_t).
-// Queue manipulation:
 //  void queue_init(struct queue*) - initialize queue.
 //  void queue_clear(struct queue*) - free resources, make queue unusable.
 //  void queue_push_back(struct queue*, void*) - Add item onto the back.
