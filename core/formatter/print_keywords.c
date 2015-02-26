@@ -16,6 +16,9 @@ static int max_2args_(int a, int b)
 }
 
 
+// based on 3rd (bool) arg return
+// either max(1st, 2nd)
+// or 2nd arg
 static int max_or_current(int prev_count, int curr_count, char use_only_curr_ind)
 {
     if (use_only_curr_ind) {
