@@ -5,7 +5,7 @@
 #include "../kw/kw.h" // struct kw_conf, kw
 
 
-void use_token(FILE *yyout, char *yytext, const struct kw_conf *s);
+void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s);
 
 
 #endif

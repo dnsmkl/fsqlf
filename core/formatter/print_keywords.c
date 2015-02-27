@@ -224,11 +224,11 @@ static void echo_print(FILE *yyout, char *txt)
 }
 
 
-void use_token(FILE *yyout, char *yytext, const struct kw_conf *s)
+void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 {
     if (s == NULL) {
-        echo_print(yyout, yytext);
+        echo_print(yyout, text);
     } else {
-        kw_print(yyout, yytext, *s);
+        kw_print(yyout, text, *s);
     }
 }
