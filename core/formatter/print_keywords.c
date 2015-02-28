@@ -224,11 +224,37 @@ static void echo_print(FILE *yyout, char *txt)
 }
 
 
+#include "../../utils/queue/queue.h"
+#include "../lex/token.h"
+
+
+static struct queue qtokens;
+
+
 void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 {
+    static int first_run = 1;
+    if (first_run) {
+        queue_init(&qtokens, sizeof(struct token));
+        first_run = 0;
+    }
+    queue_push_back(&qtokens, make_token(0, text, len, s));
+    printf("length:%d\n",qtokens.length);
+
+
     if (s == NULL) {
         echo_print(yyout, text);
     } else {
         kw_print(yyout, text, *s);
+    }
+
+
+    struct token *tok;
+    if (s == kw("kw_semicolon")) {
+        while (!queue_empty(&qtokens)) {
+            tok = (struct token *) queue_peek_n(&qtokens, 0);
+            puts(tok->text);
+            queue_drop_head(&qtokens);
+        }
     }
 }

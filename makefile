@@ -49,6 +49,7 @@ COBJ += core/debuging.o
 COBJ += core/formatter/globals.o
 COBJ += core/formatter/lex.yy.o
 COBJ += core/formatter/print_keywords.o
+COBJ += core/lex/token.o
 COBJ += core/kw/kw.o
 COBJ += core/kw/kwall_init.o
 COBJ += utils/stack/stack.o

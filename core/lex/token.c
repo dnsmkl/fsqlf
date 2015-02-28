@@ -18,6 +18,7 @@ struct token *make_token(
     tok->text = malloc(leng+1);
     assert(tok->text);
     strncpy(tok->text, text, leng);
+    tok->text[leng] = '\0';
     tok->leng = leng;
 
     tok->kw_setting = kw_setting;
