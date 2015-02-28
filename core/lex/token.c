@@ -16,9 +16,17 @@ struct token *make_token(
     tok->token_class = token_class;
 
     tok->text = malloc(leng+1);
+    assert(tok->text);
     strncpy(tok->text, text, leng);
     tok->leng = leng;
 
     tok->kw_setting = kw_setting;
     return tok;
+}
+
+
+void delete_token(struct token *tok)
+{
+    free(tok->text);
+    free(tok);
 }

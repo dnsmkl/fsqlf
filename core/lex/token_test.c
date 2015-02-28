@@ -8,6 +8,7 @@ void token_demo()
     struct token *t = make_token(TC_CMT, "blabla", 6, NULL);
     printf("t{%d, %s, %d, %d}\n"
         , t->token_class, t->text, t->leng, t->kw_setting);
+    delete_token(t);
 }
 
 
