@@ -47,9 +47,9 @@
 
 
 typedef int token_class_t;
-#define TC_KW 1
-#define TC_SP 2
-#define TC_CMT 3
+#define TC_KW 1     // Keyword
+#define TC_SP 2     // Spacing
+#define TC_CMT 3    // Comment
 
 
 struct token
