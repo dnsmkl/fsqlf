@@ -6,8 +6,8 @@
 
 struct token *make_token(
     const token_class_t token_class,
-    const char * yytext,
-    const int yyleng,
+    const char *text,
+    const int leng,
     const struct kw_conf *kw_setting)
 {
     struct token *token;
@@ -15,9 +15,9 @@ struct token *make_token(
     assert(token);
     token->token_class = token_class;
 
-    token->yytext = malloc(yyleng+1);
-    strncpy(token->yytext, yytext, yyleng);
-    token->yyleng = yyleng;
+    token->text = malloc(leng+1);
+    strncpy(token->text, text, leng);
+    token->leng = leng;
 
     token->kw_setting = kw_setting;
     return token;
