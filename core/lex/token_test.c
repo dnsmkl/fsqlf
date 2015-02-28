@@ -1,19 +1,23 @@
-#include <stdio.h>
+#include <string.h> // memcmp
+#include <assert.h> // assert
 #include "token.h"
 
 
-void token_demo()
+void token_test()
 {
-    printf("Demo token.h\n");
     struct token *t = make_token(TC_CMT, "blabla", 6, NULL);
-    printf("t{%d, %s, %d, %d}\n"
-        , t->token_class, t->text, t->leng, t->kw_setting);
+
+    assert(t->token_class == TC_CMT);
+    assert(t->leng == 6);
+    assert(memcmp(t->text, "blabla", t->leng) == 0);
+    assert(t->kw_setting == NULL);
+
     delete_token(t);
 }
 
 
 int main()
 {
-    token_demo();
+    token_test();
     return 0;
 }
