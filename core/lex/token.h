@@ -55,7 +55,7 @@ typedef int token_class_t;
 struct token
 {
     token_class_t token_class;
-    const char *yytext;
+    char *yytext;
     int yyleng;
     const struct kw_conf *kw_setting;
 };
