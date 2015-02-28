@@ -68,7 +68,7 @@ struct token *make_token(
     const struct kw_conf *kw_setting);
 
 
-void delete_token(struct token *tok);
+void delete_token(struct token **tok);
 
 
 #endif

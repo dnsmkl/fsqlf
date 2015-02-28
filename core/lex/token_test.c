@@ -12,7 +12,8 @@ void token_test()
     assert(memcmp(t->text, "blabla", t->leng) == 0);
     assert(t->kw_setting == NULL);
 
-    delete_token(t);
+    delete_token(&t);
+    assert(!t);
 }
 
 
