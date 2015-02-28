@@ -10,15 +10,15 @@ struct token *make_token(
     const int leng,
     const struct kw_conf *kw_setting)
 {
-    struct token *token;
-    token = malloc(sizeof(struct token));
-    assert(token);
-    token->token_class = token_class;
+    struct token *tok;
+    tok = malloc(sizeof(struct token));
+    assert(tok);
+    tok->token_class = token_class;
 
-    token->text = malloc(leng+1);
-    strncpy(token->text, text, leng);
-    token->leng = leng;
+    tok->text = malloc(leng+1);
+    strncpy(tok->text, text, leng);
+    tok->leng = leng;
 
-    token->kw_setting = kw_setting;
-    return token;
+    tok->kw_setting = kw_setting;
+    return tok;
 }
