@@ -71,4 +71,11 @@ struct token *make_token(
 void delete_token(struct token **tok);
 
 
+void set_token(struct token * tok,
+    const token_class_t token_class,
+    const char *text,
+    const int leng,
+    const struct kw_conf *kw_conf);
+
+
 #endif
