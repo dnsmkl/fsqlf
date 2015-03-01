@@ -15,8 +15,8 @@
 //  int queue_empty(struct queue*) - Check if queue is empty.
 
 
-#ifndef token_queue_h
-#define token_queue_h
+#ifndef QUEUE_H
+#define QUEUE_H
 
 
 #include <string.h>
