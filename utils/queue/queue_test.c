@@ -1,4 +1,3 @@
-#define QUEUE_INIT_CAPACITY 1
 #define QUEUE_ITEM_T int
 #include <assert.h>
 #include "queue.h"
@@ -108,7 +107,6 @@ void test_queue()
     assert(queue_empty(&tq));
 }
 
-#include <stdio.h>
 
 void test_queue_internals()
 {
@@ -122,9 +120,6 @@ void test_queue_internals()
     assert(tq.length == 2);
     assert(tq.capacity == 2);
     assert(*(int*)queue_peek_n(&tq, 0) == 0);
-
-    // printf("%d\n\n", *(int*)queue_peek_n(&tq, 1));
-
     assert(*(int*)queue_peek_n(&tq, 1) == 1);
 
     queue_drop_head(&tq);

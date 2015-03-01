@@ -23,7 +23,7 @@
 
 
 #ifndef QUEUE_INIT_CAPACITY
-#define QUEUE_INIT_CAPACITY (100)
+#define QUEUE_INIT_CAPACITY (1)
 #endif
 
 
