@@ -242,8 +242,8 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
     }
 
     // Place on queue.
-    struct token *tok1 = make_token(0, text, len, s);
-    queue_push_back(&qtokens, tok1); // Content of (*tok1) is copied to queue.
+    struct token *tok1 = (struct token *) queue_alloc_back(&qtokens);
+    set_token(tok1, 0, text, len, s);
 
     // Retrieve from queue and print.
     struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
@@ -254,11 +254,4 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
     } else {
         kw_print(yyout, tok2->text, *(tok2->kw_setting));
     }
-
-    delete_token(&tok1);
-    // TODO: redo queue and make_token.
-    // make_token() needlessly alocates space, queue already does that.
-    // Queue should just pushback empty element (i.e. alocates space)
-    // then init_token() would set all the needed values.
-    // This all could be put into separate token_queue file/routines.
 }
