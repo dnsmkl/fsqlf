@@ -242,8 +242,10 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
     }
 
     // Place on queue.
-    struct token *tok1 = (struct token *) queue_alloc_back(&qtokens);
-    set_token(tok1, 0, text, len, s);
+    {
+        struct token *tok1 = (struct token *) queue_alloc_back(&qtokens);
+        set_token(tok1, 0, text, len, s);
+    }
 
     // Retrieve from queue and print.
     struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
