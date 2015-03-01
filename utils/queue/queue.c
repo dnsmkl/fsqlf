@@ -41,15 +41,22 @@ void queue_clear(struct queue * const q)
 }
 
 
-void queue_push_back(struct queue * const q, const void * const item)
+void *queue_alloc_back(struct queue * const q)
 {
     if (q->length == q->capacity) {
         queue_increase_capacity(q);
     }
     assert(q->length < q->capacity);
     size_t arr_pos = queue_array_pos(q->length, q->start, q->capacity);
-    memcpy(q->items + arr_pos * q->isize, item, q->isize);
     q->length++;
+    return q->items + arr_pos * q->isize;
+}
+
+
+void queue_push_back(struct queue * const q, const void * const item)
+{
+    char *place_for_new_item = (char*) queue_alloc_back(q);
+    memcpy(place_for_new_item, item, q->isize);
 }
 
 

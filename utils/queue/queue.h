@@ -49,6 +49,7 @@ struct queue
 
 void queue_init(struct queue * const q, size_t isize);
 void queue_clear(struct queue * const q);
+void *queue_alloc_back(struct queue * const q);
 void queue_push_back(struct queue * const q, const void * const item);
 void queue_drop_head(struct queue * const q);
 void *queue_peek_n(const struct queue * const q, const size_t n);
