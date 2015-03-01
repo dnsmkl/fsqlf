@@ -249,11 +249,12 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 
     // Retrieve from queue and print.
     struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
-    queue_drop_head(&qtokens);
 
     if (tok2->kw_setting == NULL) {
         echo_print(yyout, tok2->text);
     } else {
         kw_print(yyout, tok2->text, *(tok2->kw_setting));
     }
+    queue_drop_head(&qtokens);
+    clear_token(&tok2);
 }

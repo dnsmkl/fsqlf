@@ -76,6 +76,7 @@ void set_token(struct token * tok,
     const char *text,
     const int leng,
     const struct kw_conf *kw_conf);
+void clear_token(struct token **tok);
 
 
 #endif
