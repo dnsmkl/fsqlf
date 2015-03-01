@@ -1,5 +1,6 @@
 #define QUEUE_INIT_CAPACITY 1
 #define QUEUE_ITEM_T int
+#include <assert.h>
 #include "queue.h"
 
 

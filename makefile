@@ -53,6 +53,7 @@ COBJ += core/lex/token.o
 COBJ += core/kw/kw.o
 COBJ += core/kw/kwall_init.o
 COBJ += utils/stack/stack.o
+COBJ += utils/queue/queue.o
 COBJ += utils/string/read_int.o
 
 $(COBJ): %.o: %.c
