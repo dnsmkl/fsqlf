@@ -245,6 +245,7 @@ END (?i:end)
 
 
 <<EOF>> {
+            qtokens_finish_out(yyout);
             fprintf(yyout,"\n");
             switch (YY_START) {
                 case stCOMMENTML: fprintf(yyout,"--unterminated comment \n"); break;

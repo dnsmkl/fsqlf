@@ -228,13 +228,12 @@ static void echo_print(FILE *yyout, char *txt)
 #include "../lex/token.h"
 
 
-
+struct queue qtokens; // GLOBAL
 
 
 void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 {
-    // Initialization.
-    static struct queue qtokens;
+    // Queue initialization.
     static int first_run = 1;
     if (first_run) {
         first_run = 0;
@@ -257,4 +256,21 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
     }
     queue_drop_head(&qtokens);
     clear_token(&tok2);
+
+}
+
+
+void qtokens_finish_out(FILE *yyout)
+{
+    while (!queue_empty(&qtokens)) {
+        struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
+
+        if (tok2->kw_setting == NULL) {
+            echo_print(yyout, tok2->text);
+        } else {
+            kw_print(yyout, tok2->text, *(tok2->kw_setting));
+        }
+        queue_drop_head(&qtokens);
+        clear_token(&tok2);
+    }
 }

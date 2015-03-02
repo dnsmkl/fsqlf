@@ -6,6 +6,7 @@
 
 
 void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s);
+void qtokens_finish_out(FILE *yyout);
 
 
 #endif
