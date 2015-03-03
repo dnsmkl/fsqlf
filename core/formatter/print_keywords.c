@@ -232,6 +232,14 @@ static void echo_print(FILE *yyout, size_t indent, char *txt)
 struct queue qtokens; // GLOBAL
 
 
+// This routine has goal to do 4 things:
+// 1. Place token on the queue.
+// 2. Accumulate tokens till enough info is available for recognition.
+// 3. Perform recognition.
+// 4. Output fully recognized tokens.
+///
+// At the moment only 1st and 4th parts are done.
+// TODO: implement 2nd and 3rd
 void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 {
     // Queue initialization.
