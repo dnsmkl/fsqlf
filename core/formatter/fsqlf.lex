@@ -189,7 +189,7 @@ END (?i:end)
 
 <stP_SUB>{LEFTP}                      { BEGIN_STATE(*(int*)stack_peek(&state_stack)); use_token(yyout,yytext,yyleng,kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
-<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT); use_token(yyout,"(",1,kw("kw_left_p_sub")); use_token(yyout,yytext,yyleng,kw("kw_select"));};
+<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT); use_token(yyout,"(",1,kw("kw_left_p_sub")); begin_SUB(); use_token(yyout,yytext,yyleng,kw("kw_select"));};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
     if (*(int*)stack_peek(&state_stack) == stFROM
         || *(int*)stack_peek(&state_stack) == stJOIN)
@@ -208,6 +208,7 @@ END (?i:end)
                 POP_STATE();
                 if (!stack_empty(&sub_openings) &&
                     left_p -(*(pair*)stack_peek(&sub_openings)).left == (right_p+1) -(*(pair*)stack_peek(&sub_openings)).right - 1) {
+                    end_SUB();
                     use_token(yyout,yytext,yyleng,kw("kw_right_p_sub"));
                 } else {
                     debug_match("<wtf-leftp>");

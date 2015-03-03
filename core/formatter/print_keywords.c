@@ -167,7 +167,8 @@ static void print_spacing(
 }
 
 
-static void kw_print(FILE *yyout, const char *yytext, struct kw_conf s)
+static void kw_print(FILE *yyout, size_t indent, const char *yytext,
+                        struct kw_conf s)
 {
     int i = 0;
     // Call keyword specific functions, before printing.
@@ -176,7 +177,7 @@ static void kw_print(FILE *yyout, const char *yytext, struct kw_conf s)
     }
 
     // Print spacing.
-    print_spacing(yyout, s, currindent); // print spacing before keyword
+    print_spacing(yyout, s, indent); // print spacing before keyword
 
     // Print text:
     // .. first decide what text to use (original or default)
@@ -193,7 +194,7 @@ static void kw_print(FILE *yyout, const char *yytext, struct kw_conf s)
 }
 
 
-static void echo_print(FILE *yyout, char *txt)
+static void echo_print(FILE *yyout, size_t indent, char *txt)
 {
     int length; // length of the input text string
     length = strlen(txt);
@@ -219,7 +220,7 @@ static void echo_print(FILE *yyout, char *txt)
     s.is_word = !(length == 1 && !isalnum(txt[0]));
 
     // print spacing then text
-    print_spacing(yyout, s, currindent);
+    print_spacing(yyout, s, indent);
     fputs(txt, yyout);
 }
 
@@ -243,16 +244,16 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
     // Place on queue.
     {
         struct token *tok1 = (struct token *) queue_alloc_back(&qtokens);
-        set_token(tok1, 0, text, len, s);
+        set_token(tok1, 0, text, len, s, currindent);
     }
 
     // Retrieve from queue and print.
     struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
 
     if (tok2->kw_setting == NULL) {
-        echo_print(yyout, tok2->text);
+        echo_print(yyout, tok2->indent, tok2->text);
     } else {
-        kw_print(yyout, tok2->text, *(tok2->kw_setting));
+        kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
     }
     queue_drop_head(&qtokens);
     clear_token(&tok2);
@@ -266,9 +267,9 @@ void qtokens_finish_out(FILE *yyout)
         struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
 
         if (tok2->kw_setting == NULL) {
-            echo_print(yyout, tok2->text);
+            echo_print(yyout, tok2->indent, tok2->text);
         } else {
-            kw_print(yyout, tok2->text, *(tok2->kw_setting));
+            kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
         }
         queue_drop_head(&qtokens);
         clear_token(&tok2);
