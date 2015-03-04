@@ -79,7 +79,7 @@ void set_token(struct token * tok,
     const int leng,
     const struct kw_conf *kw_conf,
     const size_t indent);
-void clear_token(struct token **tok);
+void clear_token(struct token *tok);
 
 
 #endif

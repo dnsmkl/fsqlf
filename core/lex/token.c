@@ -21,7 +21,7 @@ struct token *make_token(
 
 void delete_token(struct token **tok)
 {
-    clear_token(tok);
+    clear_token(*tok);
     free((*tok));
     (*tok) = NULL;
 }
@@ -48,8 +48,8 @@ void set_token(struct token * tok,
 }
 
 
-void clear_token(struct token **tok)
+void clear_token(struct token *tok)
 {
-    free((*tok)->text);
-    (*tok)->text = NULL;
+    free(tok->text);
+    tok->text = NULL;
 }

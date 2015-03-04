@@ -264,8 +264,7 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
         kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
     }
     queue_drop_head(&qtokens);
-    clear_token(&tok2);
-
+    clear_token(tok2);
 }
 
 
@@ -280,6 +279,6 @@ void qtokens_finish_out(FILE *yyout)
             kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
         }
         queue_drop_head(&qtokens);
-        clear_token(&tok2);
+        clear_token(tok2);
     }
 }
