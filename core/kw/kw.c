@@ -24,3 +24,13 @@ struct kw_conf *kw(const char *name)
     HASH_FIND_STR(g_keyword_config, name, match);
     return match;
 }
+
+
+void kw_delete_all()
+{
+    struct kw_conf *current_kw, *tmp;
+    HASH_ITER(hh, g_keyword_config, current_kw, tmp) {
+        HASH_DEL(g_keyword_config, current_kw);
+        free(current_kw);
+    }
+}

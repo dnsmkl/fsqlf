@@ -44,6 +44,8 @@ enum
 struct kw_conf *kw_add(const char *name);
 // Retrieve struct kw_cont from global map.
 struct kw_conf *kw(const char *name);
+// Remove all kw_cont from global map and free the memory.
+void kw_delete_all();
 
 
 #endif

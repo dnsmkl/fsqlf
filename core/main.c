@@ -17,5 +17,7 @@ int main(int argc, char **argv)
 
     while (yylex() != 0) ;
 
+    kw_delete_all();
+
     return 0;
 }
