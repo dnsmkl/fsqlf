@@ -25,7 +25,6 @@ struct kw_conf
     char *text;
 
     void (*funct_before[KW_FUNCT_ARRAY_SIZE])();
-    void (*funct_after [KW_FUNCT_ARRAY_SIZE])();
 
     const char *name;
     UT_hash_handle hh;  // makes this structure hashable

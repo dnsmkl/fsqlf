@@ -186,11 +186,6 @@ static void kw_print(FILE *yyout, size_t indent, const char *yytext,
     const char *text = stocase(text_nocase, s.print_case);
     // .. then print the text.
     fprintf(yyout, "%s", text);
-
-    // Call keyword specific functions. after printing.
-    for (i = 0; i < KW_FUNCT_ARRAY_SIZE && s.funct_after[i] != NULL; i++) {
-        s.funct_after[i]();
-    }
 }
 
 

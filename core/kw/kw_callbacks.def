@@ -4,5 +4,5 @@
 // Define keyword specific callbacks for encountering pranthesis
 
 
-XMACRO( kw_left_p , &inc_LEFTP , NULL, NULL, NULL, NULL, NULL)
-XMACRO( kw_right_p, &inc_RIGHTP, NULL, NULL, NULL, NULL, NULL)
+XMACRO( kw_left_p , &inc_LEFTP , NULL, NULL)
+XMACRO( kw_right_p, &inc_RIGHTP, NULL, NULL)
