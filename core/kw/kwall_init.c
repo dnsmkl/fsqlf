@@ -34,6 +34,12 @@ void init_all_settings(struct kw_conf * (*kw)(const char *))
         kw(#NAME)->print_case         = CASE_UPPER;   \
         kw(#NAME)->text               = TEXT;         \
         kw(#NAME)->is_word            = 1;            \
+        kw(#NAME)->funct_before[0] = NULL;   \
+        kw(#NAME)->funct_before[1] = NULL;   \
+        kw(#NAME)->funct_before[2] = NULL;   \
+        kw(#NAME)->funct_after [0] = NULL;   \
+        kw(#NAME)->funct_after [1] = NULL;   \
+        kw(#NAME)->funct_after [2] = NULL;   \
     } while (0);
     #include "kw_defaults.def"
     #undef XMACRO
