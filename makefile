@@ -3,6 +3,7 @@ PROJECTFOLDER=fsqlf
 CFLAGS+=-std=c99
 CFLAGS+=-Wall
 CFLAGS+=-pedantic-errors
+CFLAGS+=-g
 
 CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 
@@ -65,7 +66,7 @@ core/main.o: core/formatter/lex.yy.h
 
 $(EXEC_CLI): $(COBJ)
 	$(CC) $(CFLAGS)  $^   -o $@
-	strip $@
+	# strip $@
 
 core/formatter/lex.yy.h: core/formatter/lex.yy.c
 core/formatter/lex.yy.c: core/formatter/fsqlf.lex core/formatter/globals.h core/formatter/print_keywords.h
