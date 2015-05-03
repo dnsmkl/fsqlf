@@ -31,7 +31,7 @@ static void usage_info(int argc, char **argv)
     fprintf(stderr, "usage:\n" );
     PRINT_OPTION_INFO( "fsqlf [<input_file>] [<output_file>] [options]",
         "Read from <input_file> and write formatted output to <output_file> (use std I/O if missing)\n"
-        "        If there are overlaping options set, then the last one (overflapping setting) wins.\n"
+        "        If there are overlaping options set, then the last one (overlapping setting) wins.\n"
         "        e.g. If config file is set 2 times, then from 1st file use only configs that don't exist in the 2nd file.");
     PRINT_OPTION_INFO( "fsqlf --create-config-file", "(Re)create '" FSQLF_CONFFILE_NAME "' config file.");
     fprintf(stderr, "options:\n");
@@ -47,7 +47,7 @@ static void usage_info(int argc, char **argv)
     PRINT_OPTION_INFO( "--newline-major-sections <digit>"           , "Put <digit> new lines before major sections (FROM, JOIN, WHERE)");
     PRINT_OPTION_INFO( "--keyword-case (upper|lower|initcap|none)"  , "Convert all keywords to UPPER, lower, or Initcap case, or not to convert case at all");
     PRINT_OPTION_INFO( "--keyword-text (original|default)"          , "Use original or programs default text for the keyword, when there are several alternatives");
-    PRINT_OPTION_INFO( "--debug (none|state|match|paranthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more than once");
+    PRINT_OPTION_INFO( "--debug (none|state|match|parenthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more than once");
     PRINT_OPTION_INFO( "--help, -h"                                 , "Show this help.");
 }
 
@@ -102,7 +102,7 @@ void read_cli_options(int argc, char **argv,
         } else if (ARGV_MATCH(i, "--config-file")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (read_conf_file(argv[i], kw) == READ_FAILED) {
-                FAIL_WITH_ERROR(1, "Error reading configureation file: %s", argv[i]);
+                FAIL_WITH_ERROR(1, "Error reading configuration file: %s", argv[i]);
             }
         } else if (ARGV_MATCH(i, "--select-comma-newline")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
@@ -158,7 +158,7 @@ void read_cli_options(int argc, char **argv,
             if (ARGV_MATCH(i, "none")) debug_level |= DEBUGNONE;
             else if (ARGV_MATCH(i, "state")) debug_level |= DEBUGSTATES;
             else if (ARGV_MATCH(i, "match")) debug_level |= DEBUGMATCHES;
-            else if (ARGV_MATCH(i, "paranthesis")) debug_level |= DEBUGPARCOUNTS;
+            else if (ARGV_MATCH(i, "parenthesis")) debug_level |= DEBUGPARCOUNTS;
             else FAIL_WITH_ERROR(1, "Missing or invalid value for option : %s", argv[i-1]);
         } else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
             usage_info(argc, argv);
