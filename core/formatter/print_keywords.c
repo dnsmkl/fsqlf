@@ -275,5 +275,6 @@ void qtokens_finish_out(FILE *yyout)
         }
         queue_drop_head(&qtokens);
         clear_token(tok2);
+        queue_clear(&qtokens);
     }
 }
