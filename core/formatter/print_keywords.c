@@ -224,6 +224,24 @@ static void echo_print(FILE *yyout, size_t indent, char *txt)
 #include "../lex/token.h"
 
 
+static int qtokens_print_one(struct queue * qtokens_ptr, FILE *yyout)
+{
+    if (!queue_empty(qtokens_ptr)) {
+        struct token *tok2 = (struct token *) queue_peek_n(qtokens_ptr, 0);
+        if (tok2->kw_setting == NULL) {
+            echo_print(yyout, tok2->indent, tok2->text);
+        } else {
+            kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
+        }
+        queue_drop_head(qtokens_ptr);
+        clear_token(tok2);
+        return 1; // success - printing was made
+    } else {
+        return 0; // queue was empty, so printing was not possible
+    }
+}
+
+
 struct queue qtokens; // GLOBAL
 
 
@@ -251,30 +269,14 @@ void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
     }
 
     // Retrieve from queue and print.
-    struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
-
-    if (tok2->kw_setting == NULL) {
-        echo_print(yyout, tok2->indent, tok2->text);
-    } else {
-        kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
-    }
-    queue_drop_head(&qtokens);
-    clear_token(tok2);
+    qtokens_print_one(&qtokens, yyout);
 }
 
 
 void qtokens_finish_out(FILE *yyout)
 {
-    while (!queue_empty(&qtokens)) {
-        struct token *tok2 = (struct token *) queue_peek_n(&qtokens, 0);
-
-        if (tok2->kw_setting == NULL) {
-            echo_print(yyout, tok2->indent, tok2->text);
-        } else {
-            kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
-        }
-        queue_drop_head(&qtokens);
-        clear_token(tok2);
-        queue_clear(&qtokens);
-    }
+    // Print out all queue
+    while (qtokens_print_one(&qtokens, yyout)) {}
+    // Cleanup
+    queue_clear(&qtokens);
 }
