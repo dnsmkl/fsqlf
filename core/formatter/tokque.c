@@ -3,6 +3,7 @@
 #include "../../utils/queue/queue.h"
 #include "../lex/token.h"
 #include "print_keywords.h" // echo_print, kw_print
+#include "tokque.h"
 
 
 static int tokque_print_one(struct queue * tokque_ptr, FILE *yyout)
@@ -34,7 +35,7 @@ struct queue tokque; // GLOBAL
 ///
 // At the moment only 1st and 4th parts are done.
 // TODO: implement 2nd and 3rd
-void tokque_putthrough(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
+struct state_change tokque_putthrough(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 {
     // Queue initialization.
     static int first_run = 1;
