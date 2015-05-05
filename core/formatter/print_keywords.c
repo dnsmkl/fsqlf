@@ -224,16 +224,16 @@ static void echo_print(FILE *yyout, size_t indent, char *txt)
 #include "../lex/token.h"
 
 
-static int qtokens_print_one(struct queue * qtokens_ptr, FILE *yyout)
+static int tokque_print_one(struct queue * tokque_ptr, FILE *yyout)
 {
-    if (!queue_empty(qtokens_ptr)) {
-        struct token *tok2 = (struct token *) queue_peek_n(qtokens_ptr, 0);
+    if (!queue_empty(tokque_ptr)) {
+        struct token *tok2 = (struct token *) queue_peek_n(tokque_ptr, 0);
         if (tok2->kw_setting == NULL) {
             echo_print(yyout, tok2->indent, tok2->text);
         } else {
             kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
         }
-        queue_drop_head(qtokens_ptr);
+        queue_drop_head(tokque_ptr);
         clear_token(tok2);
         return 1; // success - printing was made
     } else {
@@ -242,7 +242,7 @@ static int qtokens_print_one(struct queue * qtokens_ptr, FILE *yyout)
 }
 
 
-struct queue qtokens; // GLOBAL
+struct queue tokque; // GLOBAL
 
 
 // This routine has goal to do 4 things:
@@ -253,30 +253,30 @@ struct queue qtokens; // GLOBAL
 ///
 // At the moment only 1st and 4th parts are done.
 // TODO: implement 2nd and 3rd
-void qtokens_putthrough(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
+void tokque_putthrough(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 {
     // Queue initialization.
     static int first_run = 1;
     if (first_run) {
         first_run = 0;
-        queue_init(&qtokens, sizeof(struct token));
+        queue_init(&tokque, sizeof(struct token));
     }
 
     // Place on queue.
     {
-        struct token *tok1 = (struct token *) queue_alloc_back(&qtokens);
+        struct token *tok1 = (struct token *) queue_alloc_back(&tokque);
         set_token(tok1, 0, text, len, s, currindent);
     }
 
     // Retrieve from queue and print.
-    qtokens_print_one(&qtokens, yyout);
+    tokque_print_one(&tokque, yyout);
 }
 
 
-void qtokens_finish_out(FILE *yyout)
+void tokque_finish_out(FILE *yyout)
 {
     // Print out all queue
-    while (qtokens_print_one(&qtokens, yyout)) {}
+    while (tokque_print_one(&tokque, yyout)) {}
     // Cleanup
-    queue_clear(&qtokens);
+    queue_clear(&tokque);
 }
