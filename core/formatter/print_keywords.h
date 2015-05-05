@@ -5,8 +5,9 @@
 #include "../kw/kw.h" // struct kw_conf, kw
 
 
-void tokque_putthrough(FILE *yyout, char *text, size_t len, const struct kw_conf *s);
-void tokque_finish_out(FILE *yyout);
+void kw_print(FILE *yyout, size_t indent, const char *yytext,
+                        struct kw_conf s);
+void echo_print(FILE *yyout, size_t indent, char *txt);
 
 
 #endif

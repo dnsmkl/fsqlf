@@ -8,7 +8,7 @@ Helped to learn about flex a bit
     /* This code goes at the "top" of the generated file. */
 #include <stdio.h>      // fprintf, stdin, stdout
 #include "globals.h"    // pair_stack, sub_openings, currindent, left_p, right_p
-#include "print_keywords.h" // tokque_putthrough
+#include "tokque.h"     // tokque_putthrough
 void debug_stchange(int);
 void debug_match(char*);
 }
