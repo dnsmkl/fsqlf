@@ -253,7 +253,7 @@ struct queue qtokens; // GLOBAL
 ///
 // At the moment only 1st and 4th parts are done.
 // TODO: implement 2nd and 3rd
-void use_token(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
+void qtokens_putthrough(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
 {
     // Queue initialization.
     static int first_run = 1;
