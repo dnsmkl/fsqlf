@@ -23,6 +23,14 @@ char * state_to_char(int);
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
 #define PUSH_STATE(NEWSTATE)  stack_push(&state_stack, &(int){YY_START}); BEGIN_STATE(NEWSTATE);
 #define POP_STATE(); BEGIN_STATE(*(int*)stack_peek(&state_stack)); stack_pop(&state_stack);
+#define TUSE(YOUT, YTEXT, YLENG, TKW) \
+do { \
+    struct state_change sc = tokque_putthrough(YOUT, YTEXT, YLENG, TKW); \
+    if (sc.change_needed) { \
+        BEGIN (sc.new_state); \
+    } \
+} while (0)
+
 
 // YY_USER_INIT is lex macro executed before initialising parser
 #define YY_USER_INIT \
@@ -117,7 +125,7 @@ END (?i:end)
 
 %%
 
-{DELETEFROM}  { BEGIN_STATE(stDELETE);tokque_putthrough(yyout,yytext,yyleng,kw("kw_deletefrom")); }
+{DELETEFROM}  { TUSE(yyout,yytext,yyleng,kw("kw_deletefrom")); }
 {DELETE}      { BEGIN_STATE(stDELETE);tokque_putthrough(yyout,yytext,yyleng,kw("kw_deletefrom")); }
 {INSERTINTO}  { BEGIN_STATE(stINSERT);tokque_putthrough(yyout,yytext,yyleng,kw("kw_insertinto")); }
 {UPDATE}      { BEGIN_STATE(stUPDATE);tokque_putthrough(yyout,yytext,yyleng,kw("kw_update")); }

@@ -4,6 +4,8 @@
 #include "../lex/token.h"
 #include "print_keywords.h" // echo_print, kw_print
 #include "tokque.h"
+#define YY_HEADER_EXPORT_START_CONDITIONS
+#include "lex.yy.h" // start conditions (states)
 
 
 static int tokque_print_one(struct queue * tokque_ptr, FILE *yyout)
@@ -21,6 +23,13 @@ static int tokque_print_one(struct queue * tokque_ptr, FILE *yyout)
     } else {
         return 0; // queue was empty, so printing was not possible
     }
+}
+
+
+struct state_change decide_new_state(const struct kw_conf *s)
+{
+    if (s == kw("kw_deletefrom")) return (struct state_change) {1, stDELETE};
+    return (struct state_change) {0, 0};
 }
 
 
@@ -52,6 +61,9 @@ struct state_change tokque_putthrough(FILE *yyout, char *text, size_t len, const
 
     // Retrieve from queue and print.
     tokque_print_one(&tokque, yyout);
+
+    // Send command for state change
+    return decide_new_state(s);
 }
 
 
