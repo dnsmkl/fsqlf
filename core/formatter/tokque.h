@@ -7,8 +7,8 @@
 
 struct state_change
 {
-    int change_needed;
-    int new_state;
+    int change_needed;  // 1-yes; 0-no
+    int new_state;      // start conditions of flex lexer generator
 };
 
 
