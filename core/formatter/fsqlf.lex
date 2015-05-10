@@ -126,29 +126,29 @@ END (?i:end)
 %%
 
 {DELETEFROM}  { TUSE(yyout,yytext,yyleng,kw("kw_deletefrom")); }
-{DELETE}      { BEGIN_STATE(stDELETE);tokque_putthrough(yyout,yytext,yyleng,kw("kw_deletefrom")); }
-{INSERTINTO}  { BEGIN_STATE(stINSERT);tokque_putthrough(yyout,yytext,yyleng,kw("kw_insertinto")); }
-{UPDATE}      { BEGIN_STATE(stUPDATE);tokque_putthrough(yyout,yytext,yyleng,kw("kw_update")); }
-<stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);tokque_putthrough(yyout,yytext,yyleng,kw("kw_set")); }
+{DELETE}      { TUSE(yyout,yytext,yyleng,kw("kw_deletefrom")); }
+{INSERTINTO}  { TUSE(yyout,yytext,yyleng,kw("kw_insertinto")); }
+{UPDATE}      { TUSE(yyout,yytext,yyleng,kw("kw_update")); }
+<stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);tokque_putthrough(yyout,yytext,yyleng,kw("kw_set") ); }
 <stSET>{COMMA} { tokque_putthrough(yyout,yytext,yyleng,kw("kw_comma_set")); }
                 /* SET operations */
 
-{CREATE_TABLE} {BEGIN_STATE(stCREATE_TABLE);tokque_putthrough(yyout,yytext,yyleng,kw("kw_create_table"))   ; };
-{DROP}       {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_drop"))     ; };
-{TABLE}      {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_table"))    ; };
-{IFEXISTS}   {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_ifexists")) ; };
-{VIEW}       {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_view"))     ; };
-{UNION}      {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_union"))    ; };
-{UNION_ALL}  {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_union_all")); };
-{MINUS}      {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_minus"));     };
-{INTERSECT}  {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_intersect")); };
-{EXCEPT}     {BEGIN_STATE(INITIAL);tokque_putthrough(yyout,yytext,yyleng,kw("kw_except"));    };
+{CREATE_TABLE} { TUSE(yyout,yytext,yyleng,kw("kw_create_table")); }
+{DROP}       { TUSE(yyout,yytext,yyleng,kw("kw_drop")); }
+{TABLE}      { TUSE(yyout,yytext,yyleng,kw("kw_table")); }
+{IFEXISTS}   { TUSE(yyout,yytext,yyleng,kw("kw_ifexists")); }
+{VIEW}       { TUSE(yyout,yytext,yyleng,kw("kw_view")); }
+{UNION}      { TUSE(yyout,yytext,yyleng,kw("kw_union")); }
+{UNION_ALL}  { TUSE(yyout,yytext,yyleng,kw("kw_union_all")); }
+{MINUS}      { TUSE(yyout,yytext,yyleng,kw("kw_minus")); }
+{INTERSECT}  { TUSE(yyout,yytext,yyleng,kw("kw_intersect")); }
+{EXCEPT}     { TUSE(yyout,yytext,yyleng,kw("kw_except")); }
 
                 /* SELECT ... FROM */
 <INITIAL,stINSERT>{SELECT}           {BEGIN_STATE(stSELECT); tokque_putthrough(yyout,yytext,yyleng,kw("kw_select")); };
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  tokque_putthrough(yyout,yytext,yyleng,kw("kw_comma"));  };
 
-{IN}    { tokque_putthrough(yyout,yytext,yyleng,kw("kw_in")); };
+{IN}    { TUSE(yyout,yytext,yyleng,kw("kw_in")); }
 
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  tokque_putthrough(yyout,yytext,yyleng,kw("kw_left_p")); };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");tokque_putthrough(yyout,yytext,yyleng,kw("kw_left_p"));  };
@@ -179,12 +179,12 @@ END (?i:end)
 <stWHERE>{EXISTS}   {tokque_putthrough(yyout,yytext,yyleng,kw("kw_exists")); };
 
 
-{GROUPBY}    {BEGIN_STATE(stGROUPBY); tokque_putthrough(yyout,yytext,yyleng,kw("kw_groupby")); };
-{ORDERBY}    {BEGIN_STATE(stORDERBY); tokque_putthrough(yyout,yytext,yyleng,kw("kw_orderby")); };
+{GROUPBY}    { TUSE(yyout,yytext,yyleng,kw("kw_groupby")); }
+{ORDERBY}    { TUSE(yyout,yytext,yyleng,kw("kw_orderby")); }
 <stORDERBY>{COMMA}   { tokque_putthrough(yyout,yytext,yyleng,kw("kw_comma_ordby")); };
 <stGROUPBY>{COMMA}   { tokque_putthrough(yyout,yytext,yyleng,kw("kw_comma_grpby")); };
-{HAVING}     {BEGIN_STATE(stWHERE); tokque_putthrough(yyout,yytext,yyleng,kw("kw_having"));  };
-{QUALIFY}    {BEGIN_STATE(stWHERE); tokque_putthrough(yyout,yytext,yyleng,kw("kw_qualify")); };
+{HAVING}     { TUSE(yyout,yytext,yyleng,kw("kw_having")); }
+{QUALIFY}    { TUSE(yyout,yytext,yyleng,kw("kw_qualify")); }
 
 
 <stINSERT>{LEFTP}        { PUSH_STATE(stINSCOLLIST); tokque_putthrough(yyout,yytext,yyleng,kw("kw_left_p_ins") ); };
@@ -226,12 +226,12 @@ END (?i:end)
             };
 
 {CASE}  { tokque_putthrough(yyout,yytext,yyleng,kw("kw_case")); currindent++;}
-{WHEN}  { tokque_putthrough(yyout,yytext,yyleng,kw("kw_when")); }
-{THEN}  { tokque_putthrough(yyout,yytext,yyleng,kw("kw_then")); }
-{ELSE}  { tokque_putthrough(yyout,yytext,yyleng,kw("kw_else")); }
+{WHEN}  { TUSE(yyout,yytext,yyleng,kw("kw_when")); }
+{THEN}  { TUSE(yyout,yytext,yyleng,kw("kw_then")); }
+{ELSE}  { TUSE(yyout,yytext,yyleng,kw("kw_else")); }
 {END}   { currindent--; tokque_putthrough(yyout,yytext,yyleng,kw("kw_end")); }
 
-{USING} { tokque_putthrough(yyout,yytext,yyleng,kw("kw_using")); }
+{USING} { TUSE(yyout,yytext,yyleng,kw("kw_using")); }
 
 
 {COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); tokque_putthrough(yyout,yytext,yyleng, NULL);};
@@ -244,13 +244,12 @@ END (?i:end)
 {COMMENT_ONE_LINE_LAST_LINE_IN_FILE}    {tokque_putthrough(yyout,yytext,yyleng, NULL);};
 
 
-{STRING}     {tokque_putthrough(yyout,yytext,yyleng, NULL);};
-
+{STRING}     { TUSE(yyout,yytext,yyleng,NULL); }
 {SPACE}+     {/* discard spaces */;};
-{DBOBJECT}   {tokque_putthrough(yyout,yytext,yyleng, NULL);};
-{NUMBER}     {tokque_putthrough(yyout,yytext,yyleng, NULL);};
-{SEMICOLON}  {BEGIN_STATE(INITIAL); tokque_putthrough(yyout,yytext,yyleng,kw("kw_semicolon"));};
-<*>.         {debug_match("<*>."); tokque_putthrough(yyout,yytext,yyleng, NULL); };
+{DBOBJECT}   { TUSE(yyout,yytext,yyleng,NULL); }
+{NUMBER}     { TUSE(yyout,yytext,yyleng,NULL); }
+{SEMICOLON}  { TUSE(yyout,yytext,yyleng,kw("kw_semicolon")); }
+<*>.         { TUSE(yyout,yytext,yyleng,NULL); }
 
 
 <<EOF>> {
