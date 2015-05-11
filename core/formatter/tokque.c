@@ -26,7 +26,7 @@ static int tokque_print_one(struct queue * tokque_ptr, FILE *yyout)
 }
 
 
-struct state_change decide_new_state(const struct kw_conf *s)
+struct state_change decide_new_state(int cur_state, const struct kw_conf *s)
 {
     if (s == kw("kw_deletefrom")) return (struct state_change) {1, stDELETE};
     else if (s == kw("kw_insertinto")) return (struct state_change) {1, stINSERT};
@@ -62,7 +62,8 @@ struct queue tokque; // GLOBAL
 ///
 // At the moment only 1st and 4th parts are done.
 // TODO: implement 2nd and 3rd
-struct state_change tokque_putthrough(FILE *yyout, char *text, size_t len, const struct kw_conf *s)
+struct state_change tokque_putthrough(FILE *yyout,
+    char *text, size_t len, const struct kw_conf *s, int cur_state)
 {
     // Queue initialization.
     static int first_run = 1;
@@ -81,7 +82,7 @@ struct state_change tokque_putthrough(FILE *yyout, char *text, size_t len, const
     tokque_print_one(&tokque, yyout);
 
     // Send command for state change
-    return decide_new_state(s);
+    return decide_new_state(cur_state, s);
 }
 
 

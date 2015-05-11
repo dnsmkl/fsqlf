@@ -19,7 +19,7 @@ struct state_change
 
 
 struct state_change tokque_putthrough(FILE *yyout,
-    char *text, size_t len, const struct kw_conf *s);
+    char *text, size_t len, const struct kw_conf *s, int cur_state);
 void tokque_finish_out(FILE *yyout);
 
 
