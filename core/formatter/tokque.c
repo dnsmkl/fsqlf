@@ -75,7 +75,9 @@ struct state_change tokque_putthrough(FILE *yyout,
     // Place on queue.
     {
         struct token *tok1 = (struct token *) queue_alloc_back(&tokque);
+        if (s) currindent += s->before.global_indent_change;
         set_token(tok1, 0, text, len, s, currindent);
+        if (s) currindent += s->after.global_indent_change;
     }
 
     // Retrieve from queue and print.

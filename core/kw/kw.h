@@ -7,6 +7,7 @@
 
 struct spacing
 {
+    int global_indent_change;
     int new_line;
     int indent;
     int space;

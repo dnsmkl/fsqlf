@@ -21,7 +21,7 @@ void set_text_original(unsigned short int ind_original)
 
 void init_all_settings(struct kw_conf * (*kw)(const char *))
 {
-    #define XMACRO(NAME, nlb, tb, sb, nla, ta, sa, TEXT)    \
+    #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, TEXT)    \
     do {                                              \
         kw_add(#NAME);                                \
         kw(#NAME)->before.new_line    = nlb;          \

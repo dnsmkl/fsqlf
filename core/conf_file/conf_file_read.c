@@ -19,12 +19,14 @@ static void setting_value(const char *setting_name, const int *setting_values)
     struct kw_conf *k;
     k = kw(setting_name);
     if (k != NULL) {
-        k->before.new_line  = setting_values[0];
-        k->before.indent    = setting_values[1];
-        k->before.space     = setting_values[2];
-        k->after.new_line   = setting_values[3];
-        k->after.indent     = setting_values[4];
-        k->after.space      = setting_values[5];
+        k->before.global_indent_change  = setting_values[0];
+        k->before.new_line  = setting_values[1];
+        k->before.indent    = setting_values[2];
+        k->before.space     = setting_values[3];
+        k->after.global_indent_change   = setting_values[4];
+        k->after.new_line   = setting_values[5];
+        k->after.indent     = setting_values[6];
+        k->after.space      = setting_values[7];
     }
 }
 
@@ -68,7 +70,7 @@ int read_conf_file(const char *file_pathname,
         // nl before, tab before, space before, nl after, tab after, space after
         char *pos = space_ptr + 1; // Skip \0 char.
         llen -= pos - line;
-        const int VALUE_COUNT = 6;
+        const int VALUE_COUNT = 8;
         int setting_values[VALUE_COUNT];
         size_t cnt = read_int_array(pos, llen, VALUE_COUNT, setting_values);
         if (cnt == 0) {

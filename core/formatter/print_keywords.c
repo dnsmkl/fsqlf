@@ -144,7 +144,7 @@ static void print_spacing(
     int global_indent_level)
 {
     // keep track of 'after' spacing from previous call
-    static struct spacing from_previous__scounts = {0, 0, 0};
+    static struct spacing from_previous__scounts = {0, 0, 0, 0};
     // keep track of previous 'is_word'
     static unsigned short int from_previous__isword = 0;
 
@@ -198,7 +198,7 @@ void echo_print(FILE *yyout, size_t indent, char *txt)
 
     // Printing of spacing is delegated to print_spacing(),
     // which requires as input struct kw_conf.
-    struct kw_conf s = {{0, 0, 0}, {0, 0, 0}, 0, 0, 0, 0};
+    struct kw_conf s = {{0, 0, 0, 0}, {0, 0, 0, 0}, 0, 0, 0, 0};
 
     // Delegate to print_spacing() printing of the new line.
     if (txt[pos_last_char] == '\n') {

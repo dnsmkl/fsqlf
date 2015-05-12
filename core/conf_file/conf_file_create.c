@@ -40,21 +40,24 @@ int create_conf_file(char *config_file_name)
     fputs("\n", config_file);
     fputs("\n", config_file);
 
-    fputs("# space_after ----------------------------------------------+\n", config_file);
-    fputs("# tab_after -----------------------------------------+      |\n", config_file);
-    fputs("# new_line_after -----------------------------+      |      |\n", config_file);
-    fputs("# space_before ------------------------+      |      |      |\n", config_file);
-    fputs("# tab_before -------------------+      |      |      |      |\n", config_file);
-    fputs("# new_line_before -------+      |      |      |      |      |\n", config_file);
-    fputs("#                        |      |      |      |      |      |\n", config_file);
-    fputs("# setting_name\n", config_file);
-    fputs("\n", config_file);
+    fputs("# space_after ------------------------------------------------------------+\n",config_file);
+    fputs("# tab_after -------------------------------------------------------+      |\n",config_file);
+    fputs("# new_line_after -------------------------------------------+      |      |\n",config_file);
+    fputs("# global_indent_change_after-------------------------+      |      |      |\n",config_file);
+    fputs("#                                                    |      |      |      |\n",config_file);
+    fputs("# space_before -------------------------------+      |      |      |      |\n",config_file);
+    fputs("# tab_before --------------------------+      |      |      |      |      |\n",config_file);
+    fputs("# new_line_before --------------+      |      |      |      |      |      |\n",config_file);
+    fputs("# global_indent_                |      |      |      |      |      |      |\n",config_file);
+    fputs("# _change_before --------+      |      |      |      |      |      |      |\n",config_file);
+    fputs("#                        |      |      |      |      |      |      |      |\n",config_file);
+    fputs("# setting_name           |      |      |      |      |      |      |      |\n",config_file);
 
     // Define macro to print one line containing config of single keyword
     // and run it (via #include) for each keyword.
-    #define XMACRO(NAME, nlb, tb, sb, nla, ta, sa, ... )   \
-        fprintf(config_file, "%-24s %s %6s %6s %6s %6s %6s\n",          \
-            #NAME, #nlb, #tb, #sb, #nla, #ta, #sa);
+    #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, ... )   \
+        fprintf(config_file, "%-24s %s %6s %6s %6s %6s %6s %6s %6s\n",          \
+            #NAME, #gib, #nlb, #tb, #sb, #gia, #nla, #ta, #sa);
     #include "../kw/kw_defaults.def"
     #undef XMACRO
 
