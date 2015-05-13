@@ -230,11 +230,11 @@ END (?i:end)
 
             };
 
-{CASE}  { TUSE_DEF(kw("kw_case")); currindent++;}
+{CASE}  { TUSE_DEF(kw("kw_case")); }
 {WHEN}  { TUSE(yyout,yytext,yyleng,kw("kw_when")); }
 {THEN}  { TUSE(yyout,yytext,yyleng,kw("kw_then")); }
 {ELSE}  { TUSE(yyout,yytext,yyleng,kw("kw_else")); }
-{END}   { currindent--; TUSE_DEF(kw("kw_end")); }
+{END}   { TUSE_DEF(kw("kw_end")); }
 
 {USING} { TUSE(yyout,yytext,yyleng,kw("kw_using")); }
 
