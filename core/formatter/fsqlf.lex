@@ -26,7 +26,7 @@ char * state_to_char(int);
 #define TUSE_W_STATES(TKW) \
 do { \
     struct state_change sc = tokque_putthrough(yyout, yytext, yyleng, TKW, YY_START); \
-    if (sc.change_needed) { \
+    if (sc.state_change_action == SCA_BEGIN) { \
         BEGIN (sc.new_state); \
     } \
 } while (0)

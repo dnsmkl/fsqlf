@@ -28,24 +28,24 @@ static int tokque_print_one(struct queue * tokque_ptr, FILE *yyout)
 
 struct state_change decide_new_state(int cur_state, const struct kw_conf *s)
 {
-    if (s == kw("kw_deletefrom")) return (struct state_change) {1, stDELETE};
-    else if (s == kw("kw_insertinto")) return (struct state_change) {1, stINSERT};
-    else if (s == kw("kw_update")) return (struct state_change) {1, stUPDATE};
-    else if (s == kw("kw_create_table")) return (struct state_change) {1, stCREATE_TABLE};
-    else if (s == kw("kw_drop")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_table")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_ifexists")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_view")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_union")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_union_all")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_minus")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_intersect")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_except")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_semicolon")) return (struct state_change) {1, INITIAL};
-    else if (s == kw("kw_groupby")) return (struct state_change) {1, stGROUPBY};
-    else if (s == kw("kw_orderby")) return (struct state_change) {1, stORDERBY};
-    else if (s == kw("kw_having")) return (struct state_change) {1, stWHERE};
-    else if (s == kw("kw_qualify")) return (struct state_change) {1, stWHERE};
+    if (s == kw("kw_deletefrom")) return (struct state_change) {SCA_BEGIN, stDELETE};
+    else if (s == kw("kw_insertinto")) return (struct state_change) {SCA_BEGIN, stINSERT};
+    else if (s == kw("kw_update")) return (struct state_change) {SCA_BEGIN, stUPDATE};
+    else if (s == kw("kw_create_table")) return (struct state_change) {SCA_BEGIN, stCREATE_TABLE};
+    else if (s == kw("kw_drop")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_table")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_ifexists")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_view")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_union")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_union_all")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_minus")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_intersect")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_except")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_semicolon")) return (struct state_change) {SCA_BEGIN, INITIAL};
+    else if (s == kw("kw_groupby")) return (struct state_change) {SCA_BEGIN, stGROUPBY};
+    else if (s == kw("kw_orderby")) return (struct state_change) {SCA_BEGIN, stORDERBY};
+    else if (s == kw("kw_having")) return (struct state_change) {SCA_BEGIN, stWHERE};
+    else if (s == kw("kw_qualify")) return (struct state_change) {SCA_BEGIN, stWHERE};
 
     return (struct state_change) {0, 0};
 }
