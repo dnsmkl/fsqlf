@@ -23,15 +23,15 @@ char * state_to_char(int);
 #define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
 #define PUSH_STATE(NEWSTATE)  stack_push(&state_stack, &(int){YY_START}); BEGIN_STATE(NEWSTATE);
 #define POP_STATE(); BEGIN_STATE(*(int*)stack_peek(&state_stack)); stack_pop(&state_stack);
-#define TUSE(YOUT, YTEXT, YLENG, TKW) \
+#define TUSE_W_STATES(TKW) \
 do { \
-    struct state_change sc = tokque_putthrough(YOUT, YTEXT, YLENG, TKW, YY_START); \
+    struct state_change sc = tokque_putthrough(yyout, yytext, yyleng, TKW, YY_START); \
     if (sc.change_needed) { \
         BEGIN (sc.new_state); \
     } \
 } while (0)
 
-#define TUSE_DEF(TKW) \
+#define TUSE_SIMPLE(TKW) \
 do { \
     tokque_putthrough(yyout, yytext, yyleng, TKW, YY_START); \
 } while (0)
@@ -130,131 +130,131 @@ END (?i:end)
 
 %%
 
-{DELETEFROM}  { TUSE(yyout,yytext,yyleng,kw("kw_deletefrom")); }
-{DELETE}      { TUSE(yyout,yytext,yyleng,kw("kw_deletefrom")); }
-{INSERTINTO}  { TUSE(yyout,yytext,yyleng,kw("kw_insertinto")); }
-{UPDATE}      { TUSE(yyout,yytext,yyleng,kw("kw_update")); }
-<stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);TUSE_DEF(kw("kw_set") ); }
-<stSET>{COMMA} { TUSE_DEF(kw("kw_comma_set")); }
+{DELETEFROM}  { TUSE_W_STATES(kw("kw_deletefrom")); }
+{DELETE}      { TUSE_W_STATES(kw("kw_deletefrom")); }
+{INSERTINTO}  { TUSE_W_STATES(kw("kw_insertinto")); }
+{UPDATE}      { TUSE_W_STATES(kw("kw_update")); }
+<stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);TUSE_SIMPLE(kw("kw_set") ); }
+<stSET>{COMMA} { TUSE_SIMPLE(kw("kw_comma_set")); }
                 /* SET operations */
 
-{CREATE_TABLE} { TUSE(yyout,yytext,yyleng,kw("kw_create_table")); }
-{DROP}       { TUSE(yyout,yytext,yyleng,kw("kw_drop")); }
-{TABLE}      { TUSE(yyout,yytext,yyleng,kw("kw_table")); }
-{IFEXISTS}   { TUSE(yyout,yytext,yyleng,kw("kw_ifexists")); }
-{VIEW}       { TUSE(yyout,yytext,yyleng,kw("kw_view")); }
-{UNION}      { TUSE(yyout,yytext,yyleng,kw("kw_union")); }
-{UNION_ALL}  { TUSE(yyout,yytext,yyleng,kw("kw_union_all")); }
-{MINUS}      { TUSE(yyout,yytext,yyleng,kw("kw_minus")); }
-{INTERSECT}  { TUSE(yyout,yytext,yyleng,kw("kw_intersect")); }
-{EXCEPT}     { TUSE(yyout,yytext,yyleng,kw("kw_except")); }
+{CREATE_TABLE} { TUSE_W_STATES(kw("kw_create_table")); }
+{DROP}       { TUSE_W_STATES(kw("kw_drop")); }
+{TABLE}      { TUSE_W_STATES(kw("kw_table")); }
+{IFEXISTS}   { TUSE_W_STATES(kw("kw_ifexists")); }
+{VIEW}       { TUSE_W_STATES(kw("kw_view")); }
+{UNION}      { TUSE_W_STATES(kw("kw_union")); }
+{UNION_ALL}  { TUSE_W_STATES(kw("kw_union_all")); }
+{MINUS}      { TUSE_W_STATES(kw("kw_minus")); }
+{INTERSECT}  { TUSE_W_STATES(kw("kw_intersect")); }
+{EXCEPT}     { TUSE_W_STATES(kw("kw_except")); }
 
                 /* SELECT ... FROM */
-<INITIAL,stINSERT>{SELECT}           {BEGIN_STATE(stSELECT); TUSE_DEF(kw("kw_select")); };
-<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  TUSE_DEF(kw("kw_comma"));  };
+<INITIAL,stINSERT>{SELECT}           {BEGIN_STATE(stSELECT); TUSE_SIMPLE(kw("kw_select")); };
+<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  TUSE_SIMPLE(kw("kw_comma"));  };
 
-{IN}    { TUSE(yyout,yytext,yyleng,kw("kw_in")); }
+{IN}    { TUSE_W_STATES(kw("kw_in")); }
 
-<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  TUSE_DEF(kw("kw_left_p")); };
-<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");TUSE_DEF(kw("kw_left_p"));  };
-<stLEFTP>{COMMA}            {TUSE_DEF( NULL); };
-<stLEFTP>{ORDERBY}          {TUSE_DEF( NULL); };
-<stLEFTP>{FROM}             {debug_match("{FROM}" ); TUSE_DEF(kw("kw_from_2"));  };
-<stLEFTP>{RIGHTP}           {POP_STATE();            TUSE_DEF(kw("kw_right_p")); };
-<stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  TUSE_DEF(kw("kw_from"));    };
-<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );  TUSE_DEF(kw("kw_as"));      };
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  TUSE_SIMPLE(kw("kw_left_p")); };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");TUSE_SIMPLE(kw("kw_left_p"));  };
+<stLEFTP>{COMMA}            {TUSE_SIMPLE( NULL); };
+<stLEFTP>{ORDERBY}          {TUSE_SIMPLE( NULL); };
+<stLEFTP>{FROM}             {debug_match("{FROM}" ); TUSE_SIMPLE(kw("kw_from_2"));  };
+<stLEFTP>{RIGHTP}           {POP_STATE();            TUSE_SIMPLE(kw("kw_right_p")); };
+<stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  TUSE_SIMPLE(kw("kw_from"));    };
+<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );  TUSE_SIMPLE(kw("kw_as"));      };
 
                 /* FROM ... JOIN ... ON ... WHERE */
-<stON,stFROM,stJOIN>{IJOIN} { BEGIN_STATE(stJOIN);  TUSE_DEF(kw("kw_inner_join")); };
-<stON,stFROM,stJOIN>{LJOIN} { BEGIN_STATE(stJOIN);  TUSE_DEF(kw("kw_left_join") ); };
-<stON,stFROM,stJOIN>{RJOIN} { BEGIN_STATE(stJOIN);  TUSE_DEF(kw("kw_right_join")); };
-<stON,stFROM,stJOIN>{FJOIN} { BEGIN_STATE(stJOIN);  TUSE_DEF(kw("kw_full_join") ); };
-<stON,stFROM,stJOIN>{CJOIN} { BEGIN_STATE(stJOIN);  TUSE_DEF(kw("kw_cross_join")); };
-<stON,stFROM,stJOIN>{COMMA} { TUSE_DEF(kw("kw_comma_join")); };
+<stON,stFROM,stJOIN>{IJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_inner_join")); };
+<stON,stFROM,stJOIN>{LJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_left_join") ); };
+<stON,stFROM,stJOIN>{RJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_right_join")); };
+<stON,stFROM,stJOIN>{FJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_full_join") ); };
+<stON,stFROM,stJOIN>{CJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_cross_join")); };
+<stON,stFROM,stJOIN>{COMMA} { TUSE_SIMPLE(kw("kw_comma_join")); };
 
-<stJOIN>{ON}    {BEGIN_STATE(stON);   TUSE_DEF(kw("kw_on")); };
+<stJOIN>{ON}    {BEGIN_STATE(stON);   TUSE_SIMPLE(kw("kw_on")); };
 
 
 
                 /* WHERE ... (also join conditions) */
-<stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  TUSE_DEF(kw("kw_where")); };
-<stWHERE,stON,stJOIN>{AND}  { debug_match("{AND}");  TUSE_DEF(kw("kw_and"));   };
-<stWHERE,stON,stJOIN>{OR}   { debug_match("{OR}");   TUSE_DEF(kw("kw_or"));    };
+<stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  TUSE_SIMPLE(kw("kw_where")); };
+<stWHERE,stON,stJOIN>{AND}  { debug_match("{AND}");  TUSE_SIMPLE(kw("kw_and"));   };
+<stWHERE,stON,stJOIN>{OR}   { debug_match("{OR}");   TUSE_SIMPLE(kw("kw_or"));    };
 
-<stWHERE>{EXISTS}   {TUSE_DEF(kw("kw_exists")); };
-
-
-{GROUPBY}    { TUSE(yyout,yytext,yyleng,kw("kw_groupby")); }
-{ORDERBY}    { TUSE(yyout,yytext,yyleng,kw("kw_orderby")); }
-<stORDERBY>{COMMA}   { TUSE_DEF(kw("kw_comma_ordby")); };
-<stGROUPBY>{COMMA}   { TUSE_DEF(kw("kw_comma_grpby")); };
-{HAVING}     { TUSE(yyout,yytext,yyleng,kw("kw_having")); }
-{QUALIFY}    { TUSE(yyout,yytext,yyleng,kw("kw_qualify")); }
+<stWHERE>{EXISTS}   {TUSE_SIMPLE(kw("kw_exists")); };
 
 
-<stINSERT>{LEFTP}        { PUSH_STATE(stINSCOLLIST); TUSE_DEF(kw("kw_left_p_ins") ); };
-<stINSCOLLIST>{COMMA}    { TUSE_DEF(kw("kw_comma_ins") ); }
-<stINSCOLLIST>{RIGHTP}   { POP_STATE();              TUSE_DEF(kw("kw_right_p_ins") ); };
+{GROUPBY}    { TUSE_W_STATES(kw("kw_groupby")); }
+{ORDERBY}    { TUSE_W_STATES(kw("kw_orderby")); }
+<stORDERBY>{COMMA}   { TUSE_SIMPLE(kw("kw_comma_ordby")); };
+<stGROUPBY>{COMMA}   { TUSE_SIMPLE(kw("kw_comma_grpby")); };
+{HAVING}     { TUSE_W_STATES(kw("kw_having")); }
+{QUALIFY}    { TUSE_W_STATES(kw("kw_qualify")); }
 
-<stCREATE_TABLE>{LEFTP}  { PUSH_STATE(stTAB_COL_LIST); TUSE_DEF(kw("kw_left_p_create_table") ); };
-<stTAB_COL_LIST>{COMMA}    { TUSE_DEF(kw("kw_comma_create_table") ); }
-<stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_DEF(kw("kw_right_p_create_table") ); };
 
-<stP_SUB>{LEFTP}                      { BEGIN_STATE(*(int*)stack_peek(&state_stack)); TUSE_DEF(kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
+<stINSERT>{LEFTP}        { PUSH_STATE(stINSCOLLIST); TUSE_SIMPLE(kw("kw_left_p_ins") ); };
+<stINSCOLLIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_ins") ); }
+<stINSCOLLIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_ins") ); };
+
+<stCREATE_TABLE>{LEFTP}  { PUSH_STATE(stTAB_COL_LIST); TUSE_SIMPLE(kw("kw_left_p_create_table") ); };
+<stTAB_COL_LIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_create_table") ); }
+<stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_create_table") ); };
+
+<stP_SUB>{LEFTP}                      { BEGIN_STATE(*(int*)stack_peek(&state_stack)); TUSE_SIMPLE(kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };
-<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT); tokque_putthrough(yyout,"(",1,kw("kw_left_p_sub"),YY_START); begin_SUB(); TUSE_DEF(kw("kw_select"));};
+<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT); tokque_putthrough(yyout,"(",1,kw("kw_left_p_sub"),YY_START); begin_SUB(); TUSE_SIMPLE(kw("kw_select"));};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
     if (*(int*)stack_peek(&state_stack) == stFROM
         || *(int*)stack_peek(&state_stack) == stJOIN)
-    { BEGIN_STATE(*(int*)stack_peek(&state_stack)); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START    ); TUSE_DEF( NULL);}
+    { BEGIN_STATE(*(int*)stack_peek(&state_stack)); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START    ); TUSE_SIMPLE( NULL);}
     else
-    { BEGIN_STATE(stIN_CONSTLIST); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START    ); TUSE_DEF( NULL); }
+    { BEGIN_STATE(stIN_CONSTLIST); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START    ); TUSE_SIMPLE( NULL); }
     };
- /* <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(stIN_CONSTLIST); tokque_putthrough(yyout,"(",1,kw("kw_left_p")    ); TUSE_DEF( NULL);}; */
-<stP_SUB>{COMMENT_ML_START}           { tokque_putthrough(yyout,"",0, NULL, YY_START); PUSH_STATE(stCOMMENTML)  ; TUSE_DEF( NULL);};
-<stP_SUB>{COMMENT_ONE_LINE}           { tokque_putthrough(yyout,"",0, NULL, YY_START); TUSE_DEF( NULL);};
+ /* <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(stIN_CONSTLIST); tokque_putthrough(yyout,"(",1,kw("kw_left_p")    ); TUSE_SIMPLE( NULL);}; */
+<stP_SUB>{COMMENT_ML_START}           { tokque_putthrough(yyout,"",0, NULL, YY_START); PUSH_STATE(stCOMMENTML)  ; TUSE_SIMPLE( NULL);};
+<stP_SUB>{COMMENT_ONE_LINE}           { tokque_putthrough(yyout,"",0, NULL, YY_START); TUSE_SIMPLE( NULL);};
 <stP_SUB>{SPACE}                      { tokque_putthrough(yyout,"",0, NULL, YY_START); };
-<stP_SUB>{RIGHTP}                     { tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START); POP_STATE(); TUSE_DEF(kw("kw_right_p")); }
-<stP_SUB>.                            { BEGIN_STATE(*(int*)stack_peek(&state_stack)); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START); TUSE_DEF( NULL); };
+<stP_SUB>{RIGHTP}                     { tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START); POP_STATE(); TUSE_SIMPLE(kw("kw_right_p")); }
+<stP_SUB>.                            { BEGIN_STATE(*(int*)stack_peek(&state_stack)); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START); TUSE_SIMPLE( NULL); };
 
 {RIGHTP}    {
                 POP_STATE();
                 if (!stack_empty(&sub_openings) &&
                     left_p -(*(pair*)stack_peek(&sub_openings)).left == (right_p+1) -(*(pair*)stack_peek(&sub_openings)).right - 1) {
                     end_SUB();
-                    TUSE_DEF(kw("kw_right_p_sub"));
+                    TUSE_SIMPLE(kw("kw_right_p_sub"));
                 } else {
                     debug_match("<wtf-leftp>");
-                    TUSE_DEF(kw("kw_right_p"));
+                    TUSE_SIMPLE(kw("kw_right_p"));
                 }
 
             };
 
-{CASE}  { TUSE_DEF(kw("kw_case")); }
-{WHEN}  { TUSE(yyout,yytext,yyleng,kw("kw_when")); }
-{THEN}  { TUSE(yyout,yytext,yyleng,kw("kw_then")); }
-{ELSE}  { TUSE(yyout,yytext,yyleng,kw("kw_else")); }
-{END}   { TUSE_DEF(kw("kw_end")); }
+{CASE}  { TUSE_SIMPLE(kw("kw_case")); }
+{WHEN}  { TUSE_W_STATES(kw("kw_when")); }
+{THEN}  { TUSE_W_STATES(kw("kw_then")); }
+{ELSE}  { TUSE_W_STATES(kw("kw_else")); }
+{END}   { TUSE_SIMPLE(kw("kw_end")); }
 
-{USING} { TUSE(yyout,yytext,yyleng,kw("kw_using")); }
+{USING} { TUSE_W_STATES(kw("kw_using")); }
 
 
-{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); TUSE_DEF( NULL);};
-<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; TUSE_DEF( NULL);};
-<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; TUSE_DEF( NULL);};
-<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); TUSE_DEF( NULL);};
+{COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL);};
+<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; TUSE_SIMPLE( NULL);};
+<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; TUSE_SIMPLE( NULL);};
+<stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); TUSE_SIMPLE( NULL);};
 
-{COMMENT_ONE_LINE}     {TUSE_DEF( NULL);};
+{COMMENT_ONE_LINE}     {TUSE_SIMPLE( NULL);};
     /* Exeption to one-line-comment: comment on last line, without new-line after it */
-{COMMENT_ONE_LINE_LAST_LINE_IN_FILE}    {TUSE_DEF( NULL);};
+{COMMENT_ONE_LINE_LAST_LINE_IN_FILE}    {TUSE_SIMPLE( NULL);};
 
 
-{STRING}     { TUSE(yyout,yytext,yyleng,NULL); }
+{STRING}     { TUSE_W_STATES(NULL); }
 {SPACE}+     {/* discard spaces */;};
-{DBOBJECT}   { TUSE(yyout,yytext,yyleng,NULL); }
-{NUMBER}     { TUSE(yyout,yytext,yyleng,NULL); }
-{SEMICOLON}  { TUSE(yyout,yytext,yyleng,kw("kw_semicolon")); }
-<*>.         { TUSE(yyout,yytext,yyleng,NULL); }
+{DBOBJECT}   { TUSE_W_STATES(NULL); }
+{NUMBER}     { TUSE_W_STATES(NULL); }
+{SEMICOLON}  { TUSE_W_STATES(kw("kw_semicolon")); }
+<*>.         { TUSE_W_STATES(NULL); }
 
 
 <<EOF>> {
