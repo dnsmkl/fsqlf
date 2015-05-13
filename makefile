@@ -104,28 +104,26 @@ gui/license_text.h: LICENSE
 # Given certain input to `fsqlf`, actual output (lead) is compared
 # against to it's predefined expected output (gold).
 # TF stands for "test file".
-TF_ALL = $(wildcard testing/*.sql)
-TF_SAVED_GOLD = $(wildcard testing/*.output_gold.sql)
-TF_LEAD = $(patsubst %.output_gold.sql,%.output_lead.sql,$(TF_SAVED_GOLD))
-TF_INPUT = $(filter-out $(TF_SAVED_GOLD) $(TF_LEAD),$(TF_ALL))
-$(TF_LEAD): %.output_lead.sql: %.sql | %.output_gold.sql
+TF_INPUT = $(wildcard testcases/*_input.sql)
+TF_ACTUAL_RESULTS = $(patsubst %_input.sql,%_actual.sql,$(TF_INPUT))
+$(TF_ACTUAL_RESULTS): %_actual.sql: %_input.sql | %_expected.sql
 	@./fsqlf $< $@
 	@diff -q $@ $|
 	@rm $@
 	@echo "Result as expected for: " $<
 
-test-gold: $(EXEC_CLI)  $(TF_LEAD)
+test-gold: $(EXEC_CLI)  $(TF_ACTUAL_RESULTS)
 
 test: test-gold
 
 # Output for visual inspection.
 test-print: $(EXEC_CLI)
-	./$(EXEC_CLI) testing/bigquery.sql \
+	./$(EXEC_CLI) testcases/bigquery.sql \
 	|  awk -F, '{ printf("%4d # ", NR) ; print}'
 
-# When adding new test cases %.sql files, auto-generate %.output_gold.sql files.
-TF_NEW_GOLD = $(patsubst %.sql,%.output_gold.sql,$(TF_INPUT))
-$(TF_NEW_GOLD): %.output_gold.sql: %.sql
+# When adding new test cases %.sql files, auto-generate %_expected.sql files.
+TF_NEW_GOLD = $(patsubst %.sql,%_expected.sql,$(TF_INPUT))
+$(TF_NEW_GOLD): %_expected.sql: %.sql
 	./fsqlf $< $@
 
 generate-gold: $(TF_NEW_GOLD)
@@ -153,7 +151,7 @@ clean_obj:
 	rm -f *.o core/*.o core/*/*.o utils/*/*.o
 
 clean_test:
-	rm -f $(TF_LEAD)
+	rm -f $(TF_ACTUAL_RESULTS)
 
 
 
