@@ -24,9 +24,11 @@ void init_all_settings(struct kw_conf * (*kw)(const char *))
     #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, TEXT)    \
     do {                                              \
         kw_add(#NAME);                                \
+        kw(#NAME)->before.global_indent_change    = gib; \
         kw(#NAME)->before.new_line    = nlb;          \
         kw(#NAME)->before.indent      = tb;           \
         kw(#NAME)->before.space       = sb;           \
+        kw(#NAME)->after.global_indent_change     = gia; \
         kw(#NAME)->after.new_line     = nla;          \
         kw(#NAME)->after.indent       = ta;           \
         kw(#NAME)->after.space        = sa;           \
