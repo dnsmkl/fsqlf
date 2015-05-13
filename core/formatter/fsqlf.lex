@@ -61,7 +61,7 @@ EXCEPT    (?i:except)
 MINUS     (?i:minus)
 
 TABLE_OPT (?i:global|volatile|set|multiset|temporary)
-CREATE_TABLE (?i:create{SPACE}+({TABLE_OPT}{SPACE}+)*table)
+CREATE  (?i:create)
 DROP    (?i:drop)
 TABLE   (?i:table)
 VIEW    (?i:view)
@@ -125,7 +125,7 @@ END (?i:end)
  */
 %option always-interactive
 
-%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST stCREATE_TABLE stTAB_COL_LIST
+%s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST stCREATE stTAB_COL_LIST
 %x stCOMMENTML stSTRING
 
 %%
@@ -138,7 +138,7 @@ END (?i:end)
 <stSET>{COMMA} { TUSE_SIMPLE(kw("kw_comma_set")); }
                 /* SET operations */
 
-{CREATE_TABLE} { TUSE_W_STATES(kw("kw_create_table")); }
+{CREATE}     { TUSE_W_STATES(kw("kw_create")); }
 {DROP}       { TUSE_W_STATES(kw("kw_drop")); }
 {TABLE}      { TUSE_W_STATES(kw("kw_table")); }
 {IFEXISTS}   { TUSE_W_STATES(kw("kw_ifexists")); }
@@ -196,9 +196,9 @@ END (?i:end)
 <stINSCOLLIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_ins") ); }
 <stINSCOLLIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_ins") ); };
 
-<stCREATE_TABLE>{LEFTP}  { PUSH_STATE(stTAB_COL_LIST); TUSE_SIMPLE(kw("kw_left_p_create_table") ); };
-<stTAB_COL_LIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_create_table") ); }
-<stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_create_table") ); };
+<stCREATE>{LEFTP}  { PUSH_STATE(stTAB_COL_LIST); TUSE_SIMPLE(kw("kw_left_p_create") ); };
+<stTAB_COL_LIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_create") ); }
+<stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_create") ); };
 
 <stP_SUB>{LEFTP}                      { BEGIN_STATE(*(int*)stack_peek(&state_stack)); TUSE_SIMPLE(kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
 {LEFTP}                               { PUSH_STATE(stP_SUB); };

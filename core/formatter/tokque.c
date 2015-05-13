@@ -31,9 +31,8 @@ struct state_change decide_new_state(int cur_state, const struct kw_conf *s)
     if (s == kw("kw_deletefrom")) return (struct state_change) {SCA_BEGIN, stDELETE};
     else if (s == kw("kw_insertinto")) return (struct state_change) {SCA_BEGIN, stINSERT};
     else if (s == kw("kw_update")) return (struct state_change) {SCA_BEGIN, stUPDATE};
-    else if (s == kw("kw_create_table")) return (struct state_change) {SCA_BEGIN, stCREATE_TABLE};
+    else if (s == kw("kw_create")) return (struct state_change) {SCA_BEGIN, stCREATE};
     else if (s == kw("kw_drop")) return (struct state_change) {SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_table")) return (struct state_change) {SCA_BEGIN, INITIAL};
     else if (s == kw("kw_ifexists")) return (struct state_change) {SCA_BEGIN, INITIAL};
     else if (s == kw("kw_view")) return (struct state_change) {SCA_BEGIN, INITIAL};
     else if (s == kw("kw_union")) return (struct state_change) {SCA_BEGIN, INITIAL};

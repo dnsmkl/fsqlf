@@ -11,7 +11,7 @@ id int
 
 
 
-CREATE TABLE schema_name.table_name
+CREATE volatile multiset TABLE schema_name.table_name
 (
 id int
 , col2 varchar ( 30 )
