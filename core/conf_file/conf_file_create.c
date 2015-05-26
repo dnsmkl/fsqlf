@@ -60,13 +60,13 @@ int create_conf_file(char *config_file_name)
 
     fputs("\n\n", config_file);
     fputs("# Some explanations regarding names (shortenings) used above:\n", config_file);
-    fputs("# - left_p = left paranthesis\n", config_file);
-    fputs("# - right_p = right paranthesis\n", config_file);
+    fputs("# - left_p = left parenthesis\n", config_file);
+    fputs("# - right_p = right parenthesis\n", config_file);
     fputs("# - ins = insert\n", config_file);
     fputs("# - sub = subquery\n", config_file);
     fputs("# - grpby = group by\n", config_file);
     fputs("# - ordby = order by\n", config_file);
-    fputs("# - kw = keyword (though for some reason it's used also for puntuantion character..)\n", config_file);
+    fputs("# - kw = keyword (though for some reason it's used also for punctuation character..)\n", config_file);
     fputs("\n\n", config_file);
 
     if (fclose(config_file) == 0) {

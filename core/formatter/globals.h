@@ -28,7 +28,7 @@ void begin_SUB();
 void end_SUB();
 
 
-char *dump_paranthesis_counts();
+char *dump_parenthesis_counts();
 
 
 #endif

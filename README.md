@@ -86,7 +86,7 @@ If you use Linux and have installed same programs as I do (see section 2.1), the
 3. TODO list:
 ----
 
-- paranthesis in restrictions (e.g. AND (a=1 OR b=1) )
+- parenthesis in restrictions (e.g. AND (a=1 OR b=1) )
 - improve GUI
 - make 3 configuration modes:
     none-use-file-config

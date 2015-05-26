@@ -209,7 +209,7 @@ endif
 # $+ - all prerequisites
 # $^ - all prerequisites, but list each name only once
 # $< - first prerequisite
-# $? - all prerequisites newer then target
+# $? - all prerequisites newer than target
 # $| - order only prerequisites
 #
 # See also:
