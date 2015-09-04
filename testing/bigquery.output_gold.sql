@@ -46,7 +46,7 @@ AND EXISTS
       1
     FROM t
     WHERE b=g
-    AND not EXISTS 
+    AND NOT EXISTS
     (
         SELECT
           1

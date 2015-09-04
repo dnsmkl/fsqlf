@@ -70,6 +70,7 @@ WHERE   (?i:where)
 SAMPLE  (?i:sample)
 AND     (?i:and)
 OR      (?i:or)
+NOT     (?i:not)
 EXISTS  (?i:exists)
 IN      (?i:in)
 COMPARISON (=|<>|<=|>=|<|>)
@@ -167,6 +168,7 @@ END (?i:end)
 <stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  handle_kw(yyout,yytext,kw("kw_where")); };
 <stWHERE,stON,stJOIN>{AND}  { debug_match("{AND}");  handle_kw(yyout,yytext,kw("kw_and"));   };
 <stWHERE,stON,stJOIN>{OR}   { debug_match("{OR}");   handle_kw(yyout,yytext,kw("kw_or"));    };
+{NOT}    { handle_kw(yyout,yytext,kw("kw_not")); };
 
 <stWHERE>{EXISTS}   {handle_kw(yyout,yytext,kw("kw_exists")); };
 
