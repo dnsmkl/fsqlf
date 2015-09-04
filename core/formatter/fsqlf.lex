@@ -97,6 +97,12 @@ COMMENT_ML_END   [*]+[/]
 
 STRING ([xX]?['][^'']*['])+
 SEMICOLON ;
+OP_PLUS   (\+)
+OP_MINUS  (-)
+OP_MULT   (\*)
+OP_DIV    (\/)
+OP_CONCAT (\|\|)
+
 
 INSERTINTO (?i:(ins|insert){SPACE}+into)
 UPDATE (?i:upd|update)
@@ -257,6 +263,12 @@ END (?i:end)
 {DBOBJECT}   {handle_text(yyout,yytext);};
 {NUMBER}     {handle_text(yyout,yytext);};
 {SEMICOLON}  {BEGIN_STATE(INITIAL); handle_kw(yyout,yytext,kw("kw_semicolon"));};
+
+{OP_PLUS}    { handle_kw(yyout,yytext,kw("kw_op_plus")); };
+{OP_MINUS}   { handle_kw(yyout,yytext,kw("kw_op_minus")); };
+{OP_MULT}    { handle_kw(yyout,yytext,kw("kw_op_mult")); };
+{OP_DIV}     { handle_kw(yyout,yytext,kw("kw_op_div")); };
+{OP_CONCAT}  { handle_kw(yyout,yytext,kw("kw_op_concat")); };
 <*>.         {debug_match("<*>."); handle_text(yyout,yytext); };
 
 
