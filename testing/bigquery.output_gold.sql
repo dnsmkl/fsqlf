@@ -35,7 +35,8 @@ LEFT JOIN
  ON 1 IN  ( 1,2,3 )
 OR x<>1
 AND 1=1
-AND 1=1 )
+AND 1=1
+AND "a" LIKE "b")
 LEFT JOIN ( baba
 CROSS JOIN gaga )
  ON baba.g=T.z
