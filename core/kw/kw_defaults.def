@@ -12,6 +12,12 @@
 //        kw name                   |   |  |  |  |  |   |
 //
 XMACRO( kw_comma                   , 1, 0, 0, 0, 0, 1, ","            )
+XMACRO( kw_comp_eq                 , 0, 0, 1, 0, 0, 1, "="            )
+XMACRO( kw_comp_ne                 , 0, 0, 1, 0, 0, 1, "<>"           )
+XMACRO( kw_comp_le                 , 0, 0, 1, 0, 0, 1, "<="           )
+XMACRO( kw_comp_ge                 , 0, 0, 1, 0, 0, 1, ">="           )
+XMACRO( kw_comp_lt                 , 0, 0, 1, 0, 0, 1, "<"            )
+XMACRO( kw_comp_gt                 , 0, 0, 1, 0, 0, 1, ">"            )
 XMACRO( kw_select                  , 1, 0, 0, 1, 0, 2, "SELECT"       )
 XMACRO( kw_inner_join              , 1, 0, 0, 0, 0, 1, "JOIN"         )
 XMACRO( kw_left_join               , 1, 0, 0, 0, 0, 1, "LEFT JOIN"    )

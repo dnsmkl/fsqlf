@@ -73,7 +73,6 @@ OR      (?i:or)
 EXISTS  (?i:exists)
 IN      (?i:in)
 LIKE    (?i:like)
-COMPARISON (=|<>|<=|>=|<|>)
 
 GROUPBY (?i:group{SPACE}+by)
 ORDERBY (?i:order{SPACE}+by)
@@ -81,6 +80,12 @@ HAVING  (?i:having)
 QUALIFY (?i:qualify)
 
 COMMA [,]
+COMP_EQ (=)
+COMP_NE (<>)
+COMP_LE (<=)
+COMP_GE (>=)
+COMP_LT (<)
+COMP_GT (>)
 
 COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
 COMMENT_ONE_LINE_LAST_LINE_IN_FILE [-]{2,}[^\n]*
@@ -143,6 +148,13 @@ END (?i:end)
 
 {IN}    { handle_kw(yyout,yytext,kw("kw_in")); };
 {LIKE}    { handle_kw(yyout,yytext,kw("kw_like")); };
+
+{COMP_EQ}    { handle_kw(yyout,yytext,kw("kw_comp_eq")); };
+{COMP_NE}    { handle_kw(yyout,yytext,kw("kw_comp_ne")); };
+{COMP_LE}    { handle_kw(yyout,yytext,kw("kw_comp_le")); };
+{COMP_GE}    { handle_kw(yyout,yytext,kw("kw_comp_ge")); };
+{COMP_LT}    { handle_kw(yyout,yytext,kw("kw_comp_lt")); };
+{COMP_GT}    { handle_kw(yyout,yytext,kw("kw_comp_gt")); };
 
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  handle_kw(yyout,yytext,kw("kw_left_p")); };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");handle_kw(yyout,yytext,kw("kw_left_p"));  };
