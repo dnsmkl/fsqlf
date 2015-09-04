@@ -1,7 +1,11 @@
 
 SELECT
   asbaba AS g
-, cast ( bfbfb AS date )+1 as x
+, cast ( bfbfb AS date ) + 1 as x
+, 2 - 1 as b1
+, 2 * 1 as c1
+, 2 / 1 as d1
+, "str" || "cat"as concatted
 , min ( a ) over ( partition by x,c order by r rows between 1 preceeding and 1 preceeding )
 , 'dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg' as c
 , cast ( 19.2 AS decimal ( 18,2 ) )
