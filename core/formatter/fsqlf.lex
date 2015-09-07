@@ -72,6 +72,7 @@ AND     (?i:and)
 OR      (?i:or)
 EXISTS  (?i:exists)
 IN      (?i:in)
+LIKE    (?i:like)
 COMPARISON (=|<>|<=|>=|<|>)
 
 GROUPBY (?i:group{SPACE}+by)
@@ -141,6 +142,7 @@ END (?i:end)
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  handle_kw(yyout,yytext,kw("kw_comma"));  };
 
 {IN}    { handle_kw(yyout,yytext,kw("kw_in")); };
+{LIKE}    { handle_kw(yyout,yytext,kw("kw_like")); };
 
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  handle_kw(yyout,yytext,kw("kw_left_p")); };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");handle_kw(yyout,yytext,kw("kw_left_p"));  };
