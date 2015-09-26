@@ -10,7 +10,7 @@ int debug_level = DEBUGNONE ;//| DEBUGSTATES | DEBUGMATCHES;
 void debug_p()
 {
     if (debug_level & DEBUGPARCOUNTS) {
-        printf("\n\t***  %s  ***\n", dump_paranthesis_counts());
+        printf("\n\t***  %s  ***\n", dump_parenthesis_counts());
     }
 }
 

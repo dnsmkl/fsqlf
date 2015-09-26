@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Convert text file into C macro
-# so it would be possbile to use the text in source code.
+# so it would be possible to use the text in source code.
 
 # Usage:
 #     text_to_header.sh  <input-file>  <output-file>
@@ -28,7 +28,7 @@ else
     # - remove last part (separated by underscore)
     text_macro_name=`echo $guard_macro_name | sed -r -e 's|([^_]+)_[^_]+$|\1|g'`
 
-    # Generate ouput file.
+    # Generate output file.
     echo "#ifndef $guard_macro_name"            > $2;
     echo "#define $guard_macro_name"            >> $2;
     echo "#define $text_macro_name \"\\"        >> $2;

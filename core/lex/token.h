@@ -24,7 +24,7 @@
 // PLAN
 // to achieve it:
 //  - Reduce responsibility of flex lexer to recognizing only 'token classes':
-//    comments, spacing, word, punctuation, string, paranthesis.
+//    comments, spacing, word, punctuation, string, parenthesis.
 //  - Further recognition of word tokens (and possibly punctuation),
 //    will be done outside of flex-generated lexer (lets say in quasiparser).
 //  - Quasiparser will:

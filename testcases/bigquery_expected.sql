@@ -33,19 +33,19 @@ LEFT JOIN
     ) T
 ) baba
  ON 1 IN  ( 1,2,3 )
-OR x<>1
-AND 1=1
-AND 1=1 )
+OR x <> 1
+AND 1 = 1
+AND 1 = 1 )
 LEFT JOIN ( baba
 CROSS JOIN gaga )
- ON baba.g=T.z
+ ON baba.g = T.z
 WHERE toto
 AND EXISTS
 (
     SELECT
       1
     FROM t
-    WHERE b=g
+    WHERE b = g
     AND not EXISTS 
     (
         SELECT
@@ -53,7 +53,12 @@ AND EXISTS
         FROM T
     )
 )
-AND 1=1
+AND 1 = 1
+AND 1 < 1
+AND 1 > 1
+AND 1 >= 1
+AND 1 <= 1
+AND 1 <> 1
 AND a IN
 (
     SELECT

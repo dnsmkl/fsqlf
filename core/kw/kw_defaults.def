@@ -13,6 +13,12 @@
 //                                  |  |  |  |  |  |  |  |   |
 //        kw name                   |  |  |  |  |  |  |  |   |
 //
+XMACRO( kw_comp_eq                , 0, 0, 0, 1, 0, 0, 0, 1, "="            )
+XMACRO( kw_comp_ne                , 0, 0, 0, 1, 0, 0, 0, 1, "<>"           )
+XMACRO( kw_comp_le                , 0, 0, 0, 1, 0, 0, 0, 1, "<="           )
+XMACRO( kw_comp_ge                , 0, 0, 0, 1, 0, 0, 0, 1, ">="           )
+XMACRO( kw_comp_lt                , 0, 0, 0, 1, 0, 0, 0, 1, "<"            )
+XMACRO( kw_comp_gt                , 0, 0, 0, 1, 0, 0, 0, 1, ">"            )
 XMACRO( kw_comma                  , 0, 1, 0, 0, 0, 0, 0, 1, ","            )
 XMACRO( kw_select                 , 0, 1, 0, 0, 0, 1, 0, 2, "SELECT"       )
 XMACRO( kw_inner_join             , 0, 1, 0, 0, 0, 0, 0, 1, "JOIN"         )
@@ -68,3 +74,4 @@ XMACRO( kw_when                   , 0, 1, 0, 0, 0, 0, 0, 0, "WHEN"         )
 XMACRO( kw_then                   , 0, 1, 0, 0, 0, 0, 0, 0, "THEN"         )
 XMACRO( kw_else                   , 0, 1, 0, 0, 0, 0, 0, 0, "ELSE"         )
 XMACRO( kw_using                  , 0, 0, 0, 0, 0, 1, 0, 0, "USING"        )
+
