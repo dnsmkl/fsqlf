@@ -83,8 +83,10 @@ WHERE   (?i:where)
 SAMPLE  (?i:sample)
 AND     (?i:and)
 OR      (?i:or)
+NOT     (?i:not)
 EXISTS  (?i:exists)
 IN      (?i:in)
+LIKE    (?i:like)
 
 GROUPBY (?i:group{SPACE}+by)
 ORDERBY (?i:order{SPACE}+by)
@@ -108,6 +110,12 @@ COMMENT_ML_END   [*]+[/]
 
 STRING ([xX]?['][^'']*['])+
 SEMICOLON ;
+OP_PLUS   (\+)
+OP_MINUS  (-)
+OP_MULT   (\*)
+OP_DIV    (\/)
+OP_CONCAT (\|\|)
+
 
 INSERTINTO (?i:(ins|insert){SPACE}+into)
 UPDATE (?i:upd|update)
@@ -159,6 +167,7 @@ END (?i:end)
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  TUSE_SIMPLE(kw("kw_comma"));  };
 
 {IN}    { TUSE_W_STATES(kw("kw_in")); }
+{LIKE}  { TUSE_SIMPLE(kw("kw_like")); };
 
 {COMP_EQ}    { TUSE_SIMPLE(kw("kw_comp_eq")); };
 {COMP_NE}    { TUSE_SIMPLE(kw("kw_comp_ne")); };
@@ -193,6 +202,7 @@ END (?i:end)
 <stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  TUSE_SIMPLE(kw("kw_where")); };
 <stWHERE,stON,stJOIN>{AND}  { debug_match("{AND}");  TUSE_SIMPLE(kw("kw_and"));   };
 <stWHERE,stON,stJOIN>{OR}   { debug_match("{OR}");   TUSE_SIMPLE(kw("kw_or"));    };
+{NOT}    { TUSE_SIMPLE(kw("kw_not")); };
 
 <stWHERE>{EXISTS}   {TUSE_SIMPLE(kw("kw_exists")); };
 
@@ -267,6 +277,11 @@ END (?i:end)
 {DBOBJECT}   { TUSE_W_STATES(NULL); }
 {NUMBER}     { TUSE_W_STATES(NULL); }
 {SEMICOLON}  { TUSE_W_STATES(kw("kw_semicolon")); }
+{OP_PLUS}    { TUSE_SIMPLE(kw("kw_op_plus")); };
+{OP_MINUS}   { TUSE_SIMPLE(kw("kw_op_minus")); };
+{OP_MULT}    { TUSE_SIMPLE(kw("kw_op_mult")); };
+{OP_DIV}     { TUSE_SIMPLE(kw("kw_op_div")); };
+{OP_CONCAT}  { TUSE_SIMPLE(kw("kw_op_concat")); };
 <*>.         { TUSE_W_STATES(NULL); }
 
 
