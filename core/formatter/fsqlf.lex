@@ -70,10 +70,10 @@ WHERE   (?i:where)
 SAMPLE  (?i:sample)
 AND     (?i:and)
 OR      (?i:or)
+NOT     (?i:not)
 EXISTS  (?i:exists)
 IN      (?i:in)
 LIKE    (?i:like)
-COMPARISON (=|<>|<=|>=|<|>)
 
 GROUPBY (?i:group{SPACE}+by)
 ORDERBY (?i:order{SPACE}+by)
@@ -81,6 +81,12 @@ HAVING  (?i:having)
 QUALIFY (?i:qualify)
 
 COMMA [,]
+COMP_EQ (=)
+COMP_NE (<>)
+COMP_LE (<=)
+COMP_GE (>=)
+COMP_LT (<)
+COMP_GT (>)
 
 COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
 COMMENT_ONE_LINE_LAST_LINE_IN_FILE [-]{2,}[^\n]*
@@ -91,6 +97,12 @@ COMMENT_ML_END   [*]+[/]
 
 STRING ([xX]?['][^'']*['])+
 SEMICOLON ;
+OP_PLUS   (\+)
+OP_MINUS  (-)
+OP_MULT   (\*)
+OP_DIV    (\/)
+OP_CONCAT (\|\|)
+
 
 INSERTINTO (?i:(ins|insert){SPACE}+into)
 UPDATE (?i:upd|update)
@@ -144,6 +156,13 @@ END (?i:end)
 {IN}    { handle_kw(yyout,yytext,kw("kw_in")); };
 {LIKE}    { handle_kw(yyout,yytext,kw("kw_like")); };
 
+{COMP_EQ}    { handle_kw(yyout,yytext,kw("kw_comp_eq")); };
+{COMP_NE}    { handle_kw(yyout,yytext,kw("kw_comp_ne")); };
+{COMP_LE}    { handle_kw(yyout,yytext,kw("kw_comp_le")); };
+{COMP_GE}    { handle_kw(yyout,yytext,kw("kw_comp_ge")); };
+{COMP_LT}    { handle_kw(yyout,yytext,kw("kw_comp_lt")); };
+{COMP_GT}    { handle_kw(yyout,yytext,kw("kw_comp_gt")); };
+
 <stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  handle_kw(yyout,yytext,kw("kw_left_p")); };
 <stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");handle_kw(yyout,yytext,kw("kw_left_p"));  };
 <stLEFTP>{COMMA}            {handle_text(yyout,yytext); };
@@ -169,6 +188,7 @@ END (?i:end)
 <stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  handle_kw(yyout,yytext,kw("kw_where")); };
 <stWHERE,stON,stJOIN>{AND}  { debug_match("{AND}");  handle_kw(yyout,yytext,kw("kw_and"));   };
 <stWHERE,stON,stJOIN>{OR}   { debug_match("{OR}");   handle_kw(yyout,yytext,kw("kw_or"));    };
+{NOT}    { handle_kw(yyout,yytext,kw("kw_not")); };
 
 <stWHERE>{EXISTS}   {handle_kw(yyout,yytext,kw("kw_exists")); };
 
@@ -243,6 +263,12 @@ END (?i:end)
 {DBOBJECT}   {handle_text(yyout,yytext);};
 {NUMBER}     {handle_text(yyout,yytext);};
 {SEMICOLON}  {BEGIN_STATE(INITIAL); handle_kw(yyout,yytext,kw("kw_semicolon"));};
+
+{OP_PLUS}    { handle_kw(yyout,yytext,kw("kw_op_plus")); };
+{OP_MINUS}   { handle_kw(yyout,yytext,kw("kw_op_minus")); };
+{OP_MULT}    { handle_kw(yyout,yytext,kw("kw_op_mult")); };
+{OP_DIV}     { handle_kw(yyout,yytext,kw("kw_op_div")); };
+{OP_CONCAT}  { handle_kw(yyout,yytext,kw("kw_op_concat")); };
 <*>.         {debug_match("<*>."); handle_text(yyout,yytext); };
 
 
