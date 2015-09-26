@@ -10,7 +10,7 @@ struct kw_conf *g_keyword_config = NULL;
 struct kw_conf *kw_add(const char *name)
 {
     struct kw_conf *tmp;
-    tmp = (struct kw_conf*) malloc(sizeof(struct kw_conf));
+    tmp = (struct kw_conf*) calloc(1, sizeof(struct kw_conf));
     assert(tmp);
     tmp->name = name;
     HASH_ADD_KEYPTR(hh, g_keyword_config, tmp->name, strlen(tmp->name), tmp);
