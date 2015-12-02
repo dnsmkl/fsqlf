@@ -8,27 +8,43 @@ CFLAGS+=-g
 CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 
 ifdef WIN
-OS_TARGET=windows
-EXEC_CLI=fsqlf.exe
-EXEC_GUI=wx_fsqlf.exe
-CC=i586-mingw32msvc-gcc
-CXX=i586-mingw32msvc-g++
-CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
-LDFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`
-# Option "-mthreads" needs to be removed, so mingwm10.dll would not be needed
-# (http://old.nabble.com/mingwm10.dll-ts8920679.html)
+	OS_TARGET=windows
+	EXEC_CLI=fsqlf.exe
+	EXEC_GUI=wx_fsqlf.exe
+	CC=i586-mingw32msvc-gcc
+	CXX=i586-mingw32msvc-g++
+	CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+	LDFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`
+	# Option "-mthreads" needs to be removed, so mingwm10.dll would not be needed
+	# (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else
-OS_TARGET=linux
-PREFIX=/usr/local
-EXEC_CLI=fsqlf
-EXEC_GUI=wx_fsqlf
-CC=gcc
-CFLAGS+=-m32
-CXX=g++
-CXXFLAGS+= `wx-config --cxxflags`
-LDFLAGS+= `wx-config --libs`
+	OS_TARGET=linux
+	PREFIX=/usr/local
+	EXEC_CLI=fsqlf
+	EXEC_GUI=wx_fsqlf
+	CC=gcc
+	CXX=g++
+	CXXFLAGS+= `wx-config --cxxflags`
+	LDFLAGS+= `wx-config --libs`
+	ifneq (Darwin, ${_system_type})
+		CFLAGS+=-m32
+	else
+		CFLAGS+=-m64
+	endif
 endif
 
+ifeq (Darwin, ${_system_type})
+	LIBNAME=libfsqlf.dylib
+	LIBFLAGS=-dynamiclib
+else
+	ifdef WIN
+		LIBNAME=libfsqlf.dll
+		LIBFLAGS=-shared -Wl,--out-implib,libfsqlf.a
+	else
+		LIBNAME=libfsqlf.so
+		LIBFLAGS=-shared
+	endif
+endif
 
 
 .PHONY: all  clean  zip  test  test-print  test-gold  clean_obj  clean_test  install  uninstall
@@ -40,39 +56,54 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 
 
 #
+# BUILD LIB
+#
+LCOBJ += lib_fsqlf/conf_file/conf_file_create.o
+LCOBJ += lib_fsqlf/conf_file/conf_file_read.o
+LCOBJ += lib_fsqlf/debuging.o
+LCOBJ += lib_fsqlf/formatter/globals.o
+LCOBJ += lib_fsqlf/formatter/lex.yy.o
+LCOBJ += lib_fsqlf/formatter/print_keywords.o
+LCOBJ += lib_fsqlf/formatter/tokque.o
+LCOBJ += lib_fsqlf/kw/kw.o
+LCOBJ += lib_fsqlf/kw/kwall_init.o
+LCOBJ += lib_fsqlf/lex/token.o
+LCOBJ += lib_fsqlf/lib_fsqlf.o
+LCOBJ += utils/queue/queue.o
+LCOBJ += utils/stack/stack.o
+LCOBJ += utils/string/read_int.o
+
+$(LCOBJ): %.o: %.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
+
+$(LIBNAME): $(LCOBJ)
+	$(CC) $(CFLAGS) $(LIBFLAGS) $^   -o $@
+
+lib_fsqlf/conf_file/conf_file_create.o: lib_fsqlf/conf_file/conf_file_constants.h
+lib_fsqlf/conf_file/conf_file_read.o: lib_fsqlf/conf_file/conf_file_constants.h utils/string/read_int.h
+
+
+
+#
 # BUILD CLI
 #
-COBJ += core/main.o
-COBJ += core/cli.o
-COBJ += core/conf_file/conf_file_create.o
-COBJ += core/conf_file/conf_file_read.o
-COBJ += core/debuging.o
-COBJ += core/formatter/globals.o
-COBJ += core/formatter/lex.yy.o
-COBJ += core/formatter/print_keywords.o
-COBJ += core/formatter/tokque.o
-COBJ += core/lex/token.o
-COBJ += core/kw/kw.o
-COBJ += core/kw/kwall_init.o
-COBJ += utils/stack/stack.o
-COBJ += utils/queue/queue.o
-COBJ += utils/string/read_int.o
+COBJ += cli/main.o
+COBJ += cli/cli.o
 
 $(COBJ): %.o: %.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-core/conf_file/conf_file_create.o: core/conf_file/conf_file_constants.h
-core/conf_file/conf_file_read.o: core/conf_file/conf_file_constants.h utils/string/read_int.h
-core/main.o: core/formatter/lex.yy.h
+cli/main.o: lib_fsqlf/formatter/lex.yy.h
 
-$(EXEC_CLI): $(COBJ)
-	$(CC) $(CFLAGS)  $^   -o $@
+$(EXEC_CLI): $(COBJ) $(LIBNAME)
+	$(CC) $(CFLAGS)  $(COBJ)  -L. -lfsqlf  -Wl,-rpath,.  -o $@
 	# strip $@
 
-core/formatter/lex.yy.h: core/formatter/lex.yy.c
-core/formatter/lex.yy.c: core/formatter/fsqlf.lex core/formatter/globals.h core/formatter/print_keywords.h
+lib_fsqlf/formatter/lex.yy.h: lib_fsqlf/formatter/lex.yy.c
+lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/globals.h lib_fsqlf/formatter/print_keywords.h
 	# flex options (e.g. `-o`) has to be before input file
-	flex  -o $@ --header-file=core/formatter/lex.yy.h $<
+	flex  -o $@ --header-file=lib_fsqlf/formatter/lex.yy.h $<
+
 
 
 #
@@ -139,16 +170,17 @@ TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMA
 clean: clean_local  clean_win  clean_obj  clean_test
 
 clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  core/formatter/lex.yy.c  $(TMP_BAKUPS) \
-		core/formatter/lex.yy.h \
-		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE) \
+	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  lib_fsqlf/formatter/lex.yy.c  $(TMP_BAKUPS) \
+		lib_fsqlf/formatter/lex.yy.h \
+		$(LIBNAME) libfsqlf.a \
+		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE)
 	make clean_obj
 
 clean_win:
 	make clean_local WIN=1
 
 clean_obj:
-	rm -f *.o core/*.o core/*/*.o utils/*/*.o
+	rm -f *.o lib_fsqlf/*.o lib_fsqlf/*/*.o utils/*/*.o cli/*.o
 
 clean_test:
 	rm -f $(TF_ACTUAL_RESULTS)
@@ -158,7 +190,7 @@ clean_test:
 #
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
-formatting.conf: core/kw/kw_defaults.def core/conf_file/conf_file_create.h $(EXEC_CLI)
+formatting.conf: lib_fsqlf/kw/kw_defaults.def lib_fsqlf/conf_file/conf_file_create.h $(EXEC_CLI)
 	./$(EXEC_CLI) --create-config-file
 
 VERSION:=$(shell git describe master)
@@ -191,6 +223,8 @@ install: $(EXEC_CLI) $(EXEC_GUI) formatting.conf
 	install $(EXEC_CLI) $(EXEC_GUI) $(PREFIX)/bin
 	install -d $(PREFIX)/share/fsqlf
 	install -m 644 formatting.conf $(PREFIX)/share/fsqlf/formatting.conf.example
+	install -d $(PREFIX)/lib
+	install $(LIBNAME) $(PREFIX)/lib
 
 uninstall:
 ifdef EXEC_CLI
@@ -201,7 +235,7 @@ ifdef EXEC_GUI
 endif
 	rm -vf $(PREFIX)/share/fsqlf/formatting.conf.example
 	rm -vfd $(PREFIX)/share/fsqlf
-
+	rm -vf $(PREFIX)/lib/$(LIBNAME)
 endif
 
 

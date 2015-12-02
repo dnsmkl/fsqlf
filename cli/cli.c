@@ -1,13 +1,14 @@
 #include <ctype.h> // isdigit
 #include <stdlib.h> // exit
-#include "cli.h"
-#include "conf_file/conf_file_read.h"
-#include "conf_file/conf_file_create.h"
-#include "conf_file/conf_file_constants.h"
-#include "kw/kwall_init.h"  // set_case, set_text_original
-#include "formatter/lex.yy.h"
-#include "debuging.h"
+#include <stdio.h> // fprintf, stderr
+#include "../lib_fsqlf/conf_file/conf_file_read.h"
+#include "../lib_fsqlf/conf_file/conf_file_create.h"
+#include "../lib_fsqlf/conf_file/conf_file_constants.h"
+#include "../lib_fsqlf/kw/kwall_init.h"  // set_case, set_text_original
+#include "../lib_fsqlf/formatter/lex.yy.h"
+#include "../lib_fsqlf/debuging.h"
 #include "../utils/string/read_int.h"   // read_int
+#include "cli.h"
 
 
 
