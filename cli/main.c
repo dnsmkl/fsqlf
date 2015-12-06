@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     fout = stdout;
 
     init_all_settings(&kw);             // Init default configs.
-    read_default_conf_file(&kw);        // Read configs from file.
+    fsqlf_read_default_conf_file(&kw);        // Read configs from file.
 
     read_cli_options(argc, argv, &kw, &fin, &fout);  // Read configs from command line.
     fsqlf_set_file_in(fin);

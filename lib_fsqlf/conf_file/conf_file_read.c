@@ -34,7 +34,7 @@ static void setting_value(const char *setting_name, const int *setting_values)
 #define READ_SUCCESSFULL (0)
 #define READ_FAILED (1)
 // Read specified config file
-int read_conf_file(const char *file_pathname,
+int fsqlf_read_conf_file(const char *file_pathname,
                     struct kw_conf * (*kw)(const char *))
 {
     FILE *config_file = fopen(file_pathname, "r");
@@ -89,11 +89,11 @@ int read_conf_file(const char *file_pathname,
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
 // TODO: rename to read_default_conf_files
-int read_default_conf_file(struct kw_conf * (*kw)(const char *))
+int fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *))
 {
     // First try file in working directory
     if (file_exists(FSQLF_CONFFILE_NAME)) {
-        return read_conf_file(FSQLF_CONFFILE_NAME, kw);
+        return fsqlf_read_conf_file(FSQLF_CONFFILE_NAME, kw);
     }
 
     // In non-windows (unix/linux) also try folder in user-home directory
@@ -114,7 +114,7 @@ int read_default_conf_file(struct kw_conf * (*kw)(const char *))
         strncat(full_path, conf_file, full_len - strlen(full_path));
 
         // Read the file
-        int ret_code = read_conf_file(full_path, kw);
+        int ret_code = fsqlf_read_conf_file(full_path, kw);
 
         // Cleanup
         free(full_path);

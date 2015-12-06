@@ -62,20 +62,20 @@ void init_all_settings(struct kw_conf * (*kw)(const char *));
 //  0 on success
 //  1 on failure to open
 //  2 on failure to close
-int create_conf_file(char *config_file_name);
+int fsqlf_create_conf_file(char *config_file_name);
 
 
 #define READ_SUCCESSFULL (0)
 #define READ_FAILED (1)
 // Read specified config file
-int read_conf_file(const char *file_pathname,
+int fsqlf_read_conf_file(const char *file_pathname,
                     struct kw_conf * (*kw)(const char *));
 
 
 // Read configuration file from default conf file
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
-int read_default_conf_file(struct kw_conf * (*kw)(const char *));
+int fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *));
 
 
 void fsqlf_set_file_in(FILE *in);

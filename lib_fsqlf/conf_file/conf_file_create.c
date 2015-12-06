@@ -8,7 +8,7 @@
 //  0 on success
 //  1 on failure to open
 //  2 on failure to close
-int create_conf_file(char *config_file_name)
+int fsqlf_create_conf_file(char *config_file_name)
 {
     FILE *config_file;
     config_file = fopen(config_file_name, "w");
