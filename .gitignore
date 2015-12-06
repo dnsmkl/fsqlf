@@ -9,10 +9,11 @@ wx_fsqlf.exe
 
 
 # Generated files
-core/formatter/lex.yy.c
-core/formatter/lex.yy.h
+lib_fsqlf/formatter/lex.yy.c
+lib_fsqlf/formatter/lex.yy.h
 gui/license_text.h
 *.o
+*.so
 formatting.conf
 
 
