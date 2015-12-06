@@ -1,8 +1,6 @@
-#include "../lib_fsqlf/conf_file/conf_file_read.h"   // read_default_conf_file
-#include "../lib_fsqlf/kw/kwall_init.h"  // init_all_settings
-#include "../lib_fsqlf/kw/kw.h"  // kw()
-#include "../lib_fsqlf/lib_fsqlf.h"    // fsqlf_set_file_in fsqlf_set_file_out
+#include <lib_fsqlf.h>
 #include "cli.h"    // read_cli_options
+#include "../lib_fsqlf/formatter/lex.yy.h"    // yylex
 
 
 int main(int argc, char **argv)

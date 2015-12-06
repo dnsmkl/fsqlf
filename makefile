@@ -4,6 +4,7 @@ CFLAGS+=-std=c99
 CFLAGS+=-Wall
 CFLAGS+=-pedantic-errors
 CFLAGS+=-g
+CFLAGS+=-Iinclude
 
 CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 
@@ -32,6 +33,8 @@ else
 		CFLAGS+=-m64
 	endif
 endif
+
+
 
 ifeq (Darwin, ${_system_type})
 	LIBNAME=libfsqlf.dylib

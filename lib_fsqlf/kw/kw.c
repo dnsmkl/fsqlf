@@ -1,6 +1,6 @@
 #include <stdlib.h>  // malloc
 #include <assert.h>  // assert
-#include "kw.h" // struct kw_conf
+#include <lib_fsqlf.h> // struct kw_conf
 
 
 // Global map variable. should not be accessed directly.

@@ -2,7 +2,7 @@
 #define print_keywords_h
 
 
-#include "../kw/kw.h" // struct kw_conf, kw
+#include <lib_fsqlf.h> // struct kw_conf, kw
 
 
 void kw_print(FILE *yyout, size_t indent, const char *yytext,

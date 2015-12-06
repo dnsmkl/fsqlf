@@ -2,7 +2,7 @@
 #define tokque_h
 
 
-#include "../kw/kw.h" // struct kw_conf, kw
+#include <lib_fsqlf.h> // struct kw_conf, kw
 
 
 struct state_change

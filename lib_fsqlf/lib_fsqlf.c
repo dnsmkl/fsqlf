@@ -1,4 +1,5 @@
-#include "lib_fsqlf.h"
+#include <lib_fsqlf.h>
+#include "formatter/lex.yy.h"
 
 
 void fsqlf_set_file_in(FILE *in)

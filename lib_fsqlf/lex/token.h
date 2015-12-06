@@ -2,7 +2,7 @@
 #define token_h
 
 
-#include "../kw/kw.h"  // kw_conf
+#include <lib_fsqlf.h>  // kw_conf
 
 
 // Currently token.h is not used, but there is a plan for it.

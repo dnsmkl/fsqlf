@@ -3,7 +3,7 @@
 
 
 #include <stdio.h> // fprintf, FILE
-#include "../lib_fsqlf/kw/kw.h"
+#include <lib_fsqlf.h>
 
 
 void read_cli_options(int argc, char **argv,

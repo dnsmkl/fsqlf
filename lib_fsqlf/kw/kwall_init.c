@@ -1,4 +1,4 @@
-#include "kwall_init.h"
+#include <lib_fsqlf.h>
 
 
 void set_case(unsigned short int keyword_case)
