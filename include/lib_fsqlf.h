@@ -22,6 +22,22 @@ enum fsqlf_kwcase
 };
 
 
+// Keyword text variation to be used.
+// (e.g. "left outer join" vs "left join")
+enum fsqlf_kwtext
+{
+    // Use whatever was in the input.
+    FSQLF_KWTEXT_USE_ORIGINAL = 0,
+
+    // Convert some keywords to fsqlf defaults.
+    // Defaults are hard-coded in "kw_defaults.def".
+    // Current defaults prefer:
+    // - full words (e.g. convert "sel" to "select")
+    // - lower word count (e.g. convert "left outer join" to "left join")
+    FSQLF_KWTEXT_USE_HARDCODED_DEFAULT = 1,
+};
+
+
 struct spacing
 {
     int global_indent_change;
@@ -37,7 +53,7 @@ struct kw_conf
     struct spacing before;
     struct spacing after;
 
-    unsigned short int print_original_text;
+    enum fsqlf_kwtext print_original_text;
     enum fsqlf_kwcase print_case;
     unsigned short int is_word; // two adjacent words MUST be separated by some spacing
     char *text;
@@ -58,7 +74,10 @@ void kw_delete_all();
 
 
 void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case);
-void set_text_original(unsigned short int ind_original);
+
+// Set used variation of keyword text. (e.g. "left outer join" vs "left join")
+void fsqlf_set_all_kwvariant(enum fsqlf_kwtext kw_text_to_use);
+
 void init_all_settings(struct kw_conf * (*kw)(const char *));
 
 

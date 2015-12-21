@@ -179,7 +179,17 @@ void kw_print(FILE *yyout, size_t indent, const char *yytext,
 
     // Print text:
     // .. first decide what text to use (original or default)
-    const char *text_nocase = s.print_original_text ? yytext : s.text;
+    const char *text_nocase;
+    switch (s.print_original_text) {
+        case FSQLF_KWTEXT_USE_ORIGINAL:
+            text_nocase = yytext;
+            break;
+        case FSQLF_KWTEXT_USE_HARDCODED_DEFAULT:
+            text_nocase = s.text;
+            break;
+        default:
+            assert(0);
+    }
     // .. then handle its case
     const char *text = stocase(text_nocase, s.print_case);
     // .. then print the text.

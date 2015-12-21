@@ -128,9 +128,9 @@ void read_cli_options(int argc, char **argv,
         } else if (ARGV_MATCH(i, "--keyword-text")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "original") == 0) {
-                set_text_original(1);
+                fsqlf_set_all_kwvariant(FSQLF_KWTEXT_USE_ORIGINAL);
             } else if (strcmp(argv[i], "default") == 0) {
-                set_text_original(0);
+                fsqlf_set_all_kwvariant(FSQLF_KWTEXT_USE_HARDCODED_DEFAULT);
             }
         } else if (ARGV_MATCH(i, "--select-newline-after")) {
             kw("kw_select")->after.new_line = get_int_arg(++i, argc, argv);

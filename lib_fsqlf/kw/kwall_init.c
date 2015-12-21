@@ -10,10 +10,11 @@ void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case)
 }
 
 
-void set_text_original(unsigned short int ind_original)
+// Set used variation of keyword text. (e.g. "left outer join" vs "left join")
+void fsqlf_set_all_kwvariant(enum fsqlf_kwtext kw_text_to_use)
 {
     #define XMACRO( NAME , ... )           \
-        kw(#NAME)->print_original_text = ind_original;
+        kw(#NAME)->print_original_text = kw_text_to_use;
     #include "kw_defaults.def"
     #undef XMACRO
 }
@@ -32,7 +33,7 @@ void init_all_settings(struct kw_conf * (*kw)(const char *))
         kw(#NAME)->after.new_line     = nla;          \
         kw(#NAME)->after.indent       = ta;           \
         kw(#NAME)->after.space        = sa;           \
-        kw(#NAME)->print_original_text = 0;           \
+        kw(#NAME)->print_original_text = FSQLF_KWTEXT_USE_HARDCODED_DEFAULT; \
         kw(#NAME)->print_case         = FSQLF_KWCASE_UPPER; \
         kw(#NAME)->text               = TEXT;         \
         kw(#NAME)->is_word            = 1;            \
