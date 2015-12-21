@@ -1,7 +1,7 @@
 #include <lib_fsqlf.h>
 
 
-void set_case(unsigned short int keyword_case)
+void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case)
 {
     #define XMACRO( NAME , ... )   \
         kw(#NAME)->print_case = keyword_case;
@@ -33,7 +33,7 @@ void init_all_settings(struct kw_conf * (*kw)(const char *))
         kw(#NAME)->after.indent       = ta;           \
         kw(#NAME)->after.space        = sa;           \
         kw(#NAME)->print_original_text = 0;           \
-        kw(#NAME)->print_case         = CASE_UPPER;   \
+        kw(#NAME)->print_case         = FSQLF_KWCASE_UPPER; \
         kw(#NAME)->text               = TEXT;         \
         kw(#NAME)->is_word            = 1;            \
         kw(#NAME)->funct_before[0] = NULL;   \

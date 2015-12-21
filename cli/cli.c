@@ -117,13 +117,13 @@ void read_cli_options(int argc, char **argv,
         } else if (ARGV_MATCH(i, "--keyword-case")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "none") == 0) {
-                set_case(CASE_none);
+                fsqlf_set_all_kwcase(FSQLF_KWCASE_ORIGINAL);
             } else if (strcmp(argv[i], "upper") == 0) {
-                set_case(CASE_UPPER);
+                fsqlf_set_all_kwcase(FSQLF_KWCASE_UPPER);
             } else if (strcmp(argv[i], "lower") == 0) {
-                set_case(CASE_lower);
+                fsqlf_set_all_kwcase(FSQLF_KWCASE_LOWER);
             } else if (strcmp(argv[i], "initcap") == 0) {
-                set_case(CASE_Initcap);
+                fsqlf_set_all_kwcase(FSQLF_KWCASE_INITCAP);
             }
         } else if (ARGV_MATCH(i, "--keyword-text")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);

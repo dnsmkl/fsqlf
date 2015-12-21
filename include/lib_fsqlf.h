@@ -6,6 +6,22 @@
 #include "../utils/map/uthash.h" // UT_hash_handle, HASH_ADD_KEYPTR, HASH_FIND_STR
 
 
+enum fsqlf_kwcase
+{
+    // Use whatever was in the input.
+    FSQLF_KWCASE_ORIGINAL = 0,
+
+    // Example: "select".
+    FSQLF_KWCASE_LOWER = 1,
+
+    // Example: "SELECT".
+    FSQLF_KWCASE_UPPER = 2,
+
+    // Example: "Select".
+    FSQLF_KWCASE_INITCAP = 3
+};
+
+
 struct spacing
 {
     int global_indent_change;
@@ -22,7 +38,7 @@ struct kw_conf
     struct spacing after;
 
     unsigned short int print_original_text;
-    unsigned short int print_case;
+    enum fsqlf_kwcase print_case;
     unsigned short int is_word; // two adjacent words MUST be separated by some spacing
     char *text;
 
@@ -30,15 +46,6 @@ struct kw_conf
 
     const char *name;
     UT_hash_handle hh;  // makes this structure hashable
-};
-
-
-enum
-{
-    CASE_none,
-    CASE_lower,
-    CASE_UPPER,
-    CASE_Initcap
 };
 
 
@@ -50,7 +57,7 @@ struct kw_conf *kw(const char *name);
 void kw_delete_all();
 
 
-void set_case(unsigned short int keyword_case);
+void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case);
 void set_text_original(unsigned short int ind_original);
 void init_all_settings(struct kw_conf * (*kw)(const char *));
 

@@ -83,30 +83,30 @@ static struct spacing calculate_spacing(
 
 
 #define MAX_KEYWORD_SIZE (200)
-const char *stocase(const char* s_text, unsigned short int s_case)
+const char *stocase(const char* s_text, enum fsqlf_kwcase s_case)
 {
     assert(strlen(s_text) < MAX_KEYWORD_SIZE);
     static char formatted_result[MAX_KEYWORD_SIZE];
     int i;
 
     switch (s_case) {
-        case CASE_lower:
+        case FSQLF_KWCASE_LOWER:
             for (i = 0; i<strlen(s_text); i++) {
                 formatted_result[i] = tolower(s_text[i]);
             }
             break;
-        case CASE_UPPER:
+        case FSQLF_KWCASE_UPPER:
             for (i = 0; i<strlen(s_text); i++) {
                 formatted_result[i] = toupper(s_text[i]);
             }
             break;
-        case CASE_Initcap:
+        case FSQLF_KWCASE_INITCAP:
             formatted_result[0] = toupper(s_text[0]);
             for (i = 1; i<strlen(s_text); i++) {
                 formatted_result[i] = tolower(s_text[i]);
             }
             break;
-        case CASE_none:
+        case FSQLF_KWCASE_ORIGINAL:
             return s_text;
     }
     formatted_result[strlen(s_text)] = '\0';
