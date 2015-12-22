@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     fsqlf_set_file_in(fin);
     fsqlf_set_file_out(fout);
 
-    while (yylex() != 0) ;
+    yylex(); // run 'lexer' which handles the formatting.
 
     kw_delete_all();
 
