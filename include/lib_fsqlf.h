@@ -65,11 +65,11 @@ struct kw_conf
 };
 
 
-// Create new struct kw_cont and add it to global map.
+// Create new struct kw_conf and add it to global map.
 struct kw_conf *kw_add(const char *name);
-// Retrieve struct kw_cont from global map.
+// Retrieve struct kw_conf from global map.
 struct kw_conf *kw(const char *name);
-// Remove all kw_cont from global map and free the memory.
+// Remove all kw_conf from global map and free the memory.
 void kw_delete_all();
 
 
