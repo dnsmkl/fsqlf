@@ -20,7 +20,8 @@ void fsqlf_set_all_kwvariant(enum fsqlf_kwtext kw_text_to_use)
 }
 
 
-void init_all_settings(struct kw_conf * (*kw)(const char *))
+// Init all keyword settings to defaults.
+void fsqlf_init_all_kw(struct kw_conf * (*kw)(const char *))
 {
     #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, TEXT)    \
     do {                                              \

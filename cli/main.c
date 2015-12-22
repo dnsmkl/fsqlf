@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     fin = stdin;
     fout = stdout;
 
-    init_all_settings(&kw);             // Init default configs.
+    fsqlf_init_all_kw(&kw);             // Init default configs.
     fsqlf_read_default_conf_file(&kw);        // Read configs from file.
 
     read_cli_options(argc, argv, &kw, &fin, &fout);  // Read configs from command line.

@@ -78,7 +78,8 @@ void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case);
 // Set used variation of keyword text. (e.g. "left outer join" vs "left join")
 void fsqlf_set_all_kwvariant(enum fsqlf_kwtext kw_text_to_use);
 
-void init_all_settings(struct kw_conf * (*kw)(const char *));
+// Init all keyword settings to defaults.
+void fsqlf_init_all_kw(struct kw_conf * (*kw)(const char *));
 
 
 
