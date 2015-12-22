@@ -4,18 +4,14 @@
 
 
 // Create formatting configuration file with default content.
-// Return values:
-//  0 on success
-//  1 on failure to open
-//  2 on failure to close
-int fsqlf_create_conf_file(char *config_file_name)
+enum fsqlf_status fsqlf_create_conf_file(char *config_file_name)
 {
     FILE *config_file;
     config_file = fopen(config_file_name, "w");
 
     if (!config_file) {
         fprintf(stderr, "Failed to create '%s' file!\n", config_file_name);
-        return 1;
+        return FSQLF_FAIL;
     }
 
     fputs("# This file contains formatting (spacing) settings,\n", config_file);
@@ -73,9 +69,9 @@ int fsqlf_create_conf_file(char *config_file_name)
     fputs("\n\n", config_file);
 
     if (fclose(config_file) == 0) {
-        return 0;
+        return FSQLF_OK;
     } else {
         fprintf(stderr, "Failed to close '%s' file!\n", config_file_name);
-        return 2;
+        return FSQLF_FAIL;
     }
 }

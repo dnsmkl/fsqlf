@@ -6,6 +6,16 @@
 #include "../utils/map/uthash.h" // UT_hash_handle, HASH_ADD_KEYPTR, HASH_FIND_STR
 
 
+// Return value (in case function returns status code).
+// At the moment only OK and FAIL,
+// but later might add some more granular codes.
+enum fsqlf_status
+{
+    FSQLF_OK = 0,
+    FSQLF_FAIL = 1
+};
+
+
 enum fsqlf_kwcase
 {
     // Use whatever was in the input.
@@ -85,24 +95,18 @@ void fsqlf_init_all_kw(struct kw_conf * (*kw)(const char *));
 
 
 // Create formatting configuration file with default content.
-// Return values:
-//  0 on success
-//  1 on failure to open
-//  2 on failure to close
-int fsqlf_create_conf_file(char *config_file_name);
+enum fsqlf_status fsqlf_create_conf_file(char *config_file_name);
 
 
-#define READ_SUCCESSFULL (0)
-#define READ_FAILED (1)
-// Read specified config file
-int fsqlf_read_conf_file(const char *file_pathname,
+// Read specified config file.
+enum fsqlf_status fsqlf_read_conf_file(const char *file_pathname,
                     struct kw_conf * (*kw)(const char *));
 
 
-// Read configuration file from default conf file
-// This would be "formatting.conf" in working idrectory
-// If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
-int fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *));
+// Read configuration file from default conf file.
+// This would be "formatting.conf" in working directory.
+// If that does not exists, then on non-windows try "~/fslqf/formatting.conf".
+enum fsqlf_status fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *));
 
 
 void fsqlf_set_file_in(FILE *in);

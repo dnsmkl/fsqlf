@@ -31,15 +31,13 @@ static void setting_value(const char *setting_name, const int *setting_values)
 }
 
 
-#define READ_SUCCESSFULL (0)
-#define READ_FAILED (1)
-// Read specified config file
-int fsqlf_read_conf_file(const char *file_pathname,
+// Read specified config file.
+enum fsqlf_status fsqlf_read_conf_file(const char *file_pathname,
                     struct kw_conf * (*kw)(const char *))
 {
     FILE *config_file = fopen(file_pathname, "r");
     if (!config_file) {
-        return READ_FAILED;
+        return FSQLF_FAIL;
     }
 
     char line[FSQLF_CONFFILE_LINELENGTH+1];
@@ -80,7 +78,7 @@ int fsqlf_read_conf_file(const char *file_pathname,
     }
 
     fclose(config_file);
-    return READ_SUCCESSFULL;
+    return FSQLF_OK;
 }
 
 
@@ -88,8 +86,7 @@ int fsqlf_read_conf_file(const char *file_pathname,
 // Read configuration file from default conf file
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
-// TODO: rename to read_default_conf_files
-int fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *))
+enum fsqlf_status fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *))
 {
     // First try file in working directory
     if (file_exists(FSQLF_CONFFILE_NAME)) {
@@ -100,7 +97,7 @@ int fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *))
     #ifndef _WIN32
         // Get all the ingredients
         const char *home_dir = getenv("HOME");
-        if (home_dir == NULL) return READ_FAILED; // TODO: Log it.
+        if (home_dir == NULL) return FSQLF_FAIL; // TODO: Log it.
         const char *fsqlf_sub = "/.fsqlf/";
         const char *conf_file = FSQLF_CONFFILE_NAME;
 
@@ -108,7 +105,7 @@ int fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *))
         size_t full_len = strlen(home_dir) + strlen(fsqlf_sub)
                         + strlen(conf_file) + 1;
         char * full_path = malloc(full_len);
-        if (full_path == NULL) return READ_FAILED; // TODO: Log it.
+        if (full_path == NULL) return FSQLF_FAIL; // TODO: Log it.
         strncpy(full_path, home_dir, full_len);
         strncat(full_path, fsqlf_sub, full_len - strlen(full_path));
         strncat(full_path, conf_file, full_len - strlen(full_path));
