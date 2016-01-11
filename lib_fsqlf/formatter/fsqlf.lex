@@ -13,27 +13,43 @@ Helped to learn about flex a bit
 
 
 %{
+
 #define BEGIN_STATE(NEWSTATE) BEGIN (NEWSTATE);
-#define PUSH_STATE(NEWSTATE)  stack_push(&state_stack, &(int){YY_START}); BEGIN_STATE(NEWSTATE);
-#define POP_STATE(); BEGIN_STATE(*(int*)stack_peek(&state_stack)); stack_pop(&state_stack);
+
+#define PUSH_STATE(NEWSTATE) \
+do { \
+    stack_push(&state_stack, &(int){YY_START}); \
+    BEGIN_STATE(NEWSTATE); \
+} while (0)
+
+#define POP_STATE() \
+do { \
+    BEGIN_STATE(*(int*)stack_peek(&state_stack)); \
+    stack_pop(&state_stack); \
+} while (0)
+
+// Use KW with ability to change state.
 #define TUSE_W_STATES(TKW) \
 do { \
-    struct state_change sc = tokque_putthrough(yyout, yytext, yyleng, TKW, YY_START); \
+    struct state_change sc = tokque_putthrough( \
+        yyout, yytext, yyleng, TKW, YY_START \
+    ); \
     if (sc.state_change_action == SCA_BEGIN) { \
         BEGIN (sc.new_state); \
     } \
 } while (0)
 
+// Use KW without ability to change state.
 #define TUSE_SIMPLE(TKW) \
 do { \
     tokque_putthrough(yyout, yytext, yyleng, TKW, YY_START); \
 } while (0)
 
-
 // YY_USER_INIT is lex macro executed before initialising parser
 #define YY_USER_INIT \
     stack_init(&state_stack, sizeof(int)); \
     stack_init(&sub_openings, sizeof(pair));
+
 %}
 
 
@@ -123,8 +139,9 @@ ELSE (?i:else)
 END (?i:end)
 
 
-%option noyywrap nounput noinput
-
+%option noyywrap
+%option nounput
+%option noinput
 /* always-interactive - removes usage of fileno, isatty (not C99 compliant).
  * See details at:
  *     http://flex.sourceforge.net/manual/Why-do-flex-scanners-call-fileno-if-it-is-not-ANSI-compatible_003f.html
@@ -156,7 +173,7 @@ END (?i:end)
 {EXCEPT}     { TUSE_W_STATES(kw("kw_except")); }
 
                 /* SELECT ... FROM */
-<INITIAL,stINSERT>{SELECT}           {BEGIN_STATE(stSELECT); TUSE_SIMPLE(kw("kw_select")); };
+<INITIAL,stINSERT>{SELECT}  {BEGIN_STATE(stSELECT); TUSE_SIMPLE(kw("kw_select")); };
 <stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  TUSE_SIMPLE(kw("kw_comma"));  };
 
 {IN}    { TUSE_W_STATES(kw("kw_in")); }
@@ -216,9 +233,9 @@ END (?i:end)
 <stTAB_COL_LIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_create") ); }
 <stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_create") ); };
 
-<stP_SUB>{LEFTP}                      { BEGIN_STATE(*(int*)stack_peek(&state_stack)); TUSE_SIMPLE(kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
-{LEFTP}                               { PUSH_STATE(stP_SUB); };
-<stP_SUB>{SELECT}                     { BEGIN_STATE(stSELECT); tokque_putthrough(yyout,"(",1,kw("kw_left_p_sub"),YY_START); begin_SUB(); TUSE_SIMPLE(kw("kw_select"));};
+<stP_SUB>{LEFTP}   { BEGIN_STATE(*(int*)stack_peek(&state_stack)); TUSE_SIMPLE(kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
+{LEFTP}            { PUSH_STATE(stP_SUB); };
+<stP_SUB>{SELECT}  { BEGIN_STATE(stSELECT); tokque_putthrough(yyout,"(",1,kw("kw_left_p_sub"),YY_START); begin_SUB(); TUSE_SIMPLE(kw("kw_select"));};
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
     if (*(int*)stack_peek(&state_stack) == stFROM
         || *(int*)stack_peek(&state_stack) == stJOIN)
