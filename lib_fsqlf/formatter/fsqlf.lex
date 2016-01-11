@@ -9,18 +9,11 @@ Helped to learn about flex a bit
 #include <stdio.h>      // fprintf, stdin, stdout
 #include "globals.h"    // pair_stack, sub_openings, currindent, left_p, right_p
 #include "tokque.h"     // tokque_putthrough
-void debug_stchange(int);
-void debug_match(char*);
 }
 
 
 %{
-char * state_to_char(int);
-//#define YY_USER_ACTION fprintf(yyout,"\n %10s - rule (%d) - line(%d) " ,state_to_char(YY_START),yy_act, __LINE__);
-#define DMATCH(name) fprintf(yyout,"%20s is rule (%d) : ", name , yy_act);
-
-
-#define BEGIN_STATE(NEWSTATE) debug_stchange(NEWSTATE); BEGIN (NEWSTATE);
+#define BEGIN_STATE(NEWSTATE) BEGIN (NEWSTATE);
 #define PUSH_STATE(NEWSTATE)  stack_push(&state_stack, &(int){YY_START}); BEGIN_STATE(NEWSTATE);
 #define POP_STATE(); BEGIN_STATE(*(int*)stack_peek(&state_stack)); stack_pop(&state_stack);
 #define TUSE_W_STATES(TKW) \
@@ -176,14 +169,14 @@ END (?i:end)
 {COMP_LT}    { TUSE_SIMPLE(kw("kw_comp_lt")); };
 {COMP_GT}    { TUSE_SIMPLE(kw("kw_comp_gt")); };
 
-<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP );  TUSE_SIMPLE(kw("kw_left_p")); };
-<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); debug_match("{LEFTP}");TUSE_SIMPLE(kw("kw_left_p"));  };
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p")); };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p"));  };
 <stLEFTP>{COMMA}            {TUSE_SIMPLE( NULL); };
 <stLEFTP>{ORDERBY}          {TUSE_SIMPLE( NULL); };
-<stLEFTP>{FROM}             {debug_match("{FROM}" ); TUSE_SIMPLE(kw("kw_from_2"));  };
+<stLEFTP>{FROM}             {TUSE_SIMPLE(kw("kw_from_2"));  };
 <stLEFTP>{RIGHTP}           {POP_STATE();            TUSE_SIMPLE(kw("kw_right_p")); };
 <stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  TUSE_SIMPLE(kw("kw_from"));    };
-<stLEFTP,stSELECT>{AS}      {debug_match("{AS}"  );  TUSE_SIMPLE(kw("kw_as"));      };
+<stLEFTP,stSELECT>{AS}      {TUSE_SIMPLE(kw("kw_as"));      };
 
 
                 /* FROM ... JOIN ... ON ... WHERE */
@@ -200,8 +193,8 @@ END (?i:end)
 
                 /* WHERE ... (also join conditions) */
 <stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  TUSE_SIMPLE(kw("kw_where")); };
-<stWHERE,stON,stJOIN>{AND}  { debug_match("{AND}");  TUSE_SIMPLE(kw("kw_and"));   };
-<stWHERE,stON,stJOIN>{OR}   { debug_match("{OR}");   TUSE_SIMPLE(kw("kw_or"));    };
+<stWHERE,stON,stJOIN>{AND}  { TUSE_SIMPLE(kw("kw_and"));   };
+<stWHERE,stON,stJOIN>{OR}   { TUSE_SIMPLE(kw("kw_or"));    };
 {NOT}    { TUSE_SIMPLE(kw("kw_not")); };
 
 <stWHERE>{EXISTS}   {TUSE_SIMPLE(kw("kw_exists")); };
@@ -247,7 +240,6 @@ END (?i:end)
                     end_SUB();
                     TUSE_SIMPLE(kw("kw_right_p_sub"));
                 } else {
-                    debug_match("<wtf-leftp>");
                     TUSE_SIMPLE(kw("kw_right_p"));
                 }
 
@@ -263,8 +255,8 @@ END (?i:end)
 
 
 {COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL);};
-<stCOMMENTML>{COMMENT_ML_PART1}     {debug_match("COMMENT_ML_PART1") ; TUSE_SIMPLE( NULL);};
-<stCOMMENTML>{COMMENT_ML_PART2}     {debug_match("COMMENT_ML_PART2") ; TUSE_SIMPLE( NULL);};
+<stCOMMENTML>{COMMENT_ML_PART1}     { TUSE_SIMPLE( NULL);};
+<stCOMMENTML>{COMMENT_ML_PART2}     { TUSE_SIMPLE( NULL);};
 <stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); TUSE_SIMPLE( NULL);};
 
 {COMMENT_ONE_LINE}     {TUSE_SIMPLE( NULL);};

@@ -2,7 +2,6 @@
 #include <stdlib.h> // exit
 #include <stdio.h> // fprintf, stderr
 #include "../lib_fsqlf/formatter/lex.yy.h"
-#include "../lib_fsqlf/debuging.h"
 #include "../lib_fsqlf/conf_file/conf_file_constants.h"
 #include "../utils/string/read_int.h"   // read_int
 #include "cli.h"
@@ -45,7 +44,6 @@ static void usage_info(int argc, char **argv)
     PRINT_OPTION_INFO( "--newline-major-sections <digit>"           , "Put <digit> new lines before major sections (FROM, JOIN, WHERE)");
     PRINT_OPTION_INFO( "--keyword-case (upper|lower|initcap|none)"  , "Convert all keywords to UPPER, lower, or Initcap case, or not to convert case at all");
     PRINT_OPTION_INFO( "--keyword-text (original|default)"          , "Use original or programs default text for the keyword, when there are several alternatives");
-    PRINT_OPTION_INFO( "--debug (none|state|match|parenthesis)"     , "Print info for debuging.  To have different kinds of debug output, use more than once");
     PRINT_OPTION_INFO( "--help, -h"                                 , "Show this help.");
 }
 
@@ -151,13 +149,6 @@ void read_cli_options(int argc, char **argv,
             kw("kw_right_join")->before.new_line = new_line_count;
             kw("kw_full_join")->before.new_line  = new_line_count;
             kw("kw_cross_join")->before.new_line = new_line_count;
-        } else if (ARGV_MATCH(i, "--debug")) {
-            if (++i >= argc ) FAIL_WITH_ERROR(1, "Missing or invalid value for option : %s", argv[i-1]);
-            if (ARGV_MATCH(i, "none")) debug_level |= DEBUGNONE;
-            else if (ARGV_MATCH(i, "state")) debug_level |= DEBUGSTATES;
-            else if (ARGV_MATCH(i, "match")) debug_level |= DEBUGMATCHES;
-            else if (ARGV_MATCH(i, "parenthesis")) debug_level |= DEBUGPARCOUNTS;
-            else FAIL_WITH_ERROR(1, "Missing or invalid value for option : %s", argv[i-1]);
         } else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
             usage_info(argc, argv);
             exit(0);
