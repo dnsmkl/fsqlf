@@ -68,8 +68,6 @@ struct kw_conf
     unsigned short int is_word; // two adjacent words MUST be separated by some spacing
     char *text;
 
-    void (*funct_before[KW_FUNCT_ARRAY_SIZE])();
-
     const char *name;
     UT_hash_handle hh;  // makes this structure hashable
 };

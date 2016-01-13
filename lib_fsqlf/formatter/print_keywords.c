@@ -168,12 +168,6 @@ static void print_spacing(
 void kw_print(FILE *yyout, size_t indent, const char *yytext,
                         struct kw_conf s)
 {
-    int i = 0;
-    // Call keyword specific functions, before printing.
-    for (i = 0; i < KW_FUNCT_ARRAY_SIZE && s.funct_before[i] != NULL ; i++) {
-        s.funct_before[i]();
-    }
-
     // Print spacing.
     print_spacing(yyout, s, indent); // print spacing before keyword
 

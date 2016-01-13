@@ -38,9 +38,6 @@ void fsqlf_init_all_kw(struct kw_conf * (*kw)(const char *))
         kw(#NAME)->print_case         = FSQLF_KWCASE_UPPER; \
         kw(#NAME)->text               = TEXT;         \
         kw(#NAME)->is_word            = 1;            \
-        kw(#NAME)->funct_before[0] = NULL;   \
-        kw(#NAME)->funct_before[1] = NULL;   \
-        kw(#NAME)->funct_before[2] = NULL;   \
     } while (0);
     #include "kw_defaults.def"
     #undef XMACRO
