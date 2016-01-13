@@ -44,14 +44,4 @@ void fsqlf_init_all_kw(struct kw_conf * (*kw)(const char *))
     } while (0);
     #include "kw_defaults.def"
     #undef XMACRO
-
-    #define XMACRO(NAME, fb1, fb2, fb3) \
-    do {                                    \
-        kw(#NAME)->funct_before[0] = fb1;   \
-        kw(#NAME)->funct_before[1] = fb2;   \
-        kw(#NAME)->funct_before[2] = fb3;   \
-    } while (0);
-    #include "kw_callbacks.def"
-    #undef XMACRO
-
 }

@@ -70,7 +70,6 @@ LCOBJ += lib_fsqlf/formatter/tokque.o
 LCOBJ += lib_fsqlf/kw/kw.o
 LCOBJ += lib_fsqlf/kw/kwall_init.o
 LCOBJ += lib_fsqlf/lex/token.o
-LCOBJ += lib_fsqlf/lib_fsqlf.o
 LCOBJ += utils/queue/queue.o
 LCOBJ += utils/stack/stack.o
 LCOBJ += utils/string/read_int.o

@@ -1,8 +1,0 @@
-#include "../formatter/globals.h" // inc_LEFTP, inc_RIGHTP, begin_SUB, end_SUB
-
-
-// Define keyword specific callbacks for encountering pranthesis
-
-
-XMACRO( kw_left_p , &inc_LEFTP , NULL, NULL)
-XMACRO( kw_right_p, &inc_RIGHTP, NULL, NULL)

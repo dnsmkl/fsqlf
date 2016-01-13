@@ -22,7 +22,7 @@ enum
 };
 
 
-struct state_change tokque_putthrough(FILE *yyout,
+struct state_change tokque_putthrough(FILE *yyout, int *currindent,
     char *text, size_t len, const struct kw_conf *s, int cur_state);
 void tokque_finish_out(FILE *yyout);
 

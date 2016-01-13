@@ -61,7 +61,7 @@ struct queue tokque; // GLOBAL
 ///
 // At the moment only 1st and 4th parts are done.
 // TODO: implement 2nd and 3rd
-struct state_change tokque_putthrough(FILE *yyout,
+struct state_change tokque_putthrough(FILE *yyout, int *currindent,
     char *text, size_t len, const struct kw_conf *s, int cur_state)
 {
     // Queue initialization.
@@ -74,9 +74,9 @@ struct state_change tokque_putthrough(FILE *yyout,
     // Place on queue.
     {
         struct token *tok1 = (struct token *) queue_alloc_back(&tokque);
-        if (s) currindent += s->before.global_indent_change;
-        set_token(tok1, 0, text, len, s, currindent);
-        if (s) currindent += s->after.global_indent_change;
+        if (s) (*currindent) += s->before.global_indent_change;
+        set_token(tok1, 0, text, len, s, (*currindent));
+        if (s) (*currindent) += s->after.global_indent_change;
     }
 
     // Retrieve from queue and print.

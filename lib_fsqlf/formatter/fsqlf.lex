@@ -5,14 +5,45 @@ Helped to learn about flex a bit
 */
 
 %top{
-    /* This code goes at the "top" of the generated file. */
+// This code goes at the "top" of the generated file.
+// Also it gets into generated header file.
 #include <stdio.h>      // fprintf, stdin, stdout
 #include "globals.h"    // pair_stack, sub_openings, currindent, left_p, right_p
 #include "tokque.h"     // tokque_putthrough
+
+// Actual formatter
+extern int fsqlf_format_file();
+
+// Private formatter (flex lexer)
+// Passed various paramters only to avoid global varsiables.
+extern int FSQLF_flex(int currindent, int left_p, int right_p);
+#define YY_DECL int FSQLF_flex(int currindent, int left_p, int right_p)
+
+
 }
 
 
 %{
+// This does not get into generated header file.
+
+int fsqlf_format_file()
+{
+    return FSQLF_flex(0, 0, 0);
+}
+
+
+void fsqlf_set_file_in(FILE *in)
+{
+    yyin = in;
+}
+
+
+void fsqlf_set_file_out(FILE *out)
+{
+    yyout = out;
+}
+
+
 
 #define BEGIN_STATE(NEWSTATE) BEGIN (NEWSTATE);
 
@@ -32,7 +63,7 @@ do { \
 #define TUSE_W_STATES(TKW) \
 do { \
     struct state_change sc = tokque_putthrough( \
-        yyout, yytext, yyleng, TKW, YY_START \
+        yyout, &currindent, yytext, yyleng, TKW, YY_START \
     ); \
     if (sc.state_change_action == SCA_BEGIN) { \
         BEGIN (sc.new_state); \
@@ -42,13 +73,22 @@ do { \
 // Use KW without ability to change state.
 #define TUSE_SIMPLE(TKW) \
 do { \
-    tokque_putthrough(yyout, yytext, yyleng, TKW, YY_START); \
+    tokque_putthrough(yyout, &currindent,  yytext, yyleng, TKW, YY_START); \
 } while (0)
+
+#define FSQLF_BEGIN_SUB() \
+do { \
+    stack_push(&sub_openings, &(pair){left_p, right_p}); \
+    currindent++; \
+} while(0)
 
 // YY_USER_INIT is lex macro executed before initialising parser
 #define YY_USER_INIT \
     stack_init(&state_stack, sizeof(int)); \
-    stack_init(&sub_openings, sizeof(pair));
+    stack_init(&sub_openings, sizeof(pair)); \
+    currindent = 0; \
+    left_p = 0; \
+    right_p = 0;
 
 %}
 
@@ -186,12 +226,12 @@ END (?i:end)
 {COMP_LT}    { TUSE_SIMPLE(kw("kw_comp_lt")); };
 {COMP_GT}    { TUSE_SIMPLE(kw("kw_comp_gt")); };
 
-<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p")); };
-<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p"));  };
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p")); left_p++; };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p")); left_p++; };
 <stLEFTP>{COMMA}            {TUSE_SIMPLE( NULL); };
 <stLEFTP>{ORDERBY}          {TUSE_SIMPLE( NULL); };
 <stLEFTP>{FROM}             {TUSE_SIMPLE(kw("kw_from_2"));  };
-<stLEFTP>{RIGHTP}           {POP_STATE();            TUSE_SIMPLE(kw("kw_right_p")); };
+<stLEFTP>{RIGHTP}           {POP_STATE(); TUSE_SIMPLE(kw("kw_right_p")); right_p++; };
 <stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  TUSE_SIMPLE(kw("kw_from"));    };
 <stLEFTP,stSELECT>{AS}      {TUSE_SIMPLE(kw("kw_as"));      };
 
@@ -233,31 +273,60 @@ END (?i:end)
 <stTAB_COL_LIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_create") ); }
 <stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_create") ); };
 
-<stP_SUB>{LEFTP}   { BEGIN_STATE(*(int*)stack_peek(&state_stack)); TUSE_SIMPLE(kw("kw_left_p")    ); PUSH_STATE(stP_SUB);  };
+<stP_SUB>{LEFTP}   {
+    BEGIN_STATE(*(int*)stack_peek(&state_stack));
+    TUSE_SIMPLE(kw("kw_left_p"));
+    left_p++;
+    PUSH_STATE(stP_SUB);  };
 {LEFTP}            { PUSH_STATE(stP_SUB); };
-<stP_SUB>{SELECT}  { BEGIN_STATE(stSELECT); tokque_putthrough(yyout,"(",1,kw("kw_left_p_sub"),YY_START); begin_SUB(); TUSE_SIMPLE(kw("kw_select"));};
-<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
-    if (*(int*)stack_peek(&state_stack) == stFROM
-        || *(int*)stack_peek(&state_stack) == stJOIN)
-    { BEGIN_STATE(*(int*)stack_peek(&state_stack)); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START    ); TUSE_SIMPLE( NULL);}
-    else
-    { BEGIN_STATE(stIN_CONSTLIST); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START    ); TUSE_SIMPLE( NULL); }
+<stP_SUB>{SELECT}  {
+        BEGIN_STATE(stSELECT);
+        tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p_sub"), YY_START);
+        stack_push(&sub_openings, &(pair){left_p, right_p}); // begin sub
+        currindent++; // begin sub
+        TUSE_SIMPLE(kw("kw_select"));
     };
- /* <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} { BEGIN_STATE(stIN_CONSTLIST); tokque_putthrough(yyout,"(",1,kw("kw_left_p")    ); TUSE_SIMPLE( NULL);}; */
-<stP_SUB>{COMMENT_ML_START}           { tokque_putthrough(yyout,"",0, NULL, YY_START); PUSH_STATE(stCOMMENTML)  ; TUSE_SIMPLE( NULL);};
-<stP_SUB>{COMMENT_ONE_LINE}           { tokque_putthrough(yyout,"",0, NULL, YY_START); TUSE_SIMPLE( NULL);};
-<stP_SUB>{SPACE}                      { tokque_putthrough(yyout,"",0, NULL, YY_START); };
-<stP_SUB>{RIGHTP}                     { tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START); POP_STATE(); TUSE_SIMPLE(kw("kw_right_p")); }
-<stP_SUB>.                            { BEGIN_STATE(*(int*)stack_peek(&state_stack)); tokque_putthrough(yyout,"(",1,kw("kw_left_p"),YY_START); TUSE_SIMPLE( NULL); };
+<stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
+        if (*(int*)stack_peek(&state_stack) == stFROM
+                || *(int*)stack_peek(&state_stack) == stJOIN) {
+            BEGIN_STATE(*(int*)stack_peek(&state_stack));
+            tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+            left_p++;
+            TUSE_SIMPLE(NULL);
+        } else {
+            BEGIN_STATE(stIN_CONSTLIST);
+            tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+            left_p++;
+            TUSE_SIMPLE(NULL);
+        }
+    };
+<stP_SUB>{COMMENT_ML_START}           { tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML)  ; TUSE_SIMPLE( NULL);};
+<stP_SUB>{COMMENT_ONE_LINE}           { tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE( NULL);};
+<stP_SUB>{SPACE}                      { tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); };
+<stP_SUB>{RIGHTP}  {
+        tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+        left_p++;
+        POP_STATE();
+        TUSE_SIMPLE(kw("kw_right_p"));
+        right_p++;
+    }
+<stP_SUB>. {
+        BEGIN_STATE(*(int*)stack_peek(&state_stack));
+        tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+        left_p++;
+        TUSE_SIMPLE(NULL);
+    };
 
 {RIGHTP}    {
                 POP_STATE();
                 if (!stack_empty(&sub_openings) &&
                     left_p -(*(pair*)stack_peek(&sub_openings)).left == (right_p+1) -(*(pair*)stack_peek(&sub_openings)).right - 1) {
-                    end_SUB();
+                    stack_pop(&sub_openings); // end sub
+                    currindent--; // end sub
                     TUSE_SIMPLE(kw("kw_right_p_sub"));
                 } else {
                     TUSE_SIMPLE(kw("kw_right_p"));
+                    right_p++;
                 }
 
             };
