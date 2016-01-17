@@ -8,16 +8,16 @@
 #include "lex.yy.h" // start conditions (states)
 
 
-static int tokque_print_one(struct queue * tokque_ptr, FILE *yyout)
+static int tokque_print_one(struct FSQLF_queue * tokque_ptr, FILE *yyout)
 {
-    if (!queue_empty(tokque_ptr)) {
-        struct token *tok2 = (struct token *) queue_peek_n(tokque_ptr, 0);
+    if (!FSQLF_queue_empty(tokque_ptr)) {
+        struct token *tok2 = (struct token *) FSQLF_queue_peek_n(tokque_ptr, 0);
         if (tok2->kw_setting == NULL) {
             echo_print(yyout, tok2->indent, tok2->text);
         } else {
             kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
         }
-        queue_drop_head(tokque_ptr);
+        FSQLF_queue_drop_head(tokque_ptr);
         clear_token(tok2);
         return 1; // success - printing was made
     } else {
@@ -50,7 +50,7 @@ struct state_change decide_new_state(int cur_state, const struct kw_conf *s)
 }
 
 
-struct queue tokque; // GLOBAL
+struct FSQLF_queue tokque; // GLOBAL
 
 
 // This routine has goal to do 4 things:
@@ -68,12 +68,12 @@ struct state_change tokque_putthrough(FILE *yyout, int *currindent,
     static int first_run = 1;
     if (first_run) {
         first_run = 0;
-        queue_init(&tokque, sizeof(struct token));
+        FSQLF_queue_init(&tokque, sizeof(struct token));
     }
 
     // Place on queue.
     {
-        struct token *tok1 = (struct token *) queue_alloc_back(&tokque);
+        struct token *tok1 = (struct token *) FSQLF_queue_alloc_back(&tokque);
         if (s) (*currindent) += s->before.global_indent_change;
         set_token(tok1, 0, text, len, s, (*currindent));
         if (s) (*currindent) += s->after.global_indent_change;
@@ -92,5 +92,5 @@ void tokque_finish_out(FILE *yyout)
     // Print out all queue
     while (tokque_print_one(&tokque, yyout)) {}
     // Cleanup
-    queue_clear(&tokque);
+    FSQLF_queue_clear(&tokque);
 }

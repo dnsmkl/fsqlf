@@ -1,18 +1,19 @@
 // Queue implementation.
 ///
 // Macros for configuration:
-//  QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
+//  FSQLF_QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
 ///
 // Defined names for queue usage:
 // (other names should not be used)
-//  struct queue - queue struct
-//  struct queue.length - number of items in the queue (size_t).
-//  void queue_init(struct queue*) - initialize queue.
-//  void queue_clear(struct queue*) - free resources, make queue unusable.
-//  void queue_push_back(struct queue*, void*) - Add item onto the back.
-//  void queue_drop_head(struct queue*) - Remove item from head.
-//  void *queue_peek_n(struct queue*, size_t) - Return certain element.
-//  int queue_empty(struct queue*) - Check if queue is empty.
+//  struct FSQLF_queue - queue struct
+//  struct FSQLF_queue.length - number of items in the queue (size_t).
+//  void FSQLF_queue_init(struct FSQLF_queue*) - initialize queue.
+//  void FSQLF_queue_clear(struct FSQLF_queue*) - free resources, make queue unusable.
+//  void *FSQLF_queue_alloc_back(struct FSQLF_queue * const q) - Allocate item onto the back.
+//  void FSQLF_queue_push_back(struct FSQLF_queue*, void*) - Add item onto the back.
+//  void FSQLF_queue_drop_head(struct FSQLF_queue*) - Remove item from head.
+//  void *FSQLF_queue_peek_n(struct FSQLF_queue*, size_t) - Return certain element.
+//  int FSQLF_queue_empty(struct FSQLF_queue*) - Check if queue is empty.
 
 
 #ifndef QUEUE_H
@@ -22,12 +23,12 @@
 #include <string.h>
 
 
-#ifndef QUEUE_INIT_CAPACITY
-#define QUEUE_INIT_CAPACITY (1)
+#ifndef FSQLF_QUEUE_INIT_CAPACITY
+#define FSQLF_QUEUE_INIT_CAPACITY (1)
 #endif
 
 
-struct queue
+struct FSQLF_queue
 {
     // Internal array for item storage.
     // (see queue_array_pos() for info about positions used for queue items)
@@ -47,19 +48,19 @@ struct queue
 };
 
 
-void queue_init(struct queue * const q, size_t isize);
-void queue_clear(struct queue * const q);
-void *queue_alloc_back(struct queue * const q);
-void queue_push_back(struct queue * const q, const void * const item);
-void queue_drop_head(struct queue * const q);
-void *queue_peek_n(const struct queue * const q, const size_t n);
-int queue_empty(const struct queue * const q);
+void FSQLF_queue_init(struct FSQLF_queue * const q, size_t isize);
+void FSQLF_queue_clear(struct FSQLF_queue * const q);
+void *FSQLF_queue_alloc_back(struct FSQLF_queue * const q);
+void FSQLF_queue_push_back(struct FSQLF_queue * const q, const void * const item);
+void FSQLF_queue_drop_head(struct FSQLF_queue * const q);
+void *FSQLF_queue_peek_n(const struct FSQLF_queue * const q, const size_t n);
+int FSQLF_queue_empty(const struct FSQLF_queue * const q);
 
 
 // Helper function for converting queue position to internal array position.
 size_t queue_array_pos(size_t que_n, size_t que_start, size_t arr_capacity);
 // Helper function for increasing capacity of internal array.
-void queue_increase_capacity(struct queue * q);
+void queue_increase_capacity(struct FSQLF_queue * q);
 
 
 #endif

@@ -1,18 +1,19 @@
 // Queue implementation.
 ///
 // Macros for configuration:
-//  QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
+//  FSQLF_QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
 ///
 // Defined names for queue usage:
 // (other names should not be used)
-//  struct queue - queue struct
-//  struct queue.length - number of items in the queue (size_t).
-//  void queue_init(struct queue*) - initialize queue.
-//  void queue_clear(struct queue*) - free resources, make queue unusable.
-//  void queue_push_back(struct queue*, void*) - Add item onto the back.
-//  void queue_drop_head(struct queue*) - Remove item from head.
-//  void *queue_peek_n(struct queue*, size_t) - Return certain element.
-//  int queue_empty(struct queue*) - Check if queue is empty.
+//  struct FSQLF_queue - queue struct
+//  struct FSQLF_queue.length - number of items in the queue (size_t).
+//  void FSQLF_queue_init(struct FSQLF_queue*) - initialize queue.
+//  void FSQLF_queue_clear(struct FSQLF_queue*) - free resources, make queue unusable.
+//  void *FSQLF_queue_alloc_back(struct FSQLF_queue * const q) - Allocate item onto the back.
+//  void FSQLF_queue_push_back(struct FSQLF_queue*, void*) - Add item onto the back.
+//  void FSQLF_queue_drop_head(struct FSQLF_queue*) - Remove item from head.
+//  void *FSQLF_queue_peek_n(struct FSQLF_queue*, size_t) - Return certain element.
+//  int FSQLF_queue_empty(struct FSQLF_queue*) - Check if queue is empty.
 
 
 #include <stdlib.h> // malloc, realloc
@@ -21,18 +22,18 @@
 #include "queue.h"
 
 
-void queue_init(struct queue * const q, size_t isize)
+void FSQLF_queue_init(struct FSQLF_queue * const q, size_t isize)
 {
     q->length = 0;
     q->start = 0;
-    q->capacity = QUEUE_INIT_CAPACITY;
+    q->capacity = FSQLF_QUEUE_INIT_CAPACITY;
     q->isize = isize;
     q->items = (char*) malloc(q->isize * q->capacity);
     assert(q->items != NULL);
 }
 
 
-void queue_clear(struct queue * const q)
+void FSQLF_queue_clear(struct FSQLF_queue * const q)
 {
     q->length = 0;
     q->start = 0;
@@ -41,7 +42,7 @@ void queue_clear(struct queue * const q)
 }
 
 
-void *queue_alloc_back(struct queue * const q)
+void *FSQLF_queue_alloc_back(struct FSQLF_queue * const q)
 {
     if (q->length == q->capacity) {
         queue_increase_capacity(q);
@@ -53,14 +54,14 @@ void *queue_alloc_back(struct queue * const q)
 }
 
 
-void queue_push_back(struct queue * const q, const void * const item)
+void FSQLF_queue_push_back(struct FSQLF_queue * const q, const void * const item)
 {
-    char *place_for_new_item = (char*) queue_alloc_back(q);
+    char *place_for_new_item = (char*) FSQLF_queue_alloc_back(q);
     memcpy(place_for_new_item, item, q->isize);
 }
 
 
-void queue_drop_head(struct queue * const q)
+void FSQLF_queue_drop_head(struct FSQLF_queue * const q)
 {
     assert(q->length > 0);
     q->start++;
@@ -69,7 +70,7 @@ void queue_drop_head(struct queue * const q)
 }
 
 
-void *queue_peek_n(const struct queue * const q, const size_t n)
+void *FSQLF_queue_peek_n(const struct FSQLF_queue * const q, const size_t n)
 {
     assert(n < q->length);
     assert(q->length <= q->capacity);
@@ -78,7 +79,7 @@ void *queue_peek_n(const struct queue * const q, const size_t n)
 }
 
 
-int queue_empty(const struct queue * const q)
+int FSQLF_queue_empty(const struct FSQLF_queue * const q)
 {
     return q->length == 0;
 }
@@ -115,7 +116,7 @@ size_t queue_array_pos(const size_t que_n,
 
 
 // Helper function for increasing capacity of internal array.
-void queue_increase_capacity(struct queue * const q)
+void queue_increase_capacity(struct FSQLF_queue * const q)
 {
     size_t old_cap = q->capacity;
     q->capacity *= 2;
