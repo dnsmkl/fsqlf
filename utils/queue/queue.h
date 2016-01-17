@@ -1,7 +1,7 @@
 // Queue implementation.
 ///
 // Macros for configuration:
-//  FSQLF_QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
+//  FSQLF_QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 16)
 ///
 // Defined names for queue usage:
 // (other names should not be used)
@@ -24,7 +24,7 @@
 
 
 #ifndef FSQLF_QUEUE_INIT_CAPACITY
-#define FSQLF_QUEUE_INIT_CAPACITY (1)
+#define FSQLF_QUEUE_INIT_CAPACITY (16)
 #endif
 
 
@@ -55,12 +55,6 @@ void FSQLF_queue_push_back(struct FSQLF_queue * const q, const void * const item
 void FSQLF_queue_drop_head(struct FSQLF_queue * const q);
 void *FSQLF_queue_peek_n(const struct FSQLF_queue * const q, const size_t n);
 int FSQLF_queue_empty(const struct FSQLF_queue * const q);
-
-
-// Helper function for converting queue position to internal array position.
-size_t queue_array_pos(size_t que_n, size_t que_start, size_t arr_capacity);
-// Helper function for increasing capacity of internal array.
-void queue_increase_capacity(struct FSQLF_queue * q);
 
 
 #endif

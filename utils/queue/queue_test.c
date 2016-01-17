@@ -1,6 +1,8 @@
 #define QUEUE_ITEM_T int
 #include <assert.h>
+#define FSQLF_QUEUE_INIT_CAPACITY (1)
 #include "queue.h"
+#include "queue.c"
 
 
 

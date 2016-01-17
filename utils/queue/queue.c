@@ -1,7 +1,7 @@
 // Queue implementation.
 ///
 // Macros for configuration:
-//  FSQLF_QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 100)
+//  FSQLF_QUEUE_INIT_CAPACITY - initial capacity (optional; defaults to 16)
 ///
 // Defined names for queue usage:
 // (other names should not be used)
@@ -20,6 +20,10 @@
 #include <string.h> // memcpy
 #include <assert.h> // assert
 #include "queue.h"
+
+
+static size_t queue_array_pos(const size_t, const size_t, const size_t);
+static void queue_increase_capacity(struct FSQLF_queue * const);
 
 
 void FSQLF_queue_init(struct FSQLF_queue * const q, size_t isize)
@@ -95,7 +99,7 @@ int FSQLF_queue_empty(const struct FSQLF_queue * const q)
 // and queue that starts at element 2 in internal array:
 //     0 1 2 3 4 <- internal array positions
 //     3 4 0 1 2 <- queue elements
-size_t queue_array_pos(const size_t que_n,
+static size_t queue_array_pos(const size_t que_n,
     const size_t que_start,
     const size_t arr_capacity)
 {
@@ -116,7 +120,7 @@ size_t queue_array_pos(const size_t que_n,
 
 
 // Helper function for increasing capacity of internal array.
-void queue_increase_capacity(struct FSQLF_queue * const q)
+static void queue_increase_capacity(struct FSQLF_queue * const q)
 {
     size_t old_cap = q->capacity;
     q->capacity *= 2;
