@@ -76,12 +76,6 @@ do { \
     tokque_putthrough(yyout, &currindent,  yytext, yyleng, TKW, YY_START); \
 } while (0)
 
-#define FSQLF_BEGIN_SUB() \
-do { \
-    stack_push(&sub_openings, &(pair){left_p, right_p}); \
-    currindent++; \
-} while(0)
-
 // YY_USER_INIT is lex macro executed before initialising parser
 #define YY_USER_INIT \
     stack_init(&state_stack, sizeof(int)); \
