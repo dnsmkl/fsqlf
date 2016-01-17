@@ -2,5 +2,5 @@
 #include "globals.h"
 
 
-struct stack state_stack;
-struct stack sub_openings;
+struct FSQLF_stack state_stack;
+struct FSQLF_stack sub_openings;

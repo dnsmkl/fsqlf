@@ -2,7 +2,7 @@
 #define STACK_H
 
 
-struct stack
+struct FSQLF_stack
 {
     // last item => items[length-1]
     // first item => items[0]
@@ -14,11 +14,11 @@ struct stack
 };
 
 
-void stack_init(struct stack *stk, size_t isize);
-void stack_push(struct stack *stk, const void *newitem);
-void *stack_pop(struct stack *stk);
-void *stack_peek(const struct stack *stk);
-int stack_empty(const struct stack *stk);
+void FSQLF_stack_init(struct FSQLF_stack *stk, size_t isize);
+void FSQLF_stack_push(struct FSQLF_stack *stk, const void *newitem);
+void *FSQLF_stack_pop(struct FSQLF_stack *stk);
+void *FSQLF_stack_peek(const struct FSQLF_stack *stk);
+int FSQLF_stack_empty(const struct FSQLF_stack *stk);
 
 
 #endif

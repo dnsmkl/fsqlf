@@ -6,8 +6,8 @@
 
 
 // Global variables defined in globals.c file
-extern struct stack state_stack;
-extern struct stack sub_openings;
+extern struct FSQLF_stack state_stack;
+extern struct FSQLF_stack sub_openings;
 
 
 typedef struct

@@ -11,7 +11,7 @@
 #define STATE_STACK_SIZE (100)
 
 
-void stack_init(struct stack *stk, size_t isize)
+void FSQLF_stack_init(struct FSQLF_stack *stk, size_t isize)
 {
     stk->length = 0;
     stk->isize = isize;
@@ -21,7 +21,7 @@ void stack_init(struct stack *stk, size_t isize)
 }
 
 
-void stack_push(struct stack *stk, const void *newitem)
+void FSQLF_stack_push(struct FSQLF_stack *stk, const void *newitem)
 {
     assert(stk->length >= 0 && stk->length < STATE_STACK_SIZE);
     memcpy(stk->items + stk->length * stk->isize, newitem, stk->isize);
@@ -29,7 +29,7 @@ void stack_push(struct stack *stk, const void *newitem)
 }
 
 
-void *stack_pop(struct stack *stk)
+void *FSQLF_stack_pop(struct FSQLF_stack *stk)
 {
     stk->length--;
     assert(stk->length >= 0 && stk->length < stk->capacity);
@@ -37,14 +37,14 @@ void *stack_pop(struct stack *stk)
 }
 
 
-void *stack_peek(const struct stack *stk)
+void *FSQLF_stack_peek(const struct FSQLF_stack *stk)
 {
     assert(stk->length > 0 && stk->length < STATE_STACK_SIZE);
     return stk->items + (stk->length-1) * stk->isize;
 }
 
 
-int stack_empty(const struct stack *stk)
+int FSQLF_stack_empty(const struct FSQLF_stack *stk)
 {
     return stk->length == 0;
 }
