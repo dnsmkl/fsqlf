@@ -70,7 +70,7 @@ enum fsqlf_status fsqlf_read_conf_file(const char *file_pathname,
         llen -= pos - line;
         const int VALUE_COUNT = 8;
         int setting_values[VALUE_COUNT];
-        size_t cnt = read_int_array(pos, llen, VALUE_COUNT, setting_values);
+        size_t cnt = FSQLF_read_int_array(pos, llen, VALUE_COUNT, setting_values);
         if (cnt == 0) {
             continue;
         }

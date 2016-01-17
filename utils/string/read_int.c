@@ -17,7 +17,7 @@
 // Q. Why not just use strtol?
 // A. strtol returns 0 on failure to parse.
 //      This makes it impossible to distinguish between parsed 0 and failure.
-size_t read_int(const char *text, size_t lim, int *result)
+size_t FSQLF_read_int(const char *text, size_t lim, int *result)
 {
     assert(text != NULL);
     assert(result != NULL);
@@ -74,11 +74,11 @@ size_t read_int(const char *text, size_t lim, int *result)
 }
 
 
-size_t read_int_array(const char *text, size_t lim, size_t n, int *result)
+size_t FSQLF_read_int_array(const char *text, size_t lim, size_t n, int *result)
 {
     size_t total_cnt = 0; // Cumulative char count.
     for (int i = 0; i < n; ++i) {
-        size_t cnt = read_int(text + total_cnt, lim - total_cnt, result + i);
+        size_t cnt = FSQLF_read_int(text + total_cnt, lim - total_cnt, result + i);
         if (cnt > 0) {
             total_cnt += cnt;
         } else {

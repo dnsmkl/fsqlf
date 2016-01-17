@@ -3,7 +3,7 @@
 #include <stdio.h> // fprintf, stderr
 #include "../lib_fsqlf/formatter/lex.yy.h"
 #include "../lib_fsqlf/conf_file/conf_file_constants.h"
-#include "../utils/string/read_int.h"   // read_int
+#include "../utils/string/read_int.h"   // FSQLF_read_int
 #include "cli.h"
 
 
@@ -52,7 +52,7 @@ static void usage_info(int argc, char **argv)
 static int get_int_arg(int i, int argc, char **argv)
 {
     int r;
-    if (!read_int(argv[i], 1000, &r)) {
+    if (!FSQLF_read_int(argv[i], 1000, &r)) {
         FAIL_WITH_ERROR(1, "Missing or invalid value for option : %s", argv[i-1]);
     }
     return r;
