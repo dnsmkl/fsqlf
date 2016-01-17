@@ -12,10 +12,11 @@ Helped to learn about flex a bit
 #include "tokque.h"     // tokque_putthrough
 
 // Actual formatter
+// (only needed to hide private formatter's arguments)
 extern int fsqlf_format_file();
 
 // Private formatter (flex lexer)
-// Passed various paramters only to avoid global varsiables.
+// It accepts various paramters only to avoid global variables.
 extern int FSQLF_flex(int currindent, int left_p, int right_p);
 #define YY_DECL int FSQLF_flex(int currindent, int left_p, int right_p)
 
