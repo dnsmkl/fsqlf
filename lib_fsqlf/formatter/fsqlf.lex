@@ -26,6 +26,17 @@ extern int FSQLF_flex(int currindent, int left_p, int right_p);
 %{
 // This does not get into generated header file.
 
+
+// YY_USER_INIT is lex macro executed before initialising parser
+// It run inside of FSQLF_flex.
+#define YY_USER_INIT \
+    stack_init(&state_stack, sizeof(int)); \
+    stack_init(&sub_openings, sizeof(pair)); \
+    currindent = 0; \
+    left_p = 0; \
+    right_p = 0;
+
+
 int fsqlf_format_file()
 {
     return FSQLF_flex(0, 0, 0);
@@ -75,14 +86,6 @@ do { \
 do { \
     tokque_putthrough(yyout, &currindent,  yytext, yyleng, TKW, YY_START); \
 } while (0)
-
-// YY_USER_INIT is lex macro executed before initialising parser
-#define YY_USER_INIT \
-    stack_init(&state_stack, sizeof(int)); \
-    stack_init(&sub_openings, sizeof(pair)); \
-    currindent = 0; \
-    left_p = 0; \
-    right_p = 0;
 
 %}
 
