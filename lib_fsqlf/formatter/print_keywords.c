@@ -83,7 +83,7 @@ static struct spacing calculate_spacing(
 
 
 #define MAX_KEYWORD_SIZE (200)
-const char *stocase(const char* s_text, enum fsqlf_kwcase s_case)
+const char *FSQLF_stocase(const char* s_text, enum fsqlf_kwcase s_case)
 {
     assert(strlen(s_text) < MAX_KEYWORD_SIZE);
     static char formatted_result[MAX_KEYWORD_SIZE];
@@ -165,7 +165,7 @@ static void print_spacing(
 }
 
 
-void kw_print(FILE *yyout, size_t indent, const char *yytext,
+void FSQLF_kw_print(FILE *yyout, size_t indent, const char *yytext,
                         struct kw_conf s)
 {
     // Print spacing.
@@ -185,13 +185,13 @@ void kw_print(FILE *yyout, size_t indent, const char *yytext,
             assert(0);
     }
     // .. then handle its case
-    const char *text = stocase(text_nocase, s.print_case);
+    const char *text = FSQLF_stocase(text_nocase, s.print_case);
     // .. then print the text.
     fprintf(yyout, "%s", text);
 }
 
 
-void echo_print(FILE *yyout, size_t indent, char *txt)
+void FSQLF_echo_print(FILE *yyout, size_t indent, char *txt)
 {
     int length; // length of the input text string
     length = strlen(txt);

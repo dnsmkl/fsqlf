@@ -5,7 +5,7 @@
 #include <lib_fsqlf.h> // struct kw_conf, kw
 
 
-struct state_change
+struct FSQLF_state_change
 {
     int state_change_action;
     int new_state;      // start conditions of flex lexer generator
@@ -15,16 +15,16 @@ struct state_change
 // SCA - state change action
 enum
 {
-    SCA_NONE,
-    SCA_BEGIN,
-    SCA_PUSH,
-    SCA_POP
+    FSQLF_SCA_NONE,
+    FSQLF_SCA_BEGIN,
+    FSQLF_SCA_PUSH,
+    FSQLF_SCA_POP
 };
 
 
-struct state_change tokque_putthrough(FILE *yyout, int *currindent,
+struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
     char *text, size_t len, const struct kw_conf *s, int cur_state);
-void tokque_finish_out(FILE *yyout);
+void FSQLF_tokque_finish_out(FILE *yyout);
 
 
 #endif

@@ -8,8 +8,8 @@ Helped to learn about flex a bit
 // This code goes at the "top" of the generated file.
 // Also it gets into generated header file.
 #include <stdio.h>      // fprintf, stdin, stdout
-#include "globals.h"    // pair_stack, sub_openings, currindent, left_p, right_p
-#include "tokque.h"     // tokque_putthrough
+#include "globals.h"    // pair_stack, FSQLF_sub_openings, currindent, left_p, right_p
+#include "tokque.h"     // FSQLF_tokque_putthrough
 
 // Actual formatter
 // (only needed to hide private formatter's arguments)
@@ -31,8 +31,8 @@ extern int FSQLF_flex(int currindent, int left_p, int right_p);
 // YY_USER_INIT is lex macro executed before initialising parser
 // It run inside of FSQLF_flex.
 #define YY_USER_INIT \
-    FSQLF_stack_init(&state_stack, sizeof(int)); \
-    FSQLF_stack_init(&sub_openings, sizeof(pair)); \
+    FSQLF_stack_init(&FSQLF_state_stack, sizeof(int)); \
+    FSQLF_stack_init(&FSQLF_sub_openings, sizeof(pair)); \
     currindent = 0; \
     left_p = 0; \
     right_p = 0;
@@ -61,23 +61,23 @@ void fsqlf_set_file_out(FILE *out)
 
 #define PUSH_STATE(NEWSTATE) \
 do { \
-    FSQLF_stack_push(&state_stack, &(int){YY_START}); \
+    FSQLF_stack_push(&FSQLF_state_stack, &(int){YY_START}); \
     BEGIN_STATE(NEWSTATE); \
 } while (0)
 
 #define POP_STATE() \
 do { \
-    BEGIN_STATE(*(int*)FSQLF_stack_peek(&state_stack)); \
-    FSQLF_stack_pop(&state_stack); \
+    BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack)); \
+    FSQLF_stack_pop(&FSQLF_state_stack); \
 } while (0)
 
 // Use KW with ability to change state.
 #define TUSE_W_STATES(TKW) \
 do { \
-    struct state_change sc = tokque_putthrough( \
+    struct FSQLF_state_change sc = FSQLF_tokque_putthrough( \
         yyout, &currindent, yytext, yyleng, TKW, YY_START \
     ); \
-    if (sc.state_change_action == SCA_BEGIN) { \
+    if (sc.state_change_action == FSQLF_SCA_BEGIN) { \
         BEGIN (sc.new_state); \
     } \
 } while (0)
@@ -85,7 +85,7 @@ do { \
 // Use KW without ability to change state.
 #define TUSE_SIMPLE(TKW) \
 do { \
-    tokque_putthrough(yyout, &currindent,  yytext, yyleng, TKW, YY_START); \
+    FSQLF_tokque_putthrough(yyout, &currindent,  yytext, yyleng, TKW, YY_START); \
 } while (0)
 
 %}
@@ -272,54 +272,54 @@ END (?i:end)
 <stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_create") ); };
 
 <stP_SUB>{LEFTP}   {
-    BEGIN_STATE(*(int*)FSQLF_stack_peek(&state_stack));
+    BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
     TUSE_SIMPLE(kw("kw_left_p"));
     left_p++;
     PUSH_STATE(stP_SUB);  };
 {LEFTP}            { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}  {
         BEGIN_STATE(stSELECT);
-        tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p_sub"), YY_START);
-        FSQLF_stack_push(&sub_openings, &(pair){left_p, right_p}); // begin sub
+        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p_sub"), YY_START);
+        FSQLF_stack_push(&FSQLF_sub_openings, &(pair){left_p, right_p}); // begin sub
         currindent++; // begin sub
         TUSE_SIMPLE(kw("kw_select"));
     };
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
-        if (*(int*)FSQLF_stack_peek(&state_stack) == stFROM
-                || *(int*)FSQLF_stack_peek(&state_stack) == stJOIN) {
-            BEGIN_STATE(*(int*)FSQLF_stack_peek(&state_stack));
-            tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+        if (*(int*)FSQLF_stack_peek(&FSQLF_state_stack) == stFROM
+                || *(int*)FSQLF_stack_peek(&FSQLF_state_stack) == stJOIN) {
+            BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
+            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
             left_p++;
             TUSE_SIMPLE(NULL);
         } else {
             BEGIN_STATE(stIN_CONSTLIST);
-            tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
             left_p++;
             TUSE_SIMPLE(NULL);
         }
     };
-<stP_SUB>{COMMENT_ML_START}           { tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML)  ; TUSE_SIMPLE( NULL);};
-<stP_SUB>{COMMENT_ONE_LINE}           { tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE( NULL);};
-<stP_SUB>{SPACE}                      { tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); };
+<stP_SUB>{COMMENT_ML_START}           { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML)  ; TUSE_SIMPLE( NULL);};
+<stP_SUB>{COMMENT_ONE_LINE}           { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE( NULL);};
+<stP_SUB>{SPACE}                      { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); };
 <stP_SUB>{RIGHTP}  {
-        tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
         left_p++;
         POP_STATE();
         TUSE_SIMPLE(kw("kw_right_p"));
         right_p++;
     }
 <stP_SUB>. {
-        BEGIN_STATE(*(int*)FSQLF_stack_peek(&state_stack));
-        tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+        BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
+        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
         left_p++;
         TUSE_SIMPLE(NULL);
     };
 
 {RIGHTP}    {
                 POP_STATE();
-                if (!FSQLF_stack_empty(&sub_openings) &&
-                    left_p -(*(pair*)FSQLF_stack_peek(&sub_openings)).left == (right_p+1) -(*(pair*)FSQLF_stack_peek(&sub_openings)).right - 1) {
-                    FSQLF_stack_pop(&sub_openings); // end sub
+                if (!FSQLF_stack_empty(&FSQLF_sub_openings) &&
+                    left_p -(*(pair*)FSQLF_stack_peek(&FSQLF_sub_openings)).left == (right_p+1) -(*(pair*)FSQLF_stack_peek(&FSQLF_sub_openings)).right - 1) {
+                    FSQLF_stack_pop(&FSQLF_sub_openings); // end sub
                     currindent--; // end sub
                     TUSE_SIMPLE(kw("kw_right_p_sub"));
                 } else {
@@ -362,7 +362,7 @@ END (?i:end)
 
 
 <<EOF>> {
-            tokque_finish_out(yyout);
+            FSQLF_tokque_finish_out(yyout);
             fprintf(yyout,"\n");
             switch (YY_START) {
                 case stCOMMENTML: fprintf(yyout,"--unterminated comment \n"); break;
