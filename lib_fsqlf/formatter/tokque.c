@@ -26,25 +26,25 @@ static int tokque_print_one(struct FSQLF_queue * tokque_ptr, FILE *yyout)
 }
 
 
-struct FSQLF_state_change FSQLF_decide_new_state(int cur_state, const struct kw_conf *s)
+struct FSQLF_state_change FSQLF_decide_new_state(int cur_state, const struct fsqlf_kw_conf *s)
 {
-    if (s == kw("kw_deletefrom")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stDELETE};
-    else if (s == kw("kw_insertinto")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stINSERT};
-    else if (s == kw("kw_update")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stUPDATE};
-    else if (s == kw("kw_create")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stCREATE};
-    else if (s == kw("kw_drop")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_ifexists")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_view")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_union")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_union_all")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_minus")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_intersect")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_except")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_semicolon")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == kw("kw_groupby")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stGROUPBY};
-    else if (s == kw("kw_orderby")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stORDERBY};
-    else if (s == kw("kw_having")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
-    else if (s == kw("kw_qualify")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
+    if (s == fsqlf_kw_get("kw_deletefrom")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stDELETE};
+    else if (s == fsqlf_kw_get("kw_insertinto")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stINSERT};
+    else if (s == fsqlf_kw_get("kw_update")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stUPDATE};
+    else if (s == fsqlf_kw_get("kw_create")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stCREATE};
+    else if (s == fsqlf_kw_get("kw_drop")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_ifexists")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_view")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_union")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_union_all")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_minus")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_intersect")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_except")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_semicolon")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+    else if (s == fsqlf_kw_get("kw_groupby")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stGROUPBY};
+    else if (s == fsqlf_kw_get("kw_orderby")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stORDERBY};
+    else if (s == fsqlf_kw_get("kw_having")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
+    else if (s == fsqlf_kw_get("kw_qualify")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
 
     return (struct FSQLF_state_change) {0, 0};
 }
@@ -62,7 +62,7 @@ struct FSQLF_queue FSQLF_tokque; // GLOBAL
 // At the moment only 1st and 4th parts are done.
 // TODO: implement 2nd and 3rd
 struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
-    char *text, size_t len, const struct kw_conf *s, int cur_state)
+    char *text, size_t len, const struct fsqlf_kw_conf *s, int cur_state)
 {
     // Queue initialization.
     static int first_run = 1;

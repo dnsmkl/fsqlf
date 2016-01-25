@@ -58,7 +58,7 @@ struct spacing
 
 
 #define KW_FUNCT_ARRAY_SIZE (3)
-struct kw_conf
+struct fsqlf_kw_conf
 {
     struct spacing before;
     struct spacing after;
@@ -73,12 +73,14 @@ struct kw_conf
 };
 
 
-// Create new struct kw_conf and add it to global map.
-struct kw_conf *kw_add(const char *name);
-// Retrieve struct kw_conf from global map.
-struct kw_conf *kw(const char *name);
+// Create new struct fsqlf_kw_conf and add it to global map.
+struct fsqlf_kw_conf *FSQLF_kw_create(const char *name);
+
+// Retrieve struct fsqlf_kw_conf from global map.
+struct fsqlf_kw_conf *fsqlf_kw_get(const char *name);
+
 // Remove all kw_conf from global map and free the memory.
-void kw_delete_all();
+void fsqlf_kw_delete_all();
 
 
 void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case);
@@ -87,7 +89,7 @@ void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case);
 void fsqlf_set_all_kwvariant(enum fsqlf_kwtext kw_text_to_use);
 
 // Init all keyword settings to defaults.
-void fsqlf_init_all_kw(struct kw_conf * (*kw)(const char *));
+void fsqlf_init_all_kw(struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
 
 
 
@@ -98,13 +100,13 @@ enum fsqlf_status fsqlf_create_conf_file(char *config_file_name);
 
 // Read specified config file.
 enum fsqlf_status fsqlf_read_conf_file(const char *file_pathname,
-                    struct kw_conf * (*kw)(const char *));
+                    struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
 
 
 // Read configuration file from default conf file.
 // This would be "formatting.conf" in working directory.
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf".
-enum fsqlf_status fsqlf_read_default_conf_file(struct kw_conf * (*kw)(const char *));
+enum fsqlf_status fsqlf_read_default_conf_file(struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
 
 
 void fsqlf_set_file_in(FILE *in);

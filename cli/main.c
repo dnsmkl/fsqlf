@@ -10,16 +10,16 @@ int main(int argc, char **argv)
     fin = stdin;
     fout = stdout;
 
-    fsqlf_init_all_kw(&kw);             // Init default configs.
-    fsqlf_read_default_conf_file(&kw);        // Read configs from file.
+    fsqlf_init_all_kw(&fsqlf_kw_get);             // Init default configs.
+    fsqlf_read_default_conf_file(&fsqlf_kw_get);        // Read configs from file.
 
-    read_cli_options(argc, argv, &kw, &fin, &fout);  // Read configs from command line.
+    read_cli_options(argc, argv, &fsqlf_kw_get, &fin, &fout);  // Read configs from command line.
     fsqlf_set_file_in(fin);
     fsqlf_set_file_out(fout);
 
     fsqlf_format_file();
 
-    kw_delete_all();
+    fsqlf_kw_delete_all();
 
     return 0;
 }

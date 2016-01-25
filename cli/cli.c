@@ -60,7 +60,7 @@ static int get_int_arg(int i, int argc, char **argv)
 
 
 void read_cli_options(int argc, char **argv,
-                        struct kw_conf * (*kw)(const char *), FILE ** fin, FILE ** fout)
+                        struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *), FILE ** fin, FILE ** fout)
 {
     int i;
     if (argc == 1) return; // use stdin and stdout
@@ -97,20 +97,20 @@ void read_cli_options(int argc, char **argv,
             if (!(*fout)) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
         } else if (ARGV_MATCH(i, "--config-file")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
-            if (fsqlf_read_conf_file(argv[i], kw) == FSQLF_FAIL) {
+            if (fsqlf_read_conf_file(argv[i], fsqlf_kw_get) == FSQLF_FAIL) {
                 FAIL_WITH_ERROR(1, "Error reading configuration file: %s", argv[i]);
             }
         } else if (ARGV_MATCH(i, "--select-comma-newline")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "after") == 0) {
-                kw("kw_comma")->before.new_line = 0;
-                kw("kw_comma")->after.new_line  = 1;
+                fsqlf_kw_get("kw_comma")->before.new_line = 0;
+                fsqlf_kw_get("kw_comma")->after.new_line  = 1;
             } else if (strcmp(argv[i], "before") == 0) {
-                kw("kw_comma")->before.new_line = 1;
-                kw("kw_comma")->after.new_line  = 0;
+                fsqlf_kw_get("kw_comma")->before.new_line = 1;
+                fsqlf_kw_get("kw_comma")->after.new_line  = 0;
             } else if (strcmp(argv[i], "none") == 0) {
-                kw("kw_comma")->before.new_line = 0;
-                kw("kw_comma")->after.new_line  = 0;
+                fsqlf_kw_get("kw_comma")->before.new_line = 0;
+                fsqlf_kw_get("kw_comma")->after.new_line  = 0;
             }
         } else if (ARGV_MATCH(i, "--keyword-case")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
@@ -131,24 +131,24 @@ void read_cli_options(int argc, char **argv,
                 fsqlf_set_all_kwvariant(FSQLF_KWTEXT_USE_HARDCODED_DEFAULT);
             }
         } else if (ARGV_MATCH(i, "--select-newline-after")) {
-            kw("kw_select")->after.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get("kw_select")->after.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-or-before")) {
-            kw("kw_or")->before.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get("kw_or")->before.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-or-after")) {
-            kw("kw_or")->after.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get("kw_or")->after.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-and-before")) {
-            kw("kw_and")->before.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get("kw_and")->before.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-and-after")) {
-            kw("kw_and")->after.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get("kw_and")->after.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-major-sections")) {
             int new_line_count = get_int_arg(++i, argc, argv);
-            kw("kw_from")->before.new_line = new_line_count;
-            kw("kw_where")->before.new_line = new_line_count;
-            kw("kw_inner_join")->before.new_line = new_line_count;
-            kw("kw_left_join")->before.new_line  = new_line_count;
-            kw("kw_right_join")->before.new_line = new_line_count;
-            kw("kw_full_join")->before.new_line  = new_line_count;
-            kw("kw_cross_join")->before.new_line = new_line_count;
+            fsqlf_kw_get("kw_from")->before.new_line = new_line_count;
+            fsqlf_kw_get("kw_where")->before.new_line = new_line_count;
+            fsqlf_kw_get("kw_inner_join")->before.new_line = new_line_count;
+            fsqlf_kw_get("kw_left_join")->before.new_line  = new_line_count;
+            fsqlf_kw_get("kw_right_join")->before.new_line = new_line_count;
+            fsqlf_kw_get("kw_full_join")->before.new_line  = new_line_count;
+            fsqlf_kw_get("kw_cross_join")->before.new_line = new_line_count;
         } else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
             usage_info(argc, argv);
             exit(0);

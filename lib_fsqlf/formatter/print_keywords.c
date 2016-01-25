@@ -51,7 +51,7 @@ static struct spacing calculate_spacing(
         Rationale for such logic:
             If word has in its settings new-line=1 and indent/spaces=0,
             then there is expectation that keyword will be
-            at the start of the line, no matter what previous kw setting
+            at the start of the line, no matter what previous fsqlf_kw_get setting
             for indentation after it was.
             (except for global indent level, because of subselect)
     */
@@ -140,7 +140,7 @@ static void print_struct_spacing_count(FILE * yyout, struct spacing cnt)
 // ('spacing' means new lines, tabs and spaces)
 static void print_spacing(
     FILE *yyout,
-    struct kw_conf current_settings,
+    struct fsqlf_kw_conf current_settings,
     int global_indent_level)
 {
     // keep track of 'after' spacing from previous call
@@ -166,7 +166,7 @@ static void print_spacing(
 
 
 void FSQLF_kw_print(FILE *yyout, size_t indent, const char *yytext,
-                        struct kw_conf s)
+                        struct fsqlf_kw_conf s)
 {
     // Print spacing.
     print_spacing(yyout, s, indent); // print spacing before keyword
@@ -201,8 +201,8 @@ void FSQLF_echo_print(FILE *yyout, size_t indent, char *txt)
     int pos_last_char = length - 1; // position of last character
 
     // Printing of spacing is delegated to print_spacing(),
-    // which requires as input struct kw_conf.
-    struct kw_conf s = {{0, 0, 0, 0}, {0, 0, 0, 0}, 0, 0, 0, 0};
+    // which requires as input struct fsqlf_kw_conf.
+    struct fsqlf_kw_conf s = {{0, 0, 0, 0}, {0, 0, 0, 0}, 0, 0, 0, 0};
 
     // Delegate to print_spacing() printing of the new line.
     if (txt[pos_last_char] == '\n') {

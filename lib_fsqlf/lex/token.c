@@ -8,7 +8,7 @@ struct FSQLF_token *FSQLF_make_token(
     const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
-    const struct kw_conf *kw_setting,
+    const struct fsqlf_kw_conf *kw_setting,
     const size_t indent)
 {
     struct FSQLF_token *tok;
@@ -31,7 +31,7 @@ void FSQLF_set_token(struct FSQLF_token * tok,
     const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
-    const struct kw_conf *kw_conf,
+    const struct fsqlf_kw_conf *kw_conf,
     const size_t indent)
 {
     assert(tok);

@@ -65,7 +65,7 @@ enum fsqlf_status fsqlf_create_conf_file(char *config_file_name)
     fputs("# - sub = subquery\n", config_file);
     fputs("# - grpby = group by\n", config_file);
     fputs("# - ordby = order by\n", config_file);
-    fputs("# - kw = keyword (though for some reason it's used also for punctuation character..)\n", config_file);
+    fputs("# - fsqlf_kw_get = keyword (though for some reason it's used also for punctuation character..)\n", config_file);
     fputs("\n\n", config_file);
 
     if (fclose(config_file) == 0) {

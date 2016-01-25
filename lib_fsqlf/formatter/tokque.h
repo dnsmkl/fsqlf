@@ -2,7 +2,7 @@
 #define tokque_h
 
 
-#include <lib_fsqlf.h> // struct kw_conf, kw
+#include <lib_fsqlf.h> // struct fsqlf_kw_conf, fsqlf_kw_get
 
 
 struct FSQLF_state_change
@@ -23,7 +23,7 @@ enum
 
 
 struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
-    char *text, size_t len, const struct kw_conf *s, int cur_state);
+    char *text, size_t len, const struct fsqlf_kw_conf *s, int cur_state);
 void FSQLF_tokque_finish_out(FILE *yyout);
 
 

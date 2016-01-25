@@ -7,7 +7,7 @@
 
 
 void read_cli_options(int argc, char **argv,
-    struct kw_conf * (*kw)(const char *), FILE ** fin, FILE ** fout);
+    struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *), FILE ** fin, FILE ** fout);
 
 
 #endif

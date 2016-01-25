@@ -191,109 +191,109 @@ END (?i:end)
 
 %%
 
-{DELETEFROM}  { TUSE_W_STATES(kw("kw_deletefrom")); }
-{DELETE}      { TUSE_W_STATES(kw("kw_deletefrom")); }
-{INSERTINTO}  { TUSE_W_STATES(kw("kw_insertinto")); }
-{UPDATE}      { TUSE_W_STATES(kw("kw_update")); }
-<stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);TUSE_SIMPLE(kw("kw_set") ); }
-<stSET>{COMMA} { TUSE_SIMPLE(kw("kw_comma_set")); }
+{DELETEFROM}  { TUSE_W_STATES(fsqlf_kw_get("kw_deletefrom")); }
+{DELETE}      { TUSE_W_STATES(fsqlf_kw_get("kw_deletefrom")); }
+{INSERTINTO}  { TUSE_W_STATES(fsqlf_kw_get("kw_insertinto")); }
+{UPDATE}      { TUSE_W_STATES(fsqlf_kw_get("kw_update")); }
+<stUPDATE,stFROM>{SET} { BEGIN_STATE(stSET);TUSE_SIMPLE(fsqlf_kw_get("kw_set") ); }
+<stSET>{COMMA} { TUSE_SIMPLE(fsqlf_kw_get("kw_comma_set")); }
                 /* SET operations */
 
-{CREATE}     { TUSE_W_STATES(kw("kw_create")); }
-{DROP}       { TUSE_W_STATES(kw("kw_drop")); }
-{TABLE}      { TUSE_W_STATES(kw("kw_table")); }
-{IFEXISTS}   { TUSE_W_STATES(kw("kw_ifexists")); }
-{VIEW}       { TUSE_W_STATES(kw("kw_view")); }
-{UNION}      { TUSE_W_STATES(kw("kw_union")); }
-{UNION_ALL}  { TUSE_W_STATES(kw("kw_union_all")); }
-{MINUS}      { TUSE_W_STATES(kw("kw_minus")); }
-{INTERSECT}  { TUSE_W_STATES(kw("kw_intersect")); }
-{EXCEPT}     { TUSE_W_STATES(kw("kw_except")); }
+{CREATE}     { TUSE_W_STATES(fsqlf_kw_get("kw_create")); }
+{DROP}       { TUSE_W_STATES(fsqlf_kw_get("kw_drop")); }
+{TABLE}      { TUSE_W_STATES(fsqlf_kw_get("kw_table")); }
+{IFEXISTS}   { TUSE_W_STATES(fsqlf_kw_get("kw_ifexists")); }
+{VIEW}       { TUSE_W_STATES(fsqlf_kw_get("kw_view")); }
+{UNION}      { TUSE_W_STATES(fsqlf_kw_get("kw_union")); }
+{UNION_ALL}  { TUSE_W_STATES(fsqlf_kw_get("kw_union_all")); }
+{MINUS}      { TUSE_W_STATES(fsqlf_kw_get("kw_minus")); }
+{INTERSECT}  { TUSE_W_STATES(fsqlf_kw_get("kw_intersect")); }
+{EXCEPT}     { TUSE_W_STATES(fsqlf_kw_get("kw_except")); }
 
                 /* SELECT ... FROM */
-<INITIAL,stINSERT>{SELECT}  {BEGIN_STATE(stSELECT); TUSE_SIMPLE(kw("kw_select")); };
-<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  TUSE_SIMPLE(kw("kw_comma"));  };
+<INITIAL,stINSERT>{SELECT}  {BEGIN_STATE(stSELECT); TUSE_SIMPLE(fsqlf_kw_get("kw_select")); };
+<stSELECT,stCOMMA>{COMMA}   {BEGIN_STATE(stCOMMA);  TUSE_SIMPLE(fsqlf_kw_get("kw_comma"));  };
 
-{IN}    { TUSE_W_STATES(kw("kw_in")); }
-{LIKE}  { TUSE_SIMPLE(kw("kw_like")); };
+{IN}    { TUSE_W_STATES(fsqlf_kw_get("kw_in")); }
+{LIKE}  { TUSE_SIMPLE(fsqlf_kw_get("kw_like")); };
 
-{COMP_EQ}    { TUSE_SIMPLE(kw("kw_comp_eq")); };
-{COMP_NE}    { TUSE_SIMPLE(kw("kw_comp_ne")); };
-{COMP_LE}    { TUSE_SIMPLE(kw("kw_comp_le")); };
-{COMP_GE}    { TUSE_SIMPLE(kw("kw_comp_ge")); };
-{COMP_LT}    { TUSE_SIMPLE(kw("kw_comp_lt")); };
-{COMP_GT}    { TUSE_SIMPLE(kw("kw_comp_gt")); };
+{COMP_EQ}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_eq")); };
+{COMP_NE}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_ne")); };
+{COMP_LE}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_le")); };
+{COMP_GE}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_ge")); };
+{COMP_LT}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_lt")); };
+{COMP_GT}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_gt")); };
 
-<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p")); left_p++; };
-<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(kw("kw_left_p")); left_p++; };
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p")); left_p++; };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p")); left_p++; };
 <stLEFTP>{COMMA}            {TUSE_SIMPLE( NULL); };
 <stLEFTP>{ORDERBY}          {TUSE_SIMPLE( NULL); };
-<stLEFTP>{FROM}             {TUSE_SIMPLE(kw("kw_from_2"));  };
-<stLEFTP>{RIGHTP}           {POP_STATE(); TUSE_SIMPLE(kw("kw_right_p")); right_p++; };
-<stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  TUSE_SIMPLE(kw("kw_from"));    };
-<stLEFTP,stSELECT>{AS}      {TUSE_SIMPLE(kw("kw_as"));      };
+<stLEFTP>{FROM}             {TUSE_SIMPLE(fsqlf_kw_get("kw_from_2"));  };
+<stLEFTP>{RIGHTP}           {POP_STATE(); TUSE_SIMPLE(fsqlf_kw_get("kw_right_p")); right_p++; };
+<stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  TUSE_SIMPLE(fsqlf_kw_get("kw_from"));    };
+<stLEFTP,stSELECT>{AS}      {TUSE_SIMPLE(fsqlf_kw_get("kw_as"));      };
 
 
                 /* FROM ... JOIN ... ON ... WHERE */
-<stON,stFROM,stJOIN>{IJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_inner_join")); };
-<stON,stFROM,stJOIN>{LJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_left_join") ); };
-<stON,stFROM,stJOIN>{RJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_right_join")); };
-<stON,stFROM,stJOIN>{FJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_full_join") ); };
-<stON,stFROM,stJOIN>{CJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(kw("kw_cross_join")); };
-<stON,stFROM,stJOIN>{COMMA} { TUSE_SIMPLE(kw("kw_comma_join")); };
+<stON,stFROM,stJOIN>{IJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(fsqlf_kw_get("kw_inner_join")); };
+<stON,stFROM,stJOIN>{LJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(fsqlf_kw_get("kw_left_join") ); };
+<stON,stFROM,stJOIN>{RJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(fsqlf_kw_get("kw_right_join")); };
+<stON,stFROM,stJOIN>{FJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(fsqlf_kw_get("kw_full_join") ); };
+<stON,stFROM,stJOIN>{CJOIN} { BEGIN_STATE(stJOIN);  TUSE_SIMPLE(fsqlf_kw_get("kw_cross_join")); };
+<stON,stFROM,stJOIN>{COMMA} { TUSE_SIMPLE(fsqlf_kw_get("kw_comma_join")); };
 
-<stJOIN>{ON}    {BEGIN_STATE(stON);   TUSE_SIMPLE(kw("kw_on")); };
+<stJOIN>{ON}    {BEGIN_STATE(stON);   TUSE_SIMPLE(fsqlf_kw_get("kw_on")); };
 
 
 
                 /* WHERE ... (also join conditions) */
-<stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  TUSE_SIMPLE(kw("kw_where")); };
-<stWHERE,stON,stJOIN>{AND}  { TUSE_SIMPLE(kw("kw_and"));   };
-<stWHERE,stON,stJOIN>{OR}   { TUSE_SIMPLE(kw("kw_or"));    };
-{NOT}    { TUSE_SIMPLE(kw("kw_not")); };
+<stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} {BEGIN_STATE(stWHERE );  TUSE_SIMPLE(fsqlf_kw_get("kw_where")); };
+<stWHERE,stON,stJOIN>{AND}  { TUSE_SIMPLE(fsqlf_kw_get("kw_and"));   };
+<stWHERE,stON,stJOIN>{OR}   { TUSE_SIMPLE(fsqlf_kw_get("kw_or"));    };
+{NOT}    { TUSE_SIMPLE(fsqlf_kw_get("kw_not")); };
 
-<stWHERE>{EXISTS}   {TUSE_SIMPLE(kw("kw_exists")); };
-
-
-{GROUPBY}    { TUSE_W_STATES(kw("kw_groupby")); }
-{ORDERBY}    { TUSE_W_STATES(kw("kw_orderby")); }
-<stORDERBY>{COMMA}   { TUSE_SIMPLE(kw("kw_comma_ordby")); };
-<stGROUPBY>{COMMA}   { TUSE_SIMPLE(kw("kw_comma_grpby")); };
-{HAVING}     { TUSE_W_STATES(kw("kw_having")); }
-{QUALIFY}    { TUSE_W_STATES(kw("kw_qualify")); }
+<stWHERE>{EXISTS}   {TUSE_SIMPLE(fsqlf_kw_get("kw_exists")); };
 
 
-<stINSERT>{LEFTP}        { PUSH_STATE(stINSCOLLIST); TUSE_SIMPLE(kw("kw_left_p_ins") ); };
-<stINSCOLLIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_ins") ); }
-<stINSCOLLIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_ins") ); };
+{GROUPBY}    { TUSE_W_STATES(fsqlf_kw_get("kw_groupby")); }
+{ORDERBY}    { TUSE_W_STATES(fsqlf_kw_get("kw_orderby")); }
+<stORDERBY>{COMMA}   { TUSE_SIMPLE(fsqlf_kw_get("kw_comma_ordby")); };
+<stGROUPBY>{COMMA}   { TUSE_SIMPLE(fsqlf_kw_get("kw_comma_grpby")); };
+{HAVING}     { TUSE_W_STATES(fsqlf_kw_get("kw_having")); }
+{QUALIFY}    { TUSE_W_STATES(fsqlf_kw_get("kw_qualify")); }
 
-<stCREATE>{LEFTP}  { PUSH_STATE(stTAB_COL_LIST); TUSE_SIMPLE(kw("kw_left_p_create") ); };
-<stTAB_COL_LIST>{COMMA}    { TUSE_SIMPLE(kw("kw_comma_create") ); }
-<stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(kw("kw_right_p_create") ); };
+
+<stINSERT>{LEFTP}        { PUSH_STATE(stINSCOLLIST); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p_ins") ); };
+<stINSCOLLIST>{COMMA}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comma_ins") ); }
+<stINSCOLLIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(fsqlf_kw_get("kw_right_p_ins") ); };
+
+<stCREATE>{LEFTP}  { PUSH_STATE(stTAB_COL_LIST); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p_create") ); };
+<stTAB_COL_LIST>{COMMA}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comma_create") ); }
+<stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(fsqlf_kw_get("kw_right_p_create") ); };
 
 <stP_SUB>{LEFTP}   {
     BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
-    TUSE_SIMPLE(kw("kw_left_p"));
+    TUSE_SIMPLE(fsqlf_kw_get("kw_left_p"));
     left_p++;
     PUSH_STATE(stP_SUB);  };
 {LEFTP}            { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}  {
         BEGIN_STATE(stSELECT);
-        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p_sub"), YY_START);
+        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p_sub"), YY_START);
         FSQLF_stack_push(&FSQLF_sub_openings, &(pair){left_p, right_p}); // begin sub
         currindent++; // begin sub
-        TUSE_SIMPLE(kw("kw_select"));
+        TUSE_SIMPLE(fsqlf_kw_get("kw_select"));
     };
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
         if (*(int*)FSQLF_stack_peek(&FSQLF_state_stack) == stFROM
                 || *(int*)FSQLF_stack_peek(&FSQLF_state_stack) == stJOIN) {
             BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
-            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
             left_p++;
             TUSE_SIMPLE(NULL);
         } else {
             BEGIN_STATE(stIN_CONSTLIST);
-            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
             left_p++;
             TUSE_SIMPLE(NULL);
         }
@@ -302,15 +302,15 @@ END (?i:end)
 <stP_SUB>{COMMENT_ONE_LINE}           { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE( NULL);};
 <stP_SUB>{SPACE}                      { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); };
 <stP_SUB>{RIGHTP}  {
-        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
         left_p++;
         POP_STATE();
-        TUSE_SIMPLE(kw("kw_right_p"));
+        TUSE_SIMPLE(fsqlf_kw_get("kw_right_p"));
         right_p++;
     }
 <stP_SUB>. {
         BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
-        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, kw("kw_left_p"), YY_START);
+        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
         left_p++;
         TUSE_SIMPLE(NULL);
     };
@@ -321,21 +321,21 @@ END (?i:end)
                     left_p -(*(pair*)FSQLF_stack_peek(&FSQLF_sub_openings)).left == (right_p+1) -(*(pair*)FSQLF_stack_peek(&FSQLF_sub_openings)).right - 1) {
                     FSQLF_stack_pop(&FSQLF_sub_openings); // end sub
                     currindent--; // end sub
-                    TUSE_SIMPLE(kw("kw_right_p_sub"));
+                    TUSE_SIMPLE(fsqlf_kw_get("kw_right_p_sub"));
                 } else {
-                    TUSE_SIMPLE(kw("kw_right_p"));
+                    TUSE_SIMPLE(fsqlf_kw_get("kw_right_p"));
                     right_p++;
                 }
 
             };
 
-{CASE}  { TUSE_SIMPLE(kw("kw_case")); }
-{WHEN}  { TUSE_W_STATES(kw("kw_when")); }
-{THEN}  { TUSE_W_STATES(kw("kw_then")); }
-{ELSE}  { TUSE_W_STATES(kw("kw_else")); }
-{END}   { TUSE_SIMPLE(kw("kw_end")); }
+{CASE}  { TUSE_SIMPLE(fsqlf_kw_get("kw_case")); }
+{WHEN}  { TUSE_W_STATES(fsqlf_kw_get("kw_when")); }
+{THEN}  { TUSE_W_STATES(fsqlf_kw_get("kw_then")); }
+{ELSE}  { TUSE_W_STATES(fsqlf_kw_get("kw_else")); }
+{END}   { TUSE_SIMPLE(fsqlf_kw_get("kw_end")); }
 
-{USING} { TUSE_W_STATES(kw("kw_using")); }
+{USING} { TUSE_W_STATES(fsqlf_kw_get("kw_using")); }
 
 
 {COMMENT_ML_START}     {PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL);};
@@ -352,12 +352,12 @@ END (?i:end)
 {SPACE}+     {/* discard spaces */;};
 {DBOBJECT}   { TUSE_W_STATES(NULL); }
 {NUMBER}     { TUSE_W_STATES(NULL); }
-{SEMICOLON}  { TUSE_W_STATES(kw("kw_semicolon")); }
-{OP_PLUS}    { TUSE_SIMPLE(kw("kw_op_plus")); };
-{OP_MINUS}   { TUSE_SIMPLE(kw("kw_op_minus")); };
-{OP_MULT}    { TUSE_SIMPLE(kw("kw_op_mult")); };
-{OP_DIV}     { TUSE_SIMPLE(kw("kw_op_div")); };
-{OP_CONCAT}  { TUSE_SIMPLE(kw("kw_op_concat")); };
+{SEMICOLON}  { TUSE_W_STATES(fsqlf_kw_get("kw_semicolon")); }
+{OP_PLUS}    { TUSE_SIMPLE(fsqlf_kw_get("kw_op_plus")); };
+{OP_MINUS}   { TUSE_SIMPLE(fsqlf_kw_get("kw_op_minus")); };
+{OP_MULT}    { TUSE_SIMPLE(fsqlf_kw_get("kw_op_mult")); };
+{OP_DIV}     { TUSE_SIMPLE(fsqlf_kw_get("kw_op_div")); };
+{OP_CONCAT}  { TUSE_SIMPLE(fsqlf_kw_get("kw_op_concat")); };
 <*>.         { TUSE_W_STATES(NULL); }
 
 
