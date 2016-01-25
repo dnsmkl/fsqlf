@@ -4,31 +4,31 @@
 #include "token.h"
 
 
-struct token *make_token(
-    const token_class_t token_class,
+struct FSQLF_token *FSQLF_make_token(
+    const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
     const struct kw_conf *kw_setting,
     const size_t indent)
 {
-    struct token *tok;
-    tok = malloc(sizeof(struct token));
+    struct FSQLF_token *tok;
+    tok = malloc(sizeof(struct FSQLF_token));
     assert(tok);
-    set_token(tok, token_class, text, leng, kw_setting, indent);
+    FSQLF_set_token(tok, token_class, text, leng, kw_setting, indent);
     return tok;
 }
 
 
-void delete_token(struct token **tok)
+void FSQLF_delete_token(struct FSQLF_token **tok)
 {
-    clear_token(*tok);
+    FSQLF_clear_token(*tok);
     free((*tok));
     (*tok) = NULL;
 }
 
 
-void set_token(struct token * tok,
-    const token_class_t token_class,
+void FSQLF_set_token(struct FSQLF_token * tok,
+    const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
     const struct kw_conf *kw_conf,
@@ -48,7 +48,7 @@ void set_token(struct token * tok,
 }
 
 
-void clear_token(struct token *tok)
+void FSQLF_clear_token(struct FSQLF_token *tok)
 {
     free(tok->text);
     tok->text = NULL;

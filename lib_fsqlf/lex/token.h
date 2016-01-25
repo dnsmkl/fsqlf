@@ -46,15 +46,17 @@
 
 
 
-typedef int token_class_t;
-#define TC_KW 1     // Keyword
-#define TC_SP 2     // Spacing
-#define TC_CMT 3    // Comment
-
-
-struct token
+enum FSQLF_token_class
 {
-    token_class_t token_class;
+    FSQLF_TOKEN_CLASS_KW = 1,   // Keyword
+    FSQLF_TOKEN_CLASS_SP = 2,   // Spacing
+    FSQLF_TOKEN_CLASS_CMT = 3   // Comment
+};
+
+
+struct FSQLF_token
+{
+    enum FSQLF_token_class token_class;
     char *text;
     int leng;
     const struct kw_conf *kw_setting;
@@ -62,24 +64,24 @@ struct token
 };
 
 
-struct token *make_token(
-    const token_class_t token_class,
+struct FSQLF_token *FSQLF_make_token(
+    const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
     const struct kw_conf *kw_setting,
     const size_t indent);
 
 
-void delete_token(struct token **tok);
+void FSQLF_delete_token(struct FSQLF_token **tok);
 
 
-void set_token(struct token * tok,
-    const token_class_t token_class,
+void FSQLF_set_token(struct FSQLF_token * tok,
+    const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
     const struct kw_conf *kw_conf,
     const size_t indent);
-void clear_token(struct token *tok);
+void FSQLF_clear_token(struct FSQLF_token *tok);
 
 
 #endif

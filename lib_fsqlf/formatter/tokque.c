@@ -1,7 +1,7 @@
 #include <stdio.h>      // fprintf, fputs
 #include "globals.h"
 #include "../../utils/queue/queue.h"
-#include "../lex/token.h"
+#include "../lex/token.h" // struct FSQLF_token, FSQLF_clear_token, FSQLF_set_token
 #include "print_keywords.h" // FSQLF_echo_print, FSQLF_kw_print
 #include "tokque.h"
 #define YY_HEADER_EXPORT_START_CONDITIONS
@@ -11,14 +11,14 @@
 static int tokque_print_one(struct FSQLF_queue * tokque_ptr, FILE *yyout)
 {
     if (!FSQLF_queue_empty(tokque_ptr)) {
-        struct token *tok2 = (struct token *) FSQLF_queue_peek_n(tokque_ptr, 0);
+        struct FSQLF_token *tok2 = (struct FSQLF_token *) FSQLF_queue_peek_n(tokque_ptr, 0);
         if (tok2->kw_setting == NULL) {
             FSQLF_echo_print(yyout, tok2->indent, tok2->text);
         } else {
             FSQLF_kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
         }
         FSQLF_queue_drop_head(tokque_ptr);
-        clear_token(tok2);
+        FSQLF_clear_token(tok2);
         return 1; // success - printing was made
     } else {
         return 0; // queue was empty, so printing was not possible
@@ -68,14 +68,15 @@ struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
     static int first_run = 1;
     if (first_run) {
         first_run = 0;
-        FSQLF_queue_init(&FSQLF_tokque, sizeof(struct token));
+        FSQLF_queue_init(&FSQLF_tokque, sizeof(struct FSQLF_token));
     }
 
     // Place on queue.
     {
-        struct token *tok1 = (struct token *) FSQLF_queue_alloc_back(&FSQLF_tokque);
+        struct FSQLF_token *tok1 =
+            (struct FSQLF_token *) FSQLF_queue_alloc_back(&FSQLF_tokque);
         if (s) (*currindent) += s->before.global_indent_change;
-        set_token(tok1, 0, text, len, s, (*currindent));
+        FSQLF_set_token(tok1, 0, text, len, s, (*currindent));
         if (s) (*currindent) += s->after.global_indent_change;
     }
 
