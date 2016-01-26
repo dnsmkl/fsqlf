@@ -83,6 +83,11 @@ $(LIBNAME): $(LCOBJ)
 lib_fsqlf/conf_file/conf_file_create.o: lib_fsqlf/conf_file/conf_file_constants.h
 lib_fsqlf/conf_file/conf_file_read.o: lib_fsqlf/conf_file/conf_file_constants.h utils/string/read_int.h
 
+lib_fsqlf/formatter/lex.yy.h: lib_fsqlf/formatter/lex.yy.c
+lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/globals.h lib_fsqlf/formatter/print_keywords.h
+	# flex options (e.g. `-o`) has to be before input file
+	flex  -o $@ --header-file=lib_fsqlf/formatter/lex.yy.h $<
+
 
 
 #
@@ -99,11 +104,6 @@ cli/main.o: lib_fsqlf/formatter/lex.yy.h
 $(EXEC_CLI): $(COBJ) $(LIBNAME)
 	$(CC) $(CFLAGS)  $(COBJ)  -L. -lfsqlf  -Wl,-rpath,.  -o $@
 	# strip $@
-
-lib_fsqlf/formatter/lex.yy.h: lib_fsqlf/formatter/lex.yy.c
-lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/globals.h lib_fsqlf/formatter/print_keywords.h
-	# flex options (e.g. `-o`) has to be before input file
-	flex  -o $@ --header-file=lib_fsqlf/formatter/lex.yy.h $<
 
 
 
