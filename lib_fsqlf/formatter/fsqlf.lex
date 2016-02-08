@@ -38,6 +38,13 @@ extern int FSQLF_flex(int currindent, int left_p, int right_p);
     right_p = 0;
 
 
+int fsqlf_format_bytes(const char *bytes, int len)
+{
+    yy_scan_bytes(bytes, len);
+    return FSQLF_flex(0, 0, 0);
+}
+
+
 int fsqlf_format_file()
 {
     return FSQLF_flex(0, 0, 0);

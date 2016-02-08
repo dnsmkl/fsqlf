@@ -28,10 +28,10 @@ static int max_or_current(int prev_count, int curr_count, char use_only_curr_ind
 }
 
 
-static struct spacing calculate_spacing(
-    struct spacing afterspacing_of_prev,
+static struct fsqlf_spacing calculate_spacing(
+    struct fsqlf_spacing afterspacing_of_prev,
     unsigned short int isword_of_prev,
-    struct spacing beforespacing_of_current,
+    struct fsqlf_spacing beforespacing_of_current,
     unsigned short int isword_of_current,
     int global_indent_level)
 {
@@ -55,7 +55,7 @@ static struct spacing calculate_spacing(
             for indentation after it was.
             (except for global indent level, because of subselect)
     */
-    struct spacing r; // result to be built
+    struct fsqlf_spacing r; // result to be built
 
 
     r.new_line = max_2args_(afterspacing_of_prev.new_line, beforespacing_of_current.new_line);
@@ -123,7 +123,7 @@ static void print_ntimes(FILE *yyout, const char *txt, int count)
 }
 
 
-static void print_struct_spacing_count(FILE * yyout, struct spacing cnt)
+static void print_struct_spacing_count(FILE * yyout, struct fsqlf_spacing cnt)
 {
     const char *newline_char = "\n";
     const char *indent_chars = "    "; // 4 spaces.
@@ -144,11 +144,11 @@ static void print_spacing(
     int global_indent_level)
 {
     // keep track of 'after' spacing from previous call
-    static struct spacing from_previous__scounts = {0, 0, 0, 0};
+    static struct fsqlf_spacing from_previous__scounts = {0, 0, 0, 0};
     // keep track of previous 'is_word'
     static unsigned short int from_previous__isword = 0;
 
-    struct spacing spacing =
+    struct fsqlf_spacing spacing =
         calculate_spacing(
             from_previous__scounts,
             from_previous__isword,

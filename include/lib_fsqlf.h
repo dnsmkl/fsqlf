@@ -48,7 +48,7 @@ enum fsqlf_kwtext
 };
 
 
-struct spacing
+struct fsqlf_spacing
 {
     int global_indent_change;
     int new_line;
@@ -60,8 +60,8 @@ struct spacing
 #define KW_FUNCT_ARRAY_SIZE (3)
 struct fsqlf_kw_conf
 {
-    struct spacing before;
-    struct spacing after;
+    struct fsqlf_spacing before;
+    struct fsqlf_spacing after;
 
     enum fsqlf_kwtext print_original_text;
     enum fsqlf_kwcase print_case;
