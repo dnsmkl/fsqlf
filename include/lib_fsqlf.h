@@ -109,8 +109,7 @@ enum fsqlf_status fsqlf_read_conf_file(const char *file_pathname,
 enum fsqlf_status fsqlf_read_default_conf_file(struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
 
 
-void fsqlf_set_file_in(FILE *in);
-void fsqlf_set_file_out(FILE *out);
+int fsqlf_format_file(FILE *fin, FILE *fout);
 
 
 #endif

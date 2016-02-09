@@ -14,10 +14,7 @@ int main(int argc, char **argv)
     fsqlf_read_default_conf_file(&fsqlf_kw_get);        // Read configs from file.
 
     read_cli_options(argc, argv, &fsqlf_kw_get, &fin, &fout);  // Read configs from command line.
-    fsqlf_set_file_in(fin);
-    fsqlf_set_file_out(fout);
-
-    fsqlf_format_file();
+    fsqlf_format_file(fin, fout);
 
     fsqlf_kw_delete_all();
 

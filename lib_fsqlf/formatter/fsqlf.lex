@@ -45,23 +45,12 @@ int fsqlf_format_bytes(const char *bytes, int len)
 }
 
 
-int fsqlf_format_file()
+int fsqlf_format_file(FILE *fin, FILE *fout)
 {
+    yyin = fin; // FIXME: does not seem like thread safe.
+    yyout = fout; // FIXME: does not seem like thread safe.
     return FSQLF_flex(0, 0, 0);
 }
-
-
-void fsqlf_set_file_in(FILE *in)
-{
-    yyin = in;
-}
-
-
-void fsqlf_set_file_out(FILE *out)
-{
-    yyout = out;
-}
-
 
 
 #define BEGIN_STATE(NEWSTATE) BEGIN (NEWSTATE);
