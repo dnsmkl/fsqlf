@@ -82,55 +82,70 @@ static struct fsqlf_spacing calculate_spacing(
 }
 
 
-#define MAX_KEYWORD_SIZE (200)
-const char *FSQLF_stocase(const char* s_text, enum fsqlf_kwcase s_case)
+char *FSQLF_stocase(const char *s_text, enum fsqlf_kwcase s_case)
 {
-    assert(strlen(s_text) < MAX_KEYWORD_SIZE);
-    static char formatted_result[MAX_KEYWORD_SIZE];
-    int i;
+    size_t len = strlen(s_text);
+    char *formatted_result = malloc(len+1);
+    assert(formatted_result);
 
     switch (s_case) {
         case FSQLF_KWCASE_LOWER:
-            for (i = 0; i<strlen(s_text); i++) {
+            for (int i = 0; i<len; i++) {
                 formatted_result[i] = tolower(s_text[i]);
             }
             break;
         case FSQLF_KWCASE_UPPER:
-            for (i = 0; i<strlen(s_text); i++) {
+            for (int i = 0; i<len; i++) {
                 formatted_result[i] = toupper(s_text[i]);
             }
             break;
         case FSQLF_KWCASE_INITCAP:
             formatted_result[0] = toupper(s_text[0]);
-            for (i = 1; i<strlen(s_text); i++) {
+            for (int i = 1; i<len; i++) {
                 formatted_result[i] = tolower(s_text[i]);
             }
             break;
         case FSQLF_KWCASE_ORIGINAL:
-            return s_text;
+            memcpy(formatted_result, s_text, len);
     }
-    formatted_result[strlen(s_text)] = '\0';
+    formatted_result[len] = '\0';
     return formatted_result;
 }
 
 
-static void print_ntimes(FILE *yyout, const char *txt, int count)
+static void memcpy_ntimes(char *dst, const char *src, size_t len, size_t count)
 {
-    int i;
-    for (i = 0; i < count; i++) {
-        fputs(txt, yyout);
+    for (int i = 0; i < count; i++) {
+        memcpy(dst+i*len, src, len);
     }
 }
 
 
-static void print_struct_spacing_count(FILE * yyout, struct fsqlf_spacing cnt)
+static char * struct_spacing_to_str(struct fsqlf_spacing cnt)
 {
-    const char *newline_char = "\n";
-    const char *indent_chars = "    "; // 4 spaces.
-    const char *simple_space = " ";
-    print_ntimes(yyout, newline_char, cnt.new_line);
-    print_ntimes(yyout, indent_chars, cnt.indent);
-    print_ntimes(yyout, simple_space, cnt.space);
+    const char *newline = "\n";
+    int len_n = strlen(newline);
+    const char *indent = "    "; // 4 spaces.
+    int len_i = strlen(indent);
+    const char *space = " ";
+    int len_s = strlen(space);
+
+    size_t len = cnt.new_line * len_n;
+    len += cnt.indent * len_i;
+    len += cnt.space * len_s;
+
+    char *text = malloc(len+1);
+    assert(text);
+    char *tmp = text;
+
+    memcpy_ntimes(tmp, newline, len_n, cnt.new_line);
+    tmp += cnt.new_line * len_n;
+    memcpy_ntimes(tmp, indent, len_i, cnt.indent);
+    tmp += cnt.indent * len_i;
+    memcpy_ntimes(tmp, space, len_s, cnt.space);
+    text[len] = '\0';
+
+    return text;
 }
 
 
@@ -138,7 +153,7 @@ static void print_struct_spacing_count(FILE * yyout, struct fsqlf_spacing cnt)
 // Except when space is inside the multiword-keyword (e.g. "LEFT JOIN"),
 // those will not be printed by this function.
 // ('spacing' means new lines, tabs and spaces)
-static void print_spacing(
+static char * get_spacing_str(
     FILE *yyout,
     struct fsqlf_kw_conf current_settings,
     int global_indent_level)
@@ -157,11 +172,12 @@ static void print_spacing(
             global_indent_level
         );
 
-    print_struct_spacing_count(yyout, spacing);
+    char *spacing_txt = struct_spacing_to_str(spacing);
 
     // Save settings for next function call - overwrite
     from_previous__scounts = current_settings.after;
     from_previous__isword = current_settings.is_word;
+    return spacing_txt;
 }
 
 
@@ -169,7 +185,7 @@ void FSQLF_kw_print(FILE *yyout, size_t indent, const char *yytext,
                         struct fsqlf_kw_conf s)
 {
     // Print spacing.
-    print_spacing(yyout, s, indent); // print spacing before keyword
+    char *spacing_txt = get_spacing_str(yyout, s, indent); // print spacing before keyword
 
     // Print text:
     // .. first decide what text to use (original or default)
@@ -185,9 +201,14 @@ void FSQLF_kw_print(FILE *yyout, size_t indent, const char *yytext,
             assert(0);
     }
     // .. then handle its case
-    const char *text = FSQLF_stocase(text_nocase, s.print_case);
-    // .. then print the text.
+    char *text = FSQLF_stocase(text_nocase, s.print_case);
+
+    fprintf(yyout, "%s", spacing_txt);
     fprintf(yyout, "%s", text);
+
+    free(spacing_txt);
+    free(text);
+    // return text;
 }
 
 
@@ -200,15 +221,15 @@ void FSQLF_echo_print(FILE *yyout, size_t indent, char *txt)
     // Necessary for keeping indentation and new lines right.
     int pos_last_char = length - 1; // position of last character
 
-    // Printing of spacing is delegated to print_spacing(),
+    // Printing of spacing is delegated to get_spacing_str(),
     // which requires as input struct fsqlf_kw_conf.
     struct fsqlf_kw_conf s = {{0, 0, 0, 0}, {0, 0, 0, 0}, 0, 0, 0, 0};
 
-    // Delegate to print_spacing() printing of the new line.
+    // Delegate to get_spacing_str() printing of the new line.
     if (txt[pos_last_char] == '\n') {
         // Shorten the string - overwrite \n with \0 (end of string mark).
         txt[pos_last_char] = '\0';
-        // Adjust setting used by print_spacing()
+        // Adjust setting used by get_spacing_str()
         s.after.new_line = 1;
     }
 
@@ -217,6 +238,9 @@ void FSQLF_echo_print(FILE *yyout, size_t indent, char *txt)
     s.is_word = !(length == 1 && !isalnum(txt[0]));
 
     // print spacing then text
-    print_spacing(yyout, s, indent);
+    char *spacing_txt = get_spacing_str(yyout, s, indent);
+    fprintf(yyout, "%s", spacing_txt);
     fputs(txt, yyout);
+
+    free(spacing_txt);
 }
