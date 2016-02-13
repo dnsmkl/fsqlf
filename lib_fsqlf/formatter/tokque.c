@@ -26,7 +26,10 @@ static int tokque_print_one(struct FSQLF_queue * tokque_ptr, FILE *yyout)
 }
 
 
-struct FSQLF_state_change FSQLF_decide_new_state(int cur_state, const struct fsqlf_kw_conf *s)
+static struct FSQLF_state_change decide_new_state(
+    int cur_state,
+    const struct fsqlf_kw_conf *s
+)
 {
     if (s == fsqlf_kw_get("kw_deletefrom")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stDELETE};
     else if (s == fsqlf_kw_get("kw_insertinto")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stINSERT};
@@ -84,7 +87,7 @@ struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
     tokque_print_one(&FSQLF_tokque, yyout);
 
     // Send command for state change
-    return FSQLF_decide_new_state(cur_state, s);
+    return decide_new_state(cur_state, s);
 }
 
 
