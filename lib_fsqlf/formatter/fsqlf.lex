@@ -11,16 +11,8 @@ Helped to learn about flex a bit
 #include "globals.h"    // pair_stack, FSQLF_sub_openings, currindent, left_p, right_p
 #include "tokque.h"     // FSQLF_tokque_putthrough
 
-// Actual formatter
-// (only needed to hide private formatter's arguments)
-extern int fsqlf_format_file();
 
-// Private formatter (flex lexer)
-// It accepts various paramters only to avoid global variables.
-extern int FSQLF_flex(int currindent, int left_p, int right_p);
-#define YY_DECL int FSQLF_flex(int currindent, int left_p, int right_p)
-
-
+int currindent, left_p, right_p; // TODO: move to yyextra
 }
 
 
@@ -29,28 +21,13 @@ extern int FSQLF_flex(int currindent, int left_p, int right_p);
 
 
 // YY_USER_INIT is lex macro executed before initialising parser
-// It run inside of FSQLF_flex.
+// It is run inside of yylex().
 #define YY_USER_INIT \
     FSQLF_stack_init(&FSQLF_state_stack, sizeof(int)); \
     FSQLF_stack_init(&FSQLF_sub_openings, sizeof(pair)); \
     currindent = 0; \
     left_p = 0; \
     right_p = 0;
-
-
-int fsqlf_format_bytes(const char *bytes, int len)
-{
-    yy_scan_bytes(bytes, len);
-    return FSQLF_flex(0, 0, 0);
-}
-
-
-int fsqlf_format_file(FILE *fin, FILE *fout)
-{
-    yyin = fin; // FIXME: does not seem like thread safe.
-    yyout = fout; // FIXME: does not seem like thread safe.
-    return FSQLF_flex(0, 0, 0);
-}
 
 
 #define BEGIN_STATE(NEWSTATE) BEGIN (NEWSTATE);
@@ -173,6 +150,7 @@ ELSE (?i:else)
 END (?i:end)
 
 
+%option reentrant
 %option noyywrap
 %option nounput
 %option noinput

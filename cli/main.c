@@ -1,6 +1,5 @@
 #include <lib_fsqlf.h>
 #include "cli.h"    // read_cli_options
-#include "../lib_fsqlf/formatter/lex.yy.h"    // yylex
 
 
 int main(int argc, char **argv)

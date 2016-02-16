@@ -8,14 +8,14 @@
 #include "lex.yy.h" // start conditions (states)
 
 
-static int tokque_print_one(struct FSQLF_queue * tokque_ptr, FILE *yyout)
+static int tokque_print_one(struct FSQLF_queue *tokque_ptr, FILE *fout)
 {
     if (!FSQLF_queue_empty(tokque_ptr)) {
         struct FSQLF_token *tok2 = (struct FSQLF_token *) FSQLF_queue_peek_n(tokque_ptr, 0);
         if (tok2->kw_setting == NULL) {
-            FSQLF_echo_print(yyout, tok2->indent, tok2->text);
+            FSQLF_echo_print(fout, tok2->indent, tok2->text);
         } else {
-            FSQLF_kw_print(yyout, tok2->indent, tok2->text, *(tok2->kw_setting));
+            FSQLF_kw_print(fout, tok2->indent, tok2->text, *(tok2->kw_setting));
         }
         FSQLF_queue_drop_head(tokque_ptr);
         FSQLF_clear_token(tok2);
@@ -64,7 +64,7 @@ struct FSQLF_queue FSQLF_tokque; // GLOBAL
 ///
 // At the moment only 1st and 4th parts are done.
 // TODO: implement 2nd and 3rd
-struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
+struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *fout, int *currindent,
     char *text, size_t len, const struct fsqlf_kw_conf *s, int cur_state)
 {
     // Queue initialization.
@@ -84,17 +84,17 @@ struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
     }
 
     // Retrieve from queue and print.
-    tokque_print_one(&FSQLF_tokque, yyout);
+    tokque_print_one(&FSQLF_tokque, fout);
 
     // Send command for state change
     return decide_new_state(cur_state, s);
 }
 
 
-void FSQLF_tokque_finish_out(FILE *yyout)
+void FSQLF_tokque_finish_out(FILE *fout)
 {
     // Print out all queue
-    while (tokque_print_one(&FSQLF_tokque, yyout)) {}
+    while (tokque_print_one(&FSQLF_tokque, fout)) {}
     // Cleanup
     FSQLF_queue_clear(&FSQLF_tokque);
 }

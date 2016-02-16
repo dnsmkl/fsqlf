@@ -188,7 +188,7 @@ static struct fsqlf_spacing calculate_spacing(
 
 
 void FSQLF_kw_print(
-    FILE *yyout,
+    FILE *fout,
     size_t indent,
     const char *yytext,
     struct fsqlf_kw_conf s
@@ -200,15 +200,15 @@ void FSQLF_kw_print(
     const char *text_nocase = choose_kw_text(s, yytext);
     char *text = str_to_case(text_nocase, s.print_case);
 
-    fprintf(yyout, "%s", spacing_txt);
-    fprintf(yyout, "%s", text);
+    fprintf(fout, "%s", spacing_txt);
+    fprintf(fout, "%s", text);
 
     free(spacing_txt);
     free(text);
 }
 
 
-void FSQLF_echo_print(FILE *yyout, size_t indent, char *txt)
+void FSQLF_echo_print(FILE *fout, size_t indent, char *txt)
 {
     int length = strlen(txt);
 
@@ -232,8 +232,8 @@ void FSQLF_echo_print(FILE *yyout, size_t indent, char *txt)
     const struct fsqlf_spacing spacing = calculate_spacing(s, indent);
     char *spacing_txt = struct_spacing_to_str(spacing);
 
-    fprintf(yyout, "%s", spacing_txt);
-    fputs(txt, yyout);
+    fprintf(fout, "%s", spacing_txt);
+    fputs(txt, fout);
 
     free(spacing_txt);
 }

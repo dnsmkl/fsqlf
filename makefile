@@ -65,6 +65,7 @@ LCOBJ += lib_fsqlf/conf_file/conf_file_create.o
 LCOBJ += lib_fsqlf/conf_file/conf_file_read.o
 LCOBJ += lib_fsqlf/formatter/globals.o
 LCOBJ += lib_fsqlf/formatter/lex.yy.o
+LCOBJ += lib_fsqlf/formatter/lex_wrapper.o
 LCOBJ += lib_fsqlf/formatter/print_keywords.o
 LCOBJ += lib_fsqlf/formatter/tokque.o
 LCOBJ += lib_fsqlf/kw/kw.o
