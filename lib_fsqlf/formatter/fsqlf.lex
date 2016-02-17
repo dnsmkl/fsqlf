@@ -8,47 +8,58 @@ Helped to learn about flex a bit
 // This code goes at the "top" of the generated file.
 // Also it gets into generated header file.
 #include <stdio.h>      // fprintf, stdin, stdout
-#include "globals.h"    // pair_stack, FSQLF_sub_openings, currindent, left_p, right_p
 #include "tokque.h"     // FSQLF_tokque_putthrough
+#include "../../utils/stack/stack.h" // struct FSQLF_stack
 
 
-int currindent, left_p, right_p; // TODO: move to yyextra
+typedef struct
+{
+    int left;
+    int right;
+} pair;
+
+
+struct fsqlf_formatter_state
+{
+    // Global indent. (e.g. for subqueries and case expressions)
+    int currindent;
+
+    // Count of left and right paranthesis.
+    int left_p;
+    int right_p;
+
+    // Lex state (start condition) stack.
+    struct FSQLF_stack lexstate_stack;
+
+    // Pairs of paranthesis stored at each start of subquery.
+    struct FSQLF_stack sub_openings;
+};
+
 }
 
 
 %{
 // This does not get into generated header file.
 
-
-// YY_USER_INIT is lex macro executed before initialising parser
-// It is run inside of yylex().
-#define YY_USER_INIT \
-    FSQLF_stack_init(&FSQLF_state_stack, sizeof(int)); \
-    FSQLF_stack_init(&FSQLF_sub_openings, sizeof(pair)); \
-    currindent = 0; \
-    left_p = 0; \
-    right_p = 0;
-
-
 #define BEGIN_STATE(NEWSTATE) BEGIN (NEWSTATE);
 
 #define PUSH_STATE(NEWSTATE) \
 do { \
-    FSQLF_stack_push(&FSQLF_state_stack, &(int){YY_START}); \
+    FSQLF_stack_push(&yyextra->lexstate_stack, &(int){YY_START}); \
     BEGIN_STATE(NEWSTATE); \
 } while (0)
 
 #define POP_STATE() \
 do { \
-    BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack)); \
-    FSQLF_stack_pop(&FSQLF_state_stack); \
+    BEGIN_STATE(*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack)); \
+    FSQLF_stack_pop(&yyextra->lexstate_stack); \
 } while (0)
 
 // Use KW with ability to change state.
 #define TUSE_W_STATES(TKW) \
 do { \
     struct FSQLF_state_change sc = FSQLF_tokque_putthrough( \
-        yyout, &currindent, yytext, yyleng, TKW, YY_START \
+        yyout, &yyextra->currindent, yytext, yyleng, TKW, YY_START \
     ); \
     if (sc.state_change_action == FSQLF_SCA_BEGIN) { \
         BEGIN (sc.new_state); \
@@ -58,7 +69,9 @@ do { \
 // Use KW without ability to change state.
 #define TUSE_SIMPLE(TKW) \
 do { \
-    FSQLF_tokque_putthrough(yyout, &currindent,  yytext, yyleng, TKW, YY_START); \
+    FSQLF_tokque_putthrough( \
+        yyout, &yyextra->currindent, yytext, yyleng, TKW, YY_START \
+    ); \
 } while (0)
 
 %}
@@ -151,6 +164,7 @@ END (?i:end)
 
 
 %option reentrant
+%option extra-type="struct fsqlf_formatter_state *"
 %option noyywrap
 %option nounput
 %option noinput
@@ -198,12 +212,12 @@ END (?i:end)
 {COMP_LT}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_lt")); };
 {COMP_GT}    { TUSE_SIMPLE(fsqlf_kw_get("kw_comp_gt")); };
 
-<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p")); left_p++; };
-<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p")); left_p++; };
+<stSELECT,stCOMMA>{LEFTP}   {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p")); yyextra->left_p++; };
+<stLEFTP>{LEFTP}            {PUSH_STATE(stLEFTP ); TUSE_SIMPLE(fsqlf_kw_get("kw_left_p")); yyextra->left_p++; };
 <stLEFTP>{COMMA}            {TUSE_SIMPLE( NULL); };
 <stLEFTP>{ORDERBY}          {TUSE_SIMPLE( NULL); };
 <stLEFTP>{FROM}             {TUSE_SIMPLE(fsqlf_kw_get("kw_from_2"));  };
-<stLEFTP>{RIGHTP}           {POP_STATE(); TUSE_SIMPLE(fsqlf_kw_get("kw_right_p")); right_p++; };
+<stLEFTP>{RIGHTP}           {POP_STATE(); TUSE_SIMPLE(fsqlf_kw_get("kw_right_p")); yyextra->right_p++; };
 <stSELECT,stCOMMA,stUPDATE>{FROM} {BEGIN_STATE(stFROM);  TUSE_SIMPLE(fsqlf_kw_get("kw_from"));    };
 <stLEFTP,stSELECT>{AS}      {TUSE_SIMPLE(fsqlf_kw_get("kw_as"));      };
 
@@ -246,59 +260,64 @@ END (?i:end)
 <stTAB_COL_LIST>{RIGHTP}   { POP_STATE();              TUSE_SIMPLE(fsqlf_kw_get("kw_right_p_create") ); };
 
 <stP_SUB>{LEFTP}   {
-    BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
+    BEGIN_STATE(*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack));
     TUSE_SIMPLE(fsqlf_kw_get("kw_left_p"));
-    left_p++;
+    yyextra->left_p++;
     PUSH_STATE(stP_SUB);  };
 {LEFTP}            { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}  {
         BEGIN_STATE(stSELECT);
-        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p_sub"), YY_START);
-        FSQLF_stack_push(&FSQLF_sub_openings, &(pair){left_p, right_p}); // begin sub
-        currindent++; // begin sub
+        FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get("kw_left_p_sub"), YY_START);
+        FSQLF_stack_push(&yyextra->sub_openings, &(pair){yyextra->left_p, yyextra->right_p}); // begin sub
+        yyextra->currindent++; // begin sub
         TUSE_SIMPLE(fsqlf_kw_get("kw_select"));
     };
 <stP_SUB>{NUMBER}|{STRING}|{DBOBJECT} {
-        if (*(int*)FSQLF_stack_peek(&FSQLF_state_stack) == stFROM
-                || *(int*)FSQLF_stack_peek(&FSQLF_state_stack) == stJOIN) {
-            BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
-            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
-            left_p++;
+        if (*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack) == stFROM
+                || *(int*)FSQLF_stack_peek(&yyextra->lexstate_stack) == stJOIN) {
+            BEGIN_STATE(*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack));
+            FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
+            yyextra->left_p++;
             TUSE_SIMPLE(NULL);
         } else {
             BEGIN_STATE(stIN_CONSTLIST);
-            FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
-            left_p++;
+            FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
+            yyextra->left_p++;
             TUSE_SIMPLE(NULL);
         }
     };
-<stP_SUB>{COMMENT_ML_START}           { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML)  ; TUSE_SIMPLE( NULL);};
-<stP_SUB>{COMMENT_ONE_LINE}           { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE( NULL);};
-<stP_SUB>{SPACE}                      { FSQLF_tokque_putthrough(yyout, &currindent, "", 0,  NULL, YY_START); };
+<stP_SUB>{COMMENT_ML_START}           { FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL); };
+<stP_SUB>{COMMENT_ONE_LINE}           { FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE(NULL); };
+<stP_SUB>{SPACE}                      { FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "", 0,  NULL, YY_START); };
 <stP_SUB>{RIGHTP}  {
-        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
-        left_p++;
+        FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
+        yyextra->left_p++;
         POP_STATE();
         TUSE_SIMPLE(fsqlf_kw_get("kw_right_p"));
-        right_p++;
+        yyextra->right_p++;
     }
 <stP_SUB>. {
-        BEGIN_STATE(*(int*)FSQLF_stack_peek(&FSQLF_state_stack));
-        FSQLF_tokque_putthrough(yyout, &currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
-        left_p++;
+        BEGIN_STATE(*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack));
+        FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get("kw_left_p"), YY_START);
+        yyextra->left_p++;
         TUSE_SIMPLE(NULL);
     };
 
 {RIGHTP}    {
                 POP_STATE();
-                if (!FSQLF_stack_empty(&FSQLF_sub_openings) &&
-                    left_p -(*(pair*)FSQLF_stack_peek(&FSQLF_sub_openings)).left == (right_p+1) -(*(pair*)FSQLF_stack_peek(&FSQLF_sub_openings)).right - 1) {
-                    FSQLF_stack_pop(&FSQLF_sub_openings); // end sub
-                    currindent--; // end sub
+                if (!FSQLF_stack_empty(&yyextra->sub_openings) &&
+                    yyextra->left_p
+                        - (*(pair*)FSQLF_stack_peek(&yyextra->sub_openings)).left
+                        ==
+                        (yyextra->right_p+1)
+                        - (*(pair*)FSQLF_stack_peek(&yyextra->sub_openings)).right
+                        - 1) {
+                    FSQLF_stack_pop(&yyextra->sub_openings); // end sub
+                    yyextra->currindent--; // end sub
                     TUSE_SIMPLE(fsqlf_kw_get("kw_right_p_sub"));
                 } else {
                     TUSE_SIMPLE(fsqlf_kw_get("kw_right_p"));
-                    right_p++;
+                    yyextra->right_p++;
                 }
 
             };

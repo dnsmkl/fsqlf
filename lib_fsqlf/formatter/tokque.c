@@ -1,5 +1,4 @@
 #include <stdio.h>      // fprintf, fputs
-#include "globals.h"
 #include "../../utils/queue/queue.h"
 #include "../lex/token.h" // struct FSQLF_token, FSQLF_clear_token, FSQLF_set_token
 #include "print_keywords.h" // FSQLF_echo_print, FSQLF_kw_print

@@ -63,7 +63,6 @@ all: $(EXEC_CLI)  $(EXEC_GUI)
 #
 LCOBJ += lib_fsqlf/conf_file/conf_file_create.o
 LCOBJ += lib_fsqlf/conf_file/conf_file_read.o
-LCOBJ += lib_fsqlf/formatter/globals.o
 LCOBJ += lib_fsqlf/formatter/lex.yy.o
 LCOBJ += lib_fsqlf/formatter/lex_wrapper.o
 LCOBJ += lib_fsqlf/formatter/print_keywords.o
@@ -85,7 +84,7 @@ lib_fsqlf/conf_file/conf_file_create.o: lib_fsqlf/conf_file/conf_file_constants.
 lib_fsqlf/conf_file/conf_file_read.o: lib_fsqlf/conf_file/conf_file_constants.h utils/string/read_int.h
 
 lib_fsqlf/formatter/lex.yy.h: lib_fsqlf/formatter/lex.yy.c
-lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/globals.h lib_fsqlf/formatter/print_keywords.h
+lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/print_keywords.h
 	# flex options (e.g. `-o`) has to be before input file
 	flex  -o $@ --header-file=lib_fsqlf/formatter/lex.yy.h $<
 
