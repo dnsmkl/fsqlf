@@ -74,7 +74,7 @@ struct fsqlf_kw_conf
 
 
 // Create and retrieve  new struct fsqlf_kw_conf and add it to global map.
-struct fsqlf_kw_conf *FSQLF_kw_create(const char *name);
+void FSQLF_kw_create(const char *name);
 struct fsqlf_kw_conf *fsqlf_kw_get(const char *name);
 
 // Remove all kw_conf from global map and free the memory.

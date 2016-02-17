@@ -7,14 +7,13 @@
 struct fsqlf_kw_conf *g_keyword_config = NULL;
 
 
-struct fsqlf_kw_conf *FSQLF_kw_create(const char *name)
+void FSQLF_kw_create(const char *name)
 {
     struct fsqlf_kw_conf *tmp;
     tmp = (struct fsqlf_kw_conf*) calloc(1, sizeof(struct fsqlf_kw_conf));
     assert(tmp);
     tmp->name = name;
     HASH_ADD_KEYPTR(hh, g_keyword_config, tmp->name, strlen(tmp->name), tmp);
-    return tmp;
 }
 
 
