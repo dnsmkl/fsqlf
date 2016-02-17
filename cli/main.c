@@ -9,13 +9,13 @@ int main(int argc, char **argv)
     fin = stdin;
     fout = stdout;
 
-    fsqlf_init_all_kw(&fsqlf_kw_get);             // Init default configs.
-    fsqlf_read_default_conf_file(&fsqlf_kw_get);        // Read configs from file.
+    fsqlf_kwall_init(&fsqlf_kw_get);             // Init default configs.
+    fsqlf_kwconffile_read_default(&fsqlf_kw_get);        // Read configs from file.
 
     read_cli_options(argc, argv, &fsqlf_kw_get, &fin, &fout);  // Read configs from command line.
     fsqlf_format_file(fin, fout);
 
-    fsqlf_kw_delete_all();
+    fsqlf_kwall_delete();
 
     return 0;
 }

@@ -34,17 +34,17 @@ enum fsqlf_kwcase
 
 // Keyword text variation to be used.
 // (e.g. "left outer join" vs "left join")
-enum fsqlf_kwtext
+enum fsqlf_kwspelling
 {
     // Use whatever was in the input.
-    FSQLF_KWTEXT_USE_ORIGINAL = 0,
+    FSQLF_KWSPELLING_USE_ORIGINAL = 0,
 
     // Convert some keywords to fsqlf defaults.
     // Defaults are hard-coded in "kw_defaults.def".
     // Current defaults prefer:
     // - full words (e.g. convert "sel" to "select")
     // - lower word count (e.g. convert "left outer join" to "left join")
-    FSQLF_KWTEXT_USE_HARDCODED_DEFAULT = 1,
+    FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT = 1,
 };
 
 
@@ -63,7 +63,7 @@ struct fsqlf_kw_conf
     struct fsqlf_spacing before;
     struct fsqlf_spacing after;
 
-    enum fsqlf_kwtext print_original_text;
+    enum fsqlf_kwspelling print_original_text;
     enum fsqlf_kwcase print_case;
     unsigned short int is_word; // two adjacent words MUST be separated by some spacing
     char *text;
@@ -73,40 +73,38 @@ struct fsqlf_kw_conf
 };
 
 
-// Create new struct fsqlf_kw_conf and add it to global map.
+// Create and retrieve  new struct fsqlf_kw_conf and add it to global map.
 struct fsqlf_kw_conf *FSQLF_kw_create(const char *name);
-
-// Retrieve struct fsqlf_kw_conf from global map.
 struct fsqlf_kw_conf *fsqlf_kw_get(const char *name);
 
 // Remove all kw_conf from global map and free the memory.
-void fsqlf_kw_delete_all();
+void fsqlf_kwall_delete();
 
 
-void fsqlf_set_all_kwcase(enum fsqlf_kwcase keyword_case);
+void fsqlf_kwall_set_case(enum fsqlf_kwcase keyword_case);
 
 // Set used variation of keyword text. (e.g. "left outer join" vs "left join")
-void fsqlf_set_all_kwvariant(enum fsqlf_kwtext kw_text_to_use);
+void fsqlf_kwall_set_spelling(enum fsqlf_kwspelling kw_text_to_use);
 
 // Init all keyword settings to defaults.
-void fsqlf_init_all_kw(struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
+void fsqlf_kwall_init(struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
 
 
 
 
 // Create formatting configuration file with default content.
-enum fsqlf_status fsqlf_create_conf_file(char *config_file_name);
+enum fsqlf_status fsqlf_kwconffile_create(char *config_file_name);
 
 
 // Read specified config file.
-enum fsqlf_status fsqlf_read_conf_file(const char *file_pathname,
+enum fsqlf_status fsqlf_kwconffile_read(const char *file_pathname,
                     struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
 
 
 // Read configuration file from default conf file.
 // This would be "formatting.conf" in working directory.
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf".
-enum fsqlf_status fsqlf_read_default_conf_file(struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
+enum fsqlf_status fsqlf_kwconffile_read_default(struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *));
 
 
 void fsqlf_format_file(FILE *fin, FILE *fout);

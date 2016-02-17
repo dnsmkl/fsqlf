@@ -4,7 +4,7 @@
 
 
 // Create formatting configuration file with default content.
-enum fsqlf_status fsqlf_create_conf_file(char *config_file_name)
+enum fsqlf_status fsqlf_kwconffile_create(char *config_file_name)
 {
     FILE *config_file;
     config_file = fopen(config_file_name, "w");

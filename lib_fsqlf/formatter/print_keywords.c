@@ -116,9 +116,9 @@ static char *str_to_case(const char *s_text, enum fsqlf_kwcase s_case)
 static const char * choose_kw_text(struct fsqlf_kw_conf s, const char *yytext)
 {
     switch (s.print_original_text) {
-        case FSQLF_KWTEXT_USE_ORIGINAL:
+        case FSQLF_KWSPELLING_USE_ORIGINAL:
             return yytext;
-        case FSQLF_KWTEXT_USE_HARDCODED_DEFAULT:
+        case FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT:
             return  s.text;
         default:
             assert(0);

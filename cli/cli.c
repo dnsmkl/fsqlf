@@ -66,7 +66,7 @@ void read_cli_options(int argc, char **argv,
     if (argc == 1) return; // use stdin and stdout
 
     if (argc == 2 && strcmp(argv[1], "--create-config-file") == 0) {
-        if (fsqlf_create_conf_file(FSQLF_CONFFILE_NAME) != 0) {
+        if (fsqlf_kwconffile_create(FSQLF_CONFFILE_NAME) != 0) {
             exit(1);
         } else {
             fprintf(stderr, "File '%s' (re)created.\n", FSQLF_CONFFILE_NAME);
@@ -97,7 +97,7 @@ void read_cli_options(int argc, char **argv,
             if (!(*fout)) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
         } else if (ARGV_MATCH(i, "--config-file")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
-            if (fsqlf_read_conf_file(argv[i], fsqlf_kw_get) == FSQLF_FAIL) {
+            if (fsqlf_kwconffile_read(argv[i], fsqlf_kw_get) == FSQLF_FAIL) {
                 FAIL_WITH_ERROR(1, "Error reading configuration file: %s", argv[i]);
             }
         } else if (ARGV_MATCH(i, "--select-comma-newline")) {
@@ -115,20 +115,20 @@ void read_cli_options(int argc, char **argv,
         } else if (ARGV_MATCH(i, "--keyword-case")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "none") == 0) {
-                fsqlf_set_all_kwcase(FSQLF_KWCASE_ORIGINAL);
+                fsqlf_kwall_set_case(FSQLF_KWCASE_ORIGINAL);
             } else if (strcmp(argv[i], "upper") == 0) {
-                fsqlf_set_all_kwcase(FSQLF_KWCASE_UPPER);
+                fsqlf_kwall_set_case(FSQLF_KWCASE_UPPER);
             } else if (strcmp(argv[i], "lower") == 0) {
-                fsqlf_set_all_kwcase(FSQLF_KWCASE_LOWER);
+                fsqlf_kwall_set_case(FSQLF_KWCASE_LOWER);
             } else if (strcmp(argv[i], "initcap") == 0) {
-                fsqlf_set_all_kwcase(FSQLF_KWCASE_INITCAP);
+                fsqlf_kwall_set_case(FSQLF_KWCASE_INITCAP);
             }
         } else if (ARGV_MATCH(i, "--keyword-text")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "original") == 0) {
-                fsqlf_set_all_kwvariant(FSQLF_KWTEXT_USE_ORIGINAL);
+                fsqlf_kwall_set_spelling(FSQLF_KWSPELLING_USE_ORIGINAL);
             } else if (strcmp(argv[i], "default") == 0) {
-                fsqlf_set_all_kwvariant(FSQLF_KWTEXT_USE_HARDCODED_DEFAULT);
+                fsqlf_kwall_set_spelling(FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT);
             }
         } else if (ARGV_MATCH(i, "--select-newline-after")) {
             fsqlf_kw_get("kw_select")->after.new_line = get_int_arg(++i, argc, argv);
