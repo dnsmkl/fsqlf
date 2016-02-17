@@ -191,7 +191,7 @@ clean_test:
 #
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
-formatting.conf: lib_fsqlf/kw/kw_defaults.def lib_fsqlf/conf_file/conf_file_create.h $(EXEC_CLI)
+formatting.conf: lib_fsqlf/kw/kw_defaults.def $(EXEC_CLI)
 	./$(EXEC_CLI) --create-config-file
 
 VERSION:=$(shell git describe master)
