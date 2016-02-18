@@ -14,7 +14,7 @@ int fsqlf_format_bytes(const char *bytes, int len)
 }
 
 
-void fsqlf_format_file(FILE *fin, FILE *fout)
+void fsqlf_format_file(struct fsqlf_kw_conf *kwall, FILE *fin, FILE *fout)
 {
     struct fsqlf_formatter_state f_state;
     FSQLF_stack_init(&f_state.lexstate_stack, sizeof(int));
@@ -22,6 +22,7 @@ void fsqlf_format_file(FILE *fin, FILE *fout)
     f_state.currindent = 0;
     f_state.left_p = 0;
     f_state.right_p = 0;
+    f_state.kwall = kwall;
 
     yyscan_t scanner;
     yylex_init(&scanner);

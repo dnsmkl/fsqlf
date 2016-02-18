@@ -59,8 +59,8 @@ static int get_int_arg(int i, int argc, char **argv)
 }
 
 
-void read_cli_options(int argc, char **argv,
-                        struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *), FILE ** fin, FILE ** fout)
+void read_cli_options(struct fsqlf_kw_conf *kwall, int argc, char **argv,
+    FILE **fin, FILE **fout)
 {
     int i;
     if (argc == 1) return; // use stdin and stdout
@@ -97,58 +97,58 @@ void read_cli_options(int argc, char **argv,
             if (!(*fout)) FAIL_WITH_ERROR(1, "Error opening output file: %s", argv[i]);
         } else if (ARGV_MATCH(i, "--config-file")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
-            if (fsqlf_kwconffile_read(argv[i], fsqlf_kw_get) == FSQLF_FAIL) {
+            if (fsqlf_kwconffile_read(kwall, argv[i]) == FSQLF_FAIL) {
                 FAIL_WITH_ERROR(1, "Error reading configuration file: %s", argv[i]);
             }
         } else if (ARGV_MATCH(i, "--select-comma-newline")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "after") == 0) {
-                fsqlf_kw_get("kw_comma")->before.new_line = 0;
-                fsqlf_kw_get("kw_comma")->after.new_line  = 1;
+                fsqlf_kw_get(kwall, "kw_comma")->before.new_line = 0;
+                fsqlf_kw_get(kwall, "kw_comma")->after.new_line  = 1;
             } else if (strcmp(argv[i], "before") == 0) {
-                fsqlf_kw_get("kw_comma")->before.new_line = 1;
-                fsqlf_kw_get("kw_comma")->after.new_line  = 0;
+                fsqlf_kw_get(kwall, "kw_comma")->before.new_line = 1;
+                fsqlf_kw_get(kwall, "kw_comma")->after.new_line  = 0;
             } else if (strcmp(argv[i], "none") == 0) {
-                fsqlf_kw_get("kw_comma")->before.new_line = 0;
-                fsqlf_kw_get("kw_comma")->after.new_line  = 0;
+                fsqlf_kw_get(kwall, "kw_comma")->before.new_line = 0;
+                fsqlf_kw_get(kwall, "kw_comma")->after.new_line  = 0;
             }
         } else if (ARGV_MATCH(i, "--keyword-case")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "none") == 0) {
-                fsqlf_kwall_set_case(FSQLF_KWCASE_ORIGINAL);
+                fsqlf_kwall_set_case(kwall, FSQLF_KWCASE_ORIGINAL);
             } else if (strcmp(argv[i], "upper") == 0) {
-                fsqlf_kwall_set_case(FSQLF_KWCASE_UPPER);
+                fsqlf_kwall_set_case(kwall, FSQLF_KWCASE_UPPER);
             } else if (strcmp(argv[i], "lower") == 0) {
-                fsqlf_kwall_set_case(FSQLF_KWCASE_LOWER);
+                fsqlf_kwall_set_case(kwall, FSQLF_KWCASE_LOWER);
             } else if (strcmp(argv[i], "initcap") == 0) {
-                fsqlf_kwall_set_case(FSQLF_KWCASE_INITCAP);
+                fsqlf_kwall_set_case(kwall, FSQLF_KWCASE_INITCAP);
             }
         } else if (ARGV_MATCH(i, "--keyword-text")) {
             if (++i >= argc) FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[i-1]);
             if (strcmp(argv[i], "original") == 0) {
-                fsqlf_kwall_set_spelling(FSQLF_KWSPELLING_USE_ORIGINAL);
+                fsqlf_kwall_set_spelling(kwall, FSQLF_KWSPELLING_USE_ORIGINAL);
             } else if (strcmp(argv[i], "default") == 0) {
-                fsqlf_kwall_set_spelling(FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT);
+                fsqlf_kwall_set_spelling(kwall, FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT);
             }
         } else if (ARGV_MATCH(i, "--select-newline-after")) {
-            fsqlf_kw_get("kw_select")->after.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get(kwall, "kw_select")->after.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-or-before")) {
-            fsqlf_kw_get("kw_or")->before.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get(kwall, "kw_or")->before.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-or-after")) {
-            fsqlf_kw_get("kw_or")->after.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get(kwall, "kw_or")->after.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-and-before")) {
-            fsqlf_kw_get("kw_and")->before.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get(kwall, "kw_and")->before.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-and-after")) {
-            fsqlf_kw_get("kw_and")->after.new_line = get_int_arg(++i, argc, argv);
+            fsqlf_kw_get(kwall, "kw_and")->after.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-major-sections")) {
             int new_line_count = get_int_arg(++i, argc, argv);
-            fsqlf_kw_get("kw_from")->before.new_line = new_line_count;
-            fsqlf_kw_get("kw_where")->before.new_line = new_line_count;
-            fsqlf_kw_get("kw_inner_join")->before.new_line = new_line_count;
-            fsqlf_kw_get("kw_left_join")->before.new_line  = new_line_count;
-            fsqlf_kw_get("kw_right_join")->before.new_line = new_line_count;
-            fsqlf_kw_get("kw_full_join")->before.new_line  = new_line_count;
-            fsqlf_kw_get("kw_cross_join")->before.new_line = new_line_count;
+            fsqlf_kw_get(kwall, "kw_from")->before.new_line = new_line_count;
+            fsqlf_kw_get(kwall, "kw_where")->before.new_line = new_line_count;
+            fsqlf_kw_get(kwall, "kw_inner_join")->before.new_line = new_line_count;
+            fsqlf_kw_get(kwall, "kw_left_join")->before.new_line  = new_line_count;
+            fsqlf_kw_get(kwall, "kw_right_join")->before.new_line = new_line_count;
+            fsqlf_kw_get(kwall, "kw_full_join")->before.new_line  = new_line_count;
+            fsqlf_kw_get(kwall, "kw_cross_join")->before.new_line = new_line_count;
         } else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
             usage_info(argc, argv);
             exit(0);

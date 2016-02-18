@@ -30,23 +30,25 @@ static struct FSQLF_state_change decide_new_state(
     const struct fsqlf_kw_conf *s
 )
 {
-    if (s == fsqlf_kw_get("kw_deletefrom")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stDELETE};
-    else if (s == fsqlf_kw_get("kw_insertinto")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stINSERT};
-    else if (s == fsqlf_kw_get("kw_update")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stUPDATE};
-    else if (s == fsqlf_kw_get("kw_create")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stCREATE};
-    else if (s == fsqlf_kw_get("kw_drop")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_ifexists")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_view")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_union")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_union_all")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_minus")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_intersect")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_except")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_semicolon")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
-    else if (s == fsqlf_kw_get("kw_groupby")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stGROUPBY};
-    else if (s == fsqlf_kw_get("kw_orderby")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stORDERBY};
-    else if (s == fsqlf_kw_get("kw_having")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
-    else if (s == fsqlf_kw_get("kw_qualify")) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
+    if (s) {
+        if (strcmp(s->name, "kw_deletefrom") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stDELETE};
+        else if (strcmp(s->name, "kw_insertinto") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stINSERT};
+        else if (strcmp(s->name, "kw_update") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stUPDATE};
+        else if (strcmp(s->name, "kw_create") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stCREATE};
+        else if (strcmp(s->name, "kw_drop") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_ifexists") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_view") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_union") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_union_all") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_minus") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_intersect") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_except") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_semicolon") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, INITIAL};
+        else if (strcmp(s->name, "kw_groupby") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stGROUPBY};
+        else if (strcmp(s->name, "kw_orderby") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stORDERBY};
+        else if (strcmp(s->name, "kw_having") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
+        else if (strcmp(s->name, "kw_qualify") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
+    }
 
     return (struct FSQLF_state_change) {0, 0};
 }

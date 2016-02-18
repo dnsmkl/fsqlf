@@ -6,8 +6,8 @@
 #include <lib_fsqlf.h>
 
 
-void read_cli_options(int argc, char **argv,
-    struct fsqlf_kw_conf * (*fsqlf_kw_get)(const char *), FILE ** fin, FILE ** fout);
+void read_cli_options(struct fsqlf_kw_conf *kwall, int argc, char **argv,
+    FILE **fin, FILE **fout);
 
 
 #endif
