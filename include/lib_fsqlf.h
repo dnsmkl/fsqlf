@@ -73,21 +73,24 @@ struct fsqlf_kw_conf
 };
 
 
+typedef struct fsqlf_kw_conf * fsqlf_kwmap_t;
+
+
 // Create and retrieve  new struct fsqlf_kw_conf and add it to global map.
-void FSQLF_kw_create(struct fsqlf_kw_conf **kwall, const char *name);
-struct fsqlf_kw_conf *fsqlf_kw_get(struct fsqlf_kw_conf *kwall, const char *name);
+void FSQLF_kw_create(fsqlf_kwmap_t *kwmap, const char *name);
+struct fsqlf_kw_conf * fsqlf_kw_get(fsqlf_kwmap_t kwmap, const char *name);
 
 // Remove all kw_conf from global map and free the memory.
-void fsqlf_kwall_delete(struct fsqlf_kw_conf *kwall);
+void fsqlf_kwall_delete(fsqlf_kwmap_t kwmap);
 
 
-void fsqlf_kwall_set_case(struct fsqlf_kw_conf *kwall, enum fsqlf_kwcase keyword_case);
+void fsqlf_kwall_set_case(fsqlf_kwmap_t kwmap, enum fsqlf_kwcase keyword_case);
 
 // Set used variation of keyword text. (e.g. "left outer join" vs "left join")
-void fsqlf_kwall_set_spelling(struct fsqlf_kw_conf *kwall, enum fsqlf_kwspelling kw_text_to_use);
+void fsqlf_kwall_set_spelling(fsqlf_kwmap_t kwmap, enum fsqlf_kwspelling kw_text_to_use);
 
 // Init all keyword settings to defaults.
-void fsqlf_kwall_init(struct fsqlf_kw_conf **kwall);
+void fsqlf_kwall_init(fsqlf_kwmap_t *kwmap);
 
 
 
@@ -97,16 +100,16 @@ enum fsqlf_status fsqlf_kwconffile_create(char *config_file_name);
 
 
 // Read specified config file.
-enum fsqlf_status fsqlf_kwconffile_read(struct fsqlf_kw_conf *kwall, const char *file);
+enum fsqlf_status fsqlf_kwconffile_read(fsqlf_kwmap_t kwmap, const char *file);
 
 
 // Read configuration file from default conf file.
 // This would be "formatting.conf" in working directory.
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf".
-enum fsqlf_status fsqlf_kwconffile_read_default(struct fsqlf_kw_conf *kwall);
+enum fsqlf_status fsqlf_kwconffile_read_default(fsqlf_kwmap_t kwmap);
 
 
-void fsqlf_format_file(struct fsqlf_kw_conf *kwall, FILE *fin, FILE *fout);
+void fsqlf_format_file(fsqlf_kwmap_t kwmap, FILE *fin, FILE *fout);
 int fsqlf_format_bytes(const char *bytes, int len);
 
 

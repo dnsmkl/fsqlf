@@ -23,6 +23,7 @@ void fsqlf_kwall_set_spelling(struct fsqlf_kw_conf *kwall, enum fsqlf_kwspelling
 // Init all keyword settings to defaults.
 void fsqlf_kwall_init(struct fsqlf_kw_conf **kwall)
 {
+    *kwall = NULL;
     #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, TEXT) \
     do { \
         FSQLF_kw_create(kwall, #NAME); \

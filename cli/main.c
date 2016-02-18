@@ -8,15 +8,15 @@ int main(int argc, char **argv)
     FILE *fin, *fout;
     fin = stdin;
     fout = stdout;
-    struct fsqlf_kw_conf *kwall = NULL;
+    fsqlf_kwmap_t kwmap;
 
-    fsqlf_kwall_init(&kwall);             // Init default configs.
-    fsqlf_kwconffile_read_default(kwall);        // Read configs from file.
-    read_cli_options(kwall, argc, argv, &fin, &fout);  // Read configs from command line.
+    fsqlf_kwall_init(&kwmap);             // Init default configs.
+    fsqlf_kwconffile_read_default(kwmap);        // Read configs from file.
+    read_cli_options(kwmap, argc, argv, &fin, &fout);  // Read configs from command line.
 
-    fsqlf_format_file(kwall, fin, fout);
+    fsqlf_format_file(kwmap, fin, fout);
 
-    fsqlf_kwall_delete(kwall);
+    fsqlf_kwall_delete(kwmap);
 
     return 0;
 }
