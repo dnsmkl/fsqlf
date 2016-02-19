@@ -208,7 +208,7 @@ tmp_folder: LICENSE README.md
 	make prep_bin WIN=1
 	cp    -t tmp/$(PROJECTFOLDER)   $^
 
-prep_bin:   $(EXEC_CLI) $(EXEC_GUI) formatting.conf
+prep_bin: $(EXEC_CLI) $(EXEC_GUI) $(LIBNAME) formatting.conf
 	mkdir -p tmp/$(PROJECTFOLDER)/$(OS_TARGET)
 	cp    -t tmp/$(PROJECTFOLDER)/$(OS_TARGET)    $^
 
