@@ -1,7 +1,7 @@
 #include <stdio.h>      // fprintf, fputs
 #include "../../utils/queue/queue.h"
 #include "../lex/token.h" // struct FSQLF_token, FSQLF_clear_token, FSQLF_set_token
-#include "print_keywords.h" // FSQLF_echo_print, FSQLF_kw_print
+#include "print_keywords.h" // FSQLF_print
 #include "tokque.h"
 #define YY_HEADER_EXPORT_START_CONDITIONS
 #include "lex.yy.h" // start conditions (states)
@@ -10,12 +10,9 @@
 static int tokque_print_one(struct FSQLF_queue *tokque, FILE *fout)
 {
     if (!FSQLF_queue_empty(tokque)) {
-        struct FSQLF_token *tok = (struct FSQLF_token *) FSQLF_queue_peek_n(tokque, 0);
-        if (tok->kw_setting == NULL) {
-            FSQLF_echo_print(fout, tok->indent, tok->text);
-        } else {
-            FSQLF_kw_print(fout, tok->indent, tok->text, *(tok->kw_setting));
-        }
+        struct FSQLF_token *tok;
+        tok = (struct FSQLF_token *) FSQLF_queue_peek_n(tokque, 0);
+        FSQLF_print(fout, tok->indent, tok->text, tok->kw_setting);
         FSQLF_queue_drop_head(tokque);
         FSQLF_clear_token(tok);
         return 1; // success - printing was made

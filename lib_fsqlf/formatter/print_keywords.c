@@ -187,7 +187,7 @@ static struct fsqlf_spacing calculate_spacing(
 }
 
 
-void FSQLF_kw_print(
+static void print_kw(
     FILE *fout,
     size_t indent,
     const char *yytext,
@@ -208,9 +208,13 @@ void FSQLF_kw_print(
 }
 
 
-void FSQLF_echo_print(FILE *fout, size_t indent, char *txt)
+static void print_nonkw_text(FILE *fout, size_t indent, const char *txt)
 {
     int length = strlen(txt);
+    char *txtdup;
+    txtdup = (char *) malloc(length+1);
+    strncpy(txtdup, txt, length+1);
+
 
     // Spacing is calculated by calculate_spacing(),
     // which requires as input struct fsqlf_kw_conf.
@@ -219,21 +223,37 @@ void FSQLF_echo_print(FILE *fout, size_t indent, char *txt)
     // Adjustment necessary for single line comments,
     // for keeping indentation and new lines right.
     int pos_last_char = length - 1;
-    if (txt[pos_last_char] == '\n') {
-        // 'Move' ending new line from 'txt' to 's'
-        txt[pos_last_char] = '\0';
+    if (txtdup[pos_last_char] == '\n') {
+        // 'Move' ending new line from 'txtdup' to 's'
+        txtdup[pos_last_char] = '\0';
         s.after.new_line = 1;
     }
 
     // Word-vs-operator check.
     // Ensure that two adjacent words have spacing inbetween.
-    s.is_word = !(length == 1 && !isalnum(txt[0]));
+    s.is_word = !(length == 1 && !isalnum(txtdup[0]));
 
     const struct fsqlf_spacing spacing = calculate_spacing(s, indent);
     char *spacing_txt = struct_spacing_to_str(spacing);
 
     fprintf(fout, "%s", spacing_txt);
-    fputs(txt, fout);
+    fputs(txtdup, fout);
 
+    free(txtdup);
     free(spacing_txt);
+}
+
+
+void FSQLF_print(
+    FILE *fout,
+    size_t indent,
+    const char *text,
+    const struct fsqlf_kw_conf *kw
+)
+{
+    if (kw == NULL) {
+        print_nonkw_text(fout, indent, text);
+    } else {
+        print_kw(fout, indent, text, *kw);
+    }
 }
