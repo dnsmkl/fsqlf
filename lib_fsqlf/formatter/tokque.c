@@ -7,17 +7,17 @@
 #include "lex.yy.h" // start conditions (states)
 
 
-static int tokque_print_one(struct FSQLF_queue *tokque_ptr, FILE *fout)
+static int tokque_print_one(struct FSQLF_queue *tokque, FILE *fout)
 {
-    if (!FSQLF_queue_empty(tokque_ptr)) {
-        struct FSQLF_token *tok2 = (struct FSQLF_token *) FSQLF_queue_peek_n(tokque_ptr, 0);
-        if (tok2->kw_setting == NULL) {
-            FSQLF_echo_print(fout, tok2->indent, tok2->text);
+    if (!FSQLF_queue_empty(tokque)) {
+        struct FSQLF_token *tok = (struct FSQLF_token *) FSQLF_queue_peek_n(tokque, 0);
+        if (tok->kw_setting == NULL) {
+            FSQLF_echo_print(fout, tok->indent, tok->text);
         } else {
-            FSQLF_kw_print(fout, tok2->indent, tok2->text, *(tok2->kw_setting));
+            FSQLF_kw_print(fout, tok->indent, tok->text, *(tok->kw_setting));
         }
-        FSQLF_queue_drop_head(tokque_ptr);
-        FSQLF_clear_token(tok2);
+        FSQLF_queue_drop_head(tokque);
+        FSQLF_clear_token(tok);
         return 1; // success - printing was made
     } else {
         return 0; // queue was empty, so printing was not possible
