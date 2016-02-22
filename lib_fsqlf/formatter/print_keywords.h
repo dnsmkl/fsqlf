@@ -7,6 +7,7 @@
 
 void FSQLF_print(
     FILE *fout,
+    struct FSQLF_out_buffer *bout,
     size_t indent,
     const char *text,
     const struct fsqlf_kw_conf *kw

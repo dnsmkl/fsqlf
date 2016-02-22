@@ -189,6 +189,7 @@ static struct fsqlf_spacing calculate_spacing(
 
 static void print_kw(
     FILE *fout,
+    struct FSQLF_out_buffer *bout,
     size_t indent,
     const char *yytext,
     struct fsqlf_kw_conf s
@@ -200,15 +201,33 @@ static void print_kw(
     const char *text_nocase = choose_kw_text(s, yytext);
     char *text = str_to_case(text_nocase, s.print_case);
 
-    fprintf(fout, "%s", spacing_txt);
-    fprintf(fout, "%s", text);
+    if (!bout->buffer) {
+        fprintf(fout, "%s", spacing_txt);
+        fprintf(fout, "%s", text);
+    } else {
+        size_t len_spacing = strlen(spacing_txt);
+        size_t len_text = strlen(text);
+        if (bout->len_used + len_spacing + len_text + 1 > bout->len_alloc) {
+            size_t len_realloc = bout->len_alloc * 1.5;
+            bout->buffer = realloc(bout->buffer, len_realloc);
+            assert(bout->buffer);
+            bout->len_alloc = len_realloc;
+        }
+        strncpy(bout->buffer, spacing_txt, len_spacing);
+        strncpy(bout->buffer, text, len_text);
+    }
 
     free(spacing_txt);
     free(text);
 }
 
 
-static void print_nonkw_text(FILE *fout, size_t indent, const char *txt)
+static void print_nonkw_text(
+    FILE *fout,
+    struct FSQLF_out_buffer *bout,
+    size_t indent,
+    const char *txt
+)
 {
     int length = strlen(txt);
     char *txtdup;
@@ -236,8 +255,21 @@ static void print_nonkw_text(FILE *fout, size_t indent, const char *txt)
     const struct fsqlf_spacing spacing = calculate_spacing(s, indent);
     char *spacing_txt = struct_spacing_to_str(spacing);
 
-    fprintf(fout, "%s", spacing_txt);
-    fputs(txtdup, fout);
+    if (!bout->buffer) {
+        fprintf(fout, "%s", spacing_txt);
+        fprintf(fout, "%s", txtdup);
+    } else {
+        size_t len_spacing = strlen(spacing_txt);
+        size_t len_text = strlen(txtdup);
+        if (bout->len_used + len_spacing + len_text + 1 > bout->len_alloc) {
+            size_t len_realloc = bout->len_alloc * 1.5;
+            bout->buffer = realloc(bout->buffer, len_realloc);
+            assert(bout->buffer);
+            bout->len_alloc = len_realloc;
+        }
+        strncpy(bout->buffer, spacing_txt, len_spacing);
+        strncpy(bout->buffer, txtdup, len_text);
+    }
 
     free(txtdup);
     free(spacing_txt);
@@ -246,14 +278,17 @@ static void print_nonkw_text(FILE *fout, size_t indent, const char *txt)
 
 void FSQLF_print(
     FILE *fout,
+    struct FSQLF_out_buffer *bout,
     size_t indent,
     const char *text,
     const struct fsqlf_kw_conf *kw
 )
 {
+
+
     if (kw == NULL) {
-        print_nonkw_text(fout, indent, text);
+        print_nonkw_text(fout, bout, indent, text);
     } else {
-        print_kw(fout, indent, text, *kw);
+        print_kw(fout, bout, indent, text, *kw);
     }
 }

@@ -2,15 +2,30 @@
 #include <lib_fsqlf.h>
 
 
-int fsqlf_format_bytes(const char *bytes, int len)
+void fsqlf_format_bytes(struct fsqlf_kw_conf *kwall,
+    const char *bytes_in, int len, char **bytes_out
+)
 {
-    int ret=0; // TODO: change return type. Currently unused!
+    struct fsqlf_formatter_state f_state;
+    FSQLF_stack_init(&f_state.lexstate_stack, sizeof(int));
+    FSQLF_stack_init(&f_state.sub_openings, sizeof(pair));
+    f_state.currindent = 0;
+    f_state.left_p = 0;
+    f_state.right_p = 0;
+    f_state.kwall = kwall;
+    f_state.bout.len_used = 0;
+    f_state.bout.len_alloc = len * 1.5;
+    f_state.bout.buffer = malloc(f_state.bout.len_alloc);
+
     yyscan_t scanner;
-    yy_scan_bytes(bytes, len, scanner);
     yylex_init(&scanner);
+    yy_scan_bytes(bytes_in, len, scanner);
+    yyset_extra(&f_state, scanner);
+
     yylex(scanner);
+    *bytes_out = f_state.bout.buffer;
+
     yylex_destroy(scanner);
-    return ret;
 }
 
 
@@ -23,6 +38,7 @@ void fsqlf_format_file(struct fsqlf_kw_conf *kwall, FILE *fin, FILE *fout)
     f_state.left_p = 0;
     f_state.right_p = 0;
     f_state.kwall = kwall;
+    f_state.bout = (struct FSQLF_out_buffer){NULL, 0, 0};
 
     yyscan_t scanner;
     yylex_init(&scanner);

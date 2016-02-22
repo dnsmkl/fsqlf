@@ -22,9 +22,16 @@ enum
 };
 
 
-struct FSQLF_state_change FSQLF_tokque_putthrough(FILE *yyout, int *currindent,
-    char *text, size_t len, const struct fsqlf_kw_conf *s, int cur_state);
-void FSQLF_tokque_finish_out(FILE *yyout);
+struct FSQLF_state_change FSQLF_tokque_putthrough(
+    FILE *fout,
+    struct FSQLF_out_buffer *bout,
+    int *currindent,
+    char *text,
+    size_t len,
+    const struct fsqlf_kw_conf *s,
+    int cur_state
+);
+void FSQLF_tokque_finish_out(FILE *fout, struct FSQLF_out_buffer *bout);
 
 
 #endif

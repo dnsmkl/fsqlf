@@ -36,6 +36,9 @@ struct fsqlf_formatter_state
 
     // Configuration of all keywords.
     struct fsqlf_kw_conf *kwall;
+
+    // Output buffer.
+    struct FSQLF_out_buffer bout;
 };
 
 }
@@ -62,7 +65,8 @@ do { \
 #define TUSE_W_STATES(TKW) \
 do { \
     struct FSQLF_state_change sc = FSQLF_tokque_putthrough( \
-        yyout, &yyextra->currindent, yytext, yyleng, TKW, YY_START \
+        yyout, &yyextra->bout, \
+        &yyextra->currindent, yytext, yyleng, TKW, YY_START \
     ); \
     if (sc.state_change_action == FSQLF_SCA_BEGIN) { \
         BEGIN (sc.new_state); \
@@ -73,7 +77,8 @@ do { \
 #define TUSE_SIMPLE(TKW) \
 do { \
     FSQLF_tokque_putthrough( \
-        yyout, &yyextra->currindent, yytext, yyleng, TKW, YY_START \
+        yyout, &yyextra->bout, \
+        &yyextra->currindent, yytext, yyleng, TKW, YY_START \
     ); \
 } while (0)
 
@@ -270,7 +275,7 @@ END (?i:end)
 {LEFTP}            { PUSH_STATE(stP_SUB); };
 <stP_SUB>{SELECT}  {
         BEGIN_STATE(stSELECT);
-        FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p_sub"), YY_START);
+        FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p_sub"), YY_START);
         FSQLF_stack_push(&yyextra->sub_openings, &(pair){yyextra->left_p, yyextra->right_p}); // begin sub
         yyextra->currindent++; // begin sub
         TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_select"));
@@ -279,21 +284,21 @@ END (?i:end)
         if (*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack) == stFROM
                 || *(int*)FSQLF_stack_peek(&yyextra->lexstate_stack) == stJOIN) {
             BEGIN_STATE(*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack));
-            FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
+            FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
             yyextra->left_p++;
             TUSE_SIMPLE(NULL);
         } else {
             BEGIN_STATE(stIN_CONSTLIST);
-            FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
+            FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
             yyextra->left_p++;
             TUSE_SIMPLE(NULL);
         }
     };
-<stP_SUB>{COMMENT_ML_START}           { FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL); };
-<stP_SUB>{COMMENT_ONE_LINE}           { FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE(NULL); };
-<stP_SUB>{SPACE}                      { FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "", 0,  NULL, YY_START); };
+<stP_SUB>{COMMENT_ML_START}           { FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL); };
+<stP_SUB>{COMMENT_ONE_LINE}           { FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE(NULL); };
+<stP_SUB>{SPACE}                      { FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "", 0,  NULL, YY_START); };
 <stP_SUB>{RIGHTP}  {
-        FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
+        FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
         yyextra->left_p++;
         POP_STATE();
         TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_right_p"));
@@ -301,7 +306,7 @@ END (?i:end)
     }
 <stP_SUB>. {
         BEGIN_STATE(*(int*)FSQLF_stack_peek(&yyextra->lexstate_stack));
-        FSQLF_tokque_putthrough(yyout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
+        FSQLF_tokque_putthrough(yyout, &yyextra->bout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
         yyextra->left_p++;
         TUSE_SIMPLE(NULL);
     };
@@ -358,7 +363,7 @@ END (?i:end)
 
 
 <<EOF>> {
-            FSQLF_tokque_finish_out(yyout);
+            FSQLF_tokque_finish_out(yyout, &yyextra->bout);
             fprintf(yyout,"\n");
             switch (YY_START) {
                 case stCOMMENTML: fprintf(yyout,"--unterminated comment \n"); break;

@@ -57,6 +57,14 @@ struct fsqlf_spacing
 };
 
 
+struct FSQLF_out_buffer
+{
+    char *buffer;
+    size_t len_alloc; // allocated length
+    size_t len_used;
+};
+
+
 #define KW_FUNCT_ARRAY_SIZE (3)
 struct fsqlf_kw_conf
 {
@@ -110,7 +118,9 @@ enum fsqlf_status fsqlf_kwconffile_read_default(fsqlf_kwmap_t kwmap);
 
 
 void fsqlf_format_file(fsqlf_kwmap_t kwmap, FILE *fin, FILE *fout);
-int fsqlf_format_bytes(const char *bytes, int len);
+void fsqlf_format_bytes(struct fsqlf_kw_conf *kwall,
+    const char *bytes_in, int len, char **bytes_out
+);
 
 
 #endif
