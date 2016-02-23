@@ -2,7 +2,7 @@
 #include <lib_fsqlf.h>
 
 
-void fsqlf_format_bytes(struct fsqlf_kw_conf *kwall,
+void fsqlf_format_bytes(fsqlf_kwmap_t kwmap,
     const char *bytes_in, int len, char **bytes_out
 )
 {
@@ -12,7 +12,7 @@ void fsqlf_format_bytes(struct fsqlf_kw_conf *kwall,
     f_state.currindent = 0;
     f_state.left_p = 0;
     f_state.right_p = 0;
-    f_state.kwall = kwall;
+    f_state.kwall = kwmap;
     f_state.bout.len_used = 0;
     f_state.bout.len_alloc = len * 1.5;
     f_state.bout.buffer = malloc(f_state.bout.len_alloc);

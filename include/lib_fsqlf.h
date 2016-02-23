@@ -117,7 +117,7 @@ enum fsqlf_status fsqlf_kwconffile_read_default(fsqlf_kwmap_t kwmap);
 
 
 void fsqlf_format_file(fsqlf_kwmap_t kwmap, FILE *fin, FILE *fout);
-void fsqlf_format_bytes(struct fsqlf_kw_conf *kwall,
+void fsqlf_format_bytes(fsqlf_kwmap_t kwmap,
     const char *bytes_in, int len, char **bytes_out
 );
 
