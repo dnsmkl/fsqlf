@@ -105,7 +105,13 @@ $(EXEC_CLI): $(COBJ) $(LIBNAME)
 	$(CC) $(CFLAGS)  $(COBJ)  -L. -lfsqlf  -Wl,-rpath,.  -o $@
 	# strip $@
 
+testcases/test_fsqlf_format_bytes: testcases/test_fsqlf_format_bytes.o
+	$(CC) $(CFLAGS)  $<  -L. -lfsqlf  -Wl,-rpath,.  -o $@
 
+testcases/test_fsqlf_format_bytes.o: testcases/test_fsqlf_format_bytes.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
+
+newtest: testcases/test_fsqlf_format_bytes
 
 #
 # BUILD GUI

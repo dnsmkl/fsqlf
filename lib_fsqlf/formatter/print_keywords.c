@@ -213,8 +213,11 @@ static void print_kw(
             assert(bout->buffer);
             bout->len_alloc = len_realloc;
         }
-        strncpy(bout->buffer, spacing_txt, len_spacing);
-        strncpy(bout->buffer, text, len_text);
+        strncpy(bout->buffer + bout->len_used, spacing_txt, len_spacing);
+        bout->len_used += len_spacing;
+        strncpy(bout->buffer + bout->len_used, text, len_text);
+        bout->len_used += len_text;
+        bout->buffer[bout->len_used] = '\0';
     }
 
     free(spacing_txt);
@@ -267,8 +270,11 @@ static void print_nonkw_text(
             assert(bout->buffer);
             bout->len_alloc = len_realloc;
         }
-        strncpy(bout->buffer, spacing_txt, len_spacing);
-        strncpy(bout->buffer, txtdup, len_text);
+        strncpy(bout->buffer + bout->len_used, spacing_txt, len_spacing);
+        bout->len_used += len_spacing;
+        strncpy(bout->buffer + bout->len_used, txtdup, len_text);
+        bout->len_used += len_text;
+        bout->buffer[bout->len_used] = '\0';
     }
 
     free(txtdup);
