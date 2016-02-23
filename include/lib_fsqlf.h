@@ -65,7 +65,6 @@ struct FSQLF_out_buffer
 };
 
 
-#define KW_FUNCT_ARRAY_SIZE (3)
 struct fsqlf_kw_conf
 {
     struct fsqlf_spacing before;
