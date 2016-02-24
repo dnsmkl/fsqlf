@@ -13,7 +13,7 @@ struct FSQLF_state_change
 
 
 // SCA - state change action
-enum
+enum FSQLF_state_change_action
 {
     FSQLF_SCA_NONE,
     FSQLF_SCA_BEGIN,
