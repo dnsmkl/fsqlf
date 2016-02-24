@@ -1,7 +1,7 @@
 #include <lib_fsqlf.h>
 
 
-void fsqlf_kwall_set_case(struct fsqlf_kw_conf *kwall, enum fsqlf_kwcase keyword_case)
+void fsqlf_kwmap_set_case(struct fsqlf_kw_conf *kwall, enum fsqlf_kwcase keyword_case)
 {
     #define XMACRO( NAME , ... )   \
         fsqlf_kw_get(kwall, #NAME)->print_case = keyword_case;
@@ -11,7 +11,7 @@ void fsqlf_kwall_set_case(struct fsqlf_kw_conf *kwall, enum fsqlf_kwcase keyword
 
 
 // Set used variation of keyword text. (e.g. "left outer join" vs "left join")
-void fsqlf_kwall_set_spelling(struct fsqlf_kw_conf *kwall, enum fsqlf_kwspelling kw_text_to_use)
+void fsqlf_kwmap_set_spelling(struct fsqlf_kw_conf *kwall, enum fsqlf_kwspelling kw_text_to_use)
 {
     #define XMACRO( NAME , ... )           \
         fsqlf_kw_get(kwall, #NAME)->print_original_text = kw_text_to_use;
@@ -21,7 +21,7 @@ void fsqlf_kwall_set_spelling(struct fsqlf_kw_conf *kwall, enum fsqlf_kwspelling
 
 
 // Init all keyword settings to defaults.
-void fsqlf_kwall_init(struct fsqlf_kw_conf **kwall)
+void fsqlf_kwmap_init(struct fsqlf_kw_conf **kwall)
 {
     *kwall = NULL;
     #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, TEXT) \

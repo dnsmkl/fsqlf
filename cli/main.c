@@ -10,13 +10,13 @@ int main(int argc, char **argv)
     fout = stdout;
     fsqlf_kwmap_t kwmap;
 
-    fsqlf_kwall_init(&kwmap);             // Init default configs.
-    fsqlf_kwconffile_read_default(kwmap);        // Read configs from file.
+    fsqlf_kwmap_init(&kwmap);             // Init default configs.
+    fsqlf_kwmap_conffile_read_default(kwmap);        // Read configs from file.
     read_cli_options(kwmap, argc, argv, &fin, &fout);  // Read configs from command line.
 
     fsqlf_format_file(kwmap, fin, fout);
 
-    fsqlf_kwall_delete(kwmap);
+    fsqlf_kwmap_destroy(kwmap);
 
     return 0;
 }

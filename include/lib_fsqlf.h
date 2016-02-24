@@ -88,32 +88,32 @@ void FSQLF_kw_create(fsqlf_kwmap_t *kwmap, const char *name);
 struct fsqlf_kw_conf * fsqlf_kw_get(fsqlf_kwmap_t kwmap, const char *name);
 
 // Remove all kw_conf from global map and free the memory.
-void fsqlf_kwall_delete(fsqlf_kwmap_t kwmap);
+void fsqlf_kwmap_destroy(fsqlf_kwmap_t kwmap);
 
 
-void fsqlf_kwall_set_case(fsqlf_kwmap_t kwmap, enum fsqlf_kwcase keyword_case);
+void fsqlf_kwmap_set_case(fsqlf_kwmap_t kwmap, enum fsqlf_kwcase keyword_case);
 
 // Set used variation of keyword text. (e.g. "left outer join" vs "left join")
-void fsqlf_kwall_set_spelling(fsqlf_kwmap_t kwmap, enum fsqlf_kwspelling kw_text_to_use);
+void fsqlf_kwmap_set_spelling(fsqlf_kwmap_t kwmap, enum fsqlf_kwspelling kw_text_to_use);
 
 // Init all keyword settings to defaults.
-void fsqlf_kwall_init(fsqlf_kwmap_t *kwmap);
+void fsqlf_kwmap_init(fsqlf_kwmap_t *kwmap);
 
 
 
 
 // Create formatting configuration file with default content.
-enum fsqlf_status fsqlf_kwconffile_create(char *config_file_name);
+enum fsqlf_status fsqlf_kwmap_conffile_create(char *config_file_name);
 
 
 // Read specified config file.
-enum fsqlf_status fsqlf_kwconffile_read(fsqlf_kwmap_t kwmap, const char *file);
+enum fsqlf_status fsqlf_kwmap_conffile_read(fsqlf_kwmap_t kwmap, const char *file);
 
 
 // Read configuration file from default conf file.
 // This would be "formatting.conf" in working directory.
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf".
-enum fsqlf_status fsqlf_kwconffile_read_default(fsqlf_kwmap_t kwmap);
+enum fsqlf_status fsqlf_kwmap_conffile_read_default(fsqlf_kwmap_t kwmap);
 
 
 void fsqlf_format_file(fsqlf_kwmap_t kwmap, FILE *fin, FILE *fout);

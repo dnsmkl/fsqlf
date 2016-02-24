@@ -21,7 +21,7 @@ struct fsqlf_kw_conf *fsqlf_kw_get(struct fsqlf_kw_conf *kwall, const char *name
 }
 
 
-void fsqlf_kwall_delete(struct fsqlf_kw_conf *kwall)
+void fsqlf_kwmap_destroy(struct fsqlf_kw_conf *kwall)
 {
     struct fsqlf_kw_conf *current_kw, *tmp;
     HASH_ITER(hh, kwall, current_kw, tmp) {

@@ -32,7 +32,7 @@ static void set_from_array(struct fsqlf_kw_conf *kwall, const char *name, const 
 
 
 // Read specified config file.
-enum fsqlf_status fsqlf_kwconffile_read(struct fsqlf_kw_conf *kwall, const char *file)
+enum fsqlf_status fsqlf_kwmap_conffile_read(struct fsqlf_kw_conf *kwall, const char *file)
 {
     FILE *config_file = fopen(file, "r");
     if (!config_file) {
@@ -85,11 +85,11 @@ enum fsqlf_status fsqlf_kwconffile_read(struct fsqlf_kw_conf *kwall, const char 
 // Read configuration file from default conf file
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
-enum fsqlf_status fsqlf_kwconffile_read_default(struct fsqlf_kw_conf *kwall)
+enum fsqlf_status fsqlf_kwmap_conffile_read_default(struct fsqlf_kw_conf *kwall)
 {
     // First try file in working directory
     if (file_exists(FSQLF_CONFFILE_NAME)) {
-        return fsqlf_kwconffile_read(kwall, FSQLF_CONFFILE_NAME);
+        return fsqlf_kwmap_conffile_read(kwall, FSQLF_CONFFILE_NAME);
     }
 
     // In non-windows (unix/linux) also try folder in user-home directory
@@ -110,7 +110,7 @@ enum fsqlf_status fsqlf_kwconffile_read_default(struct fsqlf_kw_conf *kwall)
         strncat(full_path, conf_file, full_len - strlen(full_path));
 
         // Read the file
-        int ret_code = fsqlf_kwconffile_read(kwall, full_path);
+        int ret_code = fsqlf_kwmap_conffile_read(kwall, full_path);
 
         // Cleanup
         free(full_path);
