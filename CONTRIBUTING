@@ -1,0 +1,63 @@
+Folder layout:
+
+./buildtools - things needed for building (except for makefile)
+./cli - code specific to command line interface
+./gui - code specific to graphical user interface
+./include - header of fsqlf library
+./lib_fsqlf - code of fsqlf library
+./testcases - tests
+./utils - generic code of considerable size. External code files also go here.
+
+
+Shortnames used:
+
+'kw' - keyword with all its settings
+'kwmap' - collection of all 'kw's
+'nl', 'tab', 'sp' - new line, tabulation/indentation, space character.
+
+
+Code style:
+
+Dialect: C99.
+Target platforms: windows and linux (though even better if more).
+Indentation: 4 spaces (no tabs).
+Line limit: 79 characters (soft).
+Exported public symbols: prefix "fsqlf_".
+Exported private symbols: prefix "FSQLF_" (static functions don't need these).
+Also, names of similar things, should share same prefix. (mimic namespacing)
+Avoid typedef'ing structs. (only if need to hide or separate from struct)
+Follow K&R style.
+External code files should go under utils, and follow their own conventions.
+
+
+Code style illustration:
+----
+#include <stdio.h> // puts()
+
+
+char * FSQLF_first()
+{
+    // For things that have names (functions, structs, enums),
+    // opening curly brace goes on new line.
+    if (1 == 1) {
+        // Opening bracket for if/for/while/switch go on same line.
+        return NULL;
+    }
+}
+
+
+// Two lines between adjacent functions.
+// (same for any other significant top level blocks)
+// If there is need to split arguments on separate lines,
+// closing parenthesis goes on new line.
+static void second(
+    struct long_configuration *cfg,
+    char *out_buffer
+)
+{
+    puts(FSQLF_first());
+    puts(
+        "NULL"
+    );
+}
+----
