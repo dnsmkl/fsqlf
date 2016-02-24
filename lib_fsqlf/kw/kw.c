@@ -19,13 +19,3 @@ struct fsqlf_kw_conf *fsqlf_kw_get(struct fsqlf_kw_conf *kwall, const char *name
     HASH_FIND_STR(kwall, name, match);
     return match;
 }
-
-
-void fsqlf_kwmap_destroy(struct fsqlf_kw_conf *kwall)
-{
-    struct fsqlf_kw_conf *current_kw, *tmp;
-    HASH_ITER(hh, kwall, current_kw, tmp) {
-        HASH_DEL(kwall, current_kw);
-        free(current_kw);
-    }
-}

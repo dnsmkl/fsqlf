@@ -5,7 +5,7 @@ void fsqlf_kwmap_set_case(struct fsqlf_kw_conf *kwall, enum fsqlf_kwcase keyword
 {
     #define XMACRO( NAME , ... )   \
         fsqlf_kw_get(kwall, #NAME)->print_case = keyword_case;
-    #include "kw_defaults.def"
+    #include "kwmap_defaults.def"
     #undef XMACRO
 }
 
@@ -15,7 +15,7 @@ void fsqlf_kwmap_set_spelling(struct fsqlf_kw_conf *kwall, enum fsqlf_kwspelling
 {
     #define XMACRO( NAME , ... )           \
         fsqlf_kw_get(kwall, #NAME)->print_original_text = kw_text_to_use;
-    #include "kw_defaults.def"
+    #include "kwmap_defaults.def"
     #undef XMACRO
 }
 
@@ -40,6 +40,16 @@ void fsqlf_kwmap_init(struct fsqlf_kw_conf **kwall)
         fsqlf_kw_get(*kwall, #NAME)->text               = TEXT; \
         fsqlf_kw_get(*kwall, #NAME)->is_word            = 1;  \
     } while (0);
-    #include "kw_defaults.def"
+    #include "kwmap_defaults.def"
     #undef XMACRO
+}
+
+
+void fsqlf_kwmap_destroy(struct fsqlf_kw_conf *kwall)
+{
+    struct fsqlf_kw_conf *current_kw, *tmp;
+    HASH_ITER(hh, kwall, current_kw, tmp) {
+        HASH_DEL(kwall, current_kw);
+        free(current_kw);
+    }
 }

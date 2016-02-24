@@ -54,7 +54,7 @@ enum fsqlf_status fsqlf_kwmap_conffile_create(char *config_file_name)
     #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, ... )   \
         fprintf(config_file, "%-24s %s %6s %6s %6s %6s %6s %6s %6s\n",          \
             #NAME, #gib, #nlb, #tb, #sb, #gia, #nla, #ta, #sa);
-    #include "../kw/kw_defaults.def"
+    #include "../kw/kwmap_defaults.def"
     #undef XMACRO
 
     fputs("\n\n", config_file);

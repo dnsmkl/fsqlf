@@ -68,7 +68,7 @@ LCOBJ += lib_fsqlf/formatter/lex_wrapper.o
 LCOBJ += lib_fsqlf/formatter/print_keywords.o
 LCOBJ += lib_fsqlf/formatter/tokque.o
 LCOBJ += lib_fsqlf/kw/kw.o
-LCOBJ += lib_fsqlf/kw/kwall_init.o
+LCOBJ += lib_fsqlf/kw/kwmap.o
 LCOBJ += lib_fsqlf/lex/token.o
 LCOBJ += utils/queue/queue.o
 LCOBJ += utils/stack/stack.o
@@ -197,7 +197,7 @@ clean_test:
 #
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
-formatting.conf: lib_fsqlf/kw/kw_defaults.def $(EXEC_CLI)
+formatting.conf: lib_fsqlf/kw/kwmap_defaults.def $(EXEC_CLI)
 	./$(EXEC_CLI) --create-config-file
 
 VERSION:=$(shell git describe master)
