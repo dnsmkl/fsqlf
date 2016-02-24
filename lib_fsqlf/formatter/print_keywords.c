@@ -290,8 +290,6 @@ void FSQLF_print(
     const struct fsqlf_kw_conf *kw
 )
 {
-
-
     if (kw == NULL) {
         print_nonkw_text(fout, bout, indent, text);
     } else {
