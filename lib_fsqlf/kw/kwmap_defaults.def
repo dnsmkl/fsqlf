@@ -12,7 +12,7 @@
 //  before: new line    ---------------+  |  |   |  |  |  |   |
 //  before: global indent change ---+  |  |  |   |  |  |  |   |
 //                                  |  |  |  |   |  |  |  |   |
-//        fsqlf_kw_get name                   |  |  |  |   |  |  |  |   |
+//        name                      |  |  |  |   |  |  |  |   |
 //
 
 XMACRO( kw_like                   , 0, 0, 0, 1,  0, 0, 0, 1, "LIKE"         )
