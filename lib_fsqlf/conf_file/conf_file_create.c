@@ -4,6 +4,7 @@
 
 
 // Create formatting configuration file with default content.
+// TODO: write from kwmap instead of stuff from "../kw/kwmap_defaults.def"
 enum fsqlf_status fsqlf_kwmap_conffile_create(char *config_file_name)
 {
     FILE *config_file;
