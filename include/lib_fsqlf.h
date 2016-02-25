@@ -80,6 +80,7 @@ struct fsqlf_kw_conf
 };
 
 
+// Typedef to be used when map of all 'kw's is needed.
 typedef struct fsqlf_kw_conf * fsqlf_kwmap_t;
 
 
