@@ -5,7 +5,7 @@ Folder layout:
 ./gui - code specific to graphical user interface
 ./include - header of fsqlf library
 ./lib_fsqlf - code of fsqlf library
-./testcases - tests
+./tests - tests
 ./utils - generic code of considerable size. External code files also go here.
 
 

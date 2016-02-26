@@ -105,13 +105,13 @@ $(EXEC_CLI): $(COBJ) $(LIBNAME)
 	$(CC) $(CFLAGS)  $(COBJ)  -L. -lfsqlf  -Wl,-rpath,.  -o $@
 	# strip $@
 
-testcases/test_fsqlf_format_bytes: testcases/test_fsqlf_format_bytes.o
+tests/test_fsqlf_format_bytes: tests/test_fsqlf_format_bytes.o
 	$(CC) $(CFLAGS)  $<  -L. -lfsqlf  -Wl,-rpath,.  -o $@
 
-testcases/test_fsqlf_format_bytes.o: testcases/test_fsqlf_format_bytes.c
+tests/test_fsqlf_format_bytes.o: tests/test_fsqlf_format_bytes.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
-newtest: testcases/test_fsqlf_format_bytes
+newtest: tests/test_fsqlf_format_bytes
 
 #
 # BUILD GUI
@@ -142,7 +142,7 @@ gui/license_text.h: LICENSE
 # Given certain input to `fsqlf`, actual output (lead) is compared
 # against to it's predefined expected output (gold).
 # TF stands for "test file".
-TF_INPUT = $(wildcard testcases/*_input.sql)
+TF_INPUT = $(wildcard tests/cases/*_input.sql)
 TF_ACTUAL_RESULTS = $(patsubst %_input.sql,%_actual.sql,$(TF_INPUT))
 $(TF_ACTUAL_RESULTS): %_actual.sql: %_input.sql | %_expected.sql
 	@./fsqlf $< $@
@@ -156,7 +156,7 @@ test: test-gold
 
 # Output for visual inspection.
 test-print: $(EXEC_CLI)
-	./$(EXEC_CLI) testcases/bigquery.sql \
+	./$(EXEC_CLI) tests/cases/bigquery.sql \
 	|  awk -F, '{ printf("%4d # ", NR) ; print}'
 
 # When adding new test cases %.sql files, auto-generate %_expected.sql files.
