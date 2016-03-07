@@ -44,7 +44,8 @@ void alloc_join_4(char **dest,
 // See if actual formatting output matches expected.
 int main(int argc, char **argv)
 {
-    // argv
+    int return_code = 0; // success unless proven otherwise
+
     for (int i = 0; i < TC_COUNT; i++) {
         char *cmd;
         const char *fsqlf = "../fsqlf";
@@ -69,14 +70,17 @@ int main(int argc, char **argv)
                 break;
             case FCOMP_DIFFER:
                 printf("file_compare: DIFFER  (%s)\n", tcs[i][TC_ACTUAL]);
+                return_code = 1; // failure
                 break;
             case FCOMP_ERROR:
                 printf("file_compare: ERROR  (%s)\n", tcs[i][TC_ACTUAL]);
+                return_code = 1; // failure
                 break;
             default:
                 assert(0);
         }
-
         free(cmd);
     }
+
+    return return_code;
 }

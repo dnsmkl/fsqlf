@@ -15,6 +15,7 @@ gui/license_text.h
 *.o
 *.so
 formatting.conf
+tests/cases/*_actual.sql
 
 
 #editor stuff

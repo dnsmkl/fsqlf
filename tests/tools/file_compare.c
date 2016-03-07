@@ -4,7 +4,7 @@
 
 
 // Char-bychar comparison of two files.
-enum fcomp_result file_compare(char *path_left, char *path_right)
+enum fcomp_result file_compare(const char *path_left, const char *path_right)
 {
     FILE *left = fopen(path_left, "r");
     FILE *right = fopen(path_right, "r");

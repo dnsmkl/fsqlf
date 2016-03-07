@@ -135,30 +135,19 @@ gui/license_text.h: LICENSE
 # Given certain input to `fsqlf`, actual output (lead) is compared
 # against to it's predefined expected output (gold).
 # TF stands for "test file".
-TF_INPUT = $(wildcard tests/cases/*_input.sql)
-TF_ACTUAL_RESULTS = $(patsubst %_input.sql,%_actual.sql,$(TF_INPUT))
-$(TF_ACTUAL_RESULTS): %_actual.sql: %_input.sql | %_expected.sql
-	@./fsqlf $< $@
-	@diff -q $@ $|
-	@rm $@
-	@echo "Result as expected for: " $<
+test: test-format-files
 
-test-gold: $(EXEC_CLI)  $(TF_ACTUAL_RESULTS)
+test-format-files: $(EXEC_CLI) tests/format_files_test
+	cd tests && ./format_files_test
 
-test: test-gold
+tests/tools/file_compare.o: tests/tools/file_compare.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
 
-# Output for visual inspection.
-test-print: $(EXEC_CLI)
-	./$(EXEC_CLI) tests/cases/bigquery.sql \
-	|  awk -F, '{ printf("%4d # ", NR) ; print}'
+tests/format_files_test.o: tests/format_files_test.c
+	$(CC) $(CFLAGS)  -c $<  -o $@
 
-# When adding new test cases %.sql files, auto-generate %_expected.sql files.
-TF_NEW_GOLD = $(patsubst %.sql,%_expected.sql,$(TF_INPUT))
-$(TF_NEW_GOLD): %_expected.sql: %.sql
-	./fsqlf $< $@
-
-generate-gold: $(TF_NEW_GOLD)
-	# Now please manualy add new gold files to git repo. Thanks.
+tests/format_files_test: tests/format_files_test.o tests/tools/file_compare.o
+	$(CC) $(CFLAGS)  $^  -o $@
 
 
 
@@ -183,7 +172,8 @@ clean_obj:
 	rm -f *.o lib_fsqlf/*.o lib_fsqlf/*/*.o utils/*/*.o cli/*.o
 
 clean_test:
-	rm -f $(TF_ACTUAL_RESULTS)
+	rm -f tests/format_files_test tests/*.o tests/tools/*.o tests/cases/*_actual.sql
+
 
 
 
