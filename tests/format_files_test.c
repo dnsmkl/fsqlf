@@ -9,8 +9,6 @@
 #define VERBOSE (0)
 
 
-// Iterate over all test-cases.
-// See if actual formatting output matches expected.
 void alloc_join_4(char **dest,
     const char *src1, size_t len1,
     const char *src2, size_t len2,
@@ -42,6 +40,8 @@ void alloc_join_4(char **dest,
 }
 
 
+// Iterate over all test-cases.
+// See if actual formatting output matches expected.
 int main(int argc, char **argv)
 {
     // argv
