@@ -3,6 +3,9 @@
 #include <lib_fsqlf.h> // struct fsqlf_kw_conf
 
 
+// Functions that retrieve single element of kw-map.
+
+
 void FSQLF_kw_create(fsqlf_kwmap_t *kwmap,  const char *name)
 {
     struct fsqlf_kw_conf *tmp;

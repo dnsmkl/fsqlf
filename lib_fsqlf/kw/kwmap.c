@@ -1,6 +1,10 @@
 #include <lib_fsqlf.h>
 
 
+// Functions that operate on kw-map as a whole.
+// (as opposed to manipulating single element of the map)
+
+
 void fsqlf_kwmap_set_case(fsqlf_kwmap_t kwmap, enum fsqlf_kwcase keyword_case)
 {
     #define XMACRO( NAME , ... )   \
