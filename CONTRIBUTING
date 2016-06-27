@@ -1,11 +1,11 @@
 Folder layout:
 
-./buildtools - things needed for building (except for makefile)
+./buildtools - things specific for building (except for makefile)
 ./cli - code specific to command line interface
 ./gui - code specific to graphical user interface
 ./include - header of fsqlf library
 ./lib_fsqlf - code of fsqlf library
-./tests - tests
+./tests - things specific to testing (tools & test-cases)
 ./utils - generic code of considerable size. External code files also go here.
 
 
@@ -19,7 +19,7 @@ Shortnames used:
 Code style:
 
 Dialect: C99.
-Target platforms: windows and linux (though even better if more).
+Target platforms: windows and linux (more is better; but no promises).
 Indentation: 4 spaces (no tabs).
 Line limit: 79 characters (soft).
 Exported public symbols: prefix "fsqlf_".
@@ -61,3 +61,4 @@ static void second(
     );
 }
 ----
+
