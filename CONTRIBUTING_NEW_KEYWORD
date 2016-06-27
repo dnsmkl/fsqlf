@@ -1,0 +1,19 @@
+Short instruction how to add simple keyword formatting:
+
+    1. Register new keyword formatting configuration
+       in "lib_fsqlf/kw/kwmap_defaults.def".
+
+    2. Add regexp and tie it keyword formatting configuration
+       in "lib_fsqlf/formatter/fsqlf.lex".
+
+    3. To help ensure that it won't accidentally break later, add testcase
+       in "tests/cases/<new-or-existing>"
+       and "tests/registered_testcases.h".
+
+    4. Ensure that nothing else got broken.
+       Execute "make test". (works only on linux)
+
+
+Note: this instruction works only for simplest cases of formatting,
+for more complex case one will need to invest time in analyzing/reading code.
+
