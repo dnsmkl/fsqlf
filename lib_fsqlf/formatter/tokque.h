@@ -2,7 +2,9 @@
 #define tokque_h
 
 
-#include <lib_fsqlf.h> // struct fsqlf_kw_conf, fsqlf_kw_get
+// struct fsqlf_kw_conf, fsqlf_kw_get, struct FSQLF_prev_kw
+#include <lib_fsqlf.h>
+#include "../../utils/queue/queue.h"
 
 
 struct FSQLF_state_change
@@ -22,16 +24,23 @@ enum FSQLF_state_change_action
 };
 
 
+void FSQLF_tokque_init(struct FSQLF_queue *tq);
+
+
+
 struct FSQLF_state_change FSQLF_tokque_putthrough(
+    struct FSQLF_queue *tq,
     FILE *fout,
     struct FSQLF_out_buffer *bout,
     int *currindent,
     char *text,
     size_t len,
-    const struct fsqlf_kw_conf *s,
+    struct fsqlf_kw_conf *s,
     int cur_state
 );
-void FSQLF_tokque_finish_out(FILE *fout, struct FSQLF_out_buffer *bout);
+
+
+void FSQLF_tokque_finish_out(struct FSQLF_queue *tq, FILE *fout, struct FSQLF_out_buffer *bout);
 
 
 #endif

@@ -2,7 +2,7 @@
 #define token_h
 
 
-#include <lib_fsqlf.h>  // kw_conf
+#include <lib_fsqlf.h>  // kw_conf, struct FSQLF_prev_kw prev
 
 
 // Currently token.h is not used, but there is a plan for it.
@@ -48,6 +48,7 @@
 
 enum FSQLF_token_class
 {
+    FSQLF_TOKEN_CLASS_TXT = 0,  // Non-keyword text
     FSQLF_TOKEN_CLASS_KW = 1,   // Keyword
     FSQLF_TOKEN_CLASS_SP = 2,   // Spacing
     FSQLF_TOKEN_CLASS_CMT = 3   // Comment
@@ -59,7 +60,7 @@ struct FSQLF_token
     enum FSQLF_token_class token_class;
     char *text;
     int leng;
-    const struct fsqlf_kw_conf *kw_setting;
+    struct fsqlf_kw_conf *kw_setting;
     size_t indent;
 };
 
@@ -68,7 +69,7 @@ struct FSQLF_token *FSQLF_make_token(
     const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
-    const struct fsqlf_kw_conf *kw_setting,
+    struct fsqlf_kw_conf *kw_setting,
     const size_t indent);
 
 
@@ -79,8 +80,10 @@ void FSQLF_set_token(struct FSQLF_token * tok,
     const enum FSQLF_token_class token_class,
     const char *text,
     const int leng,
-    const struct fsqlf_kw_conf *kw_conf,
+    struct fsqlf_kw_conf *kw_conf,
     const size_t indent);
+
+
 void FSQLF_clear_token(struct FSQLF_token *tok);
 
 

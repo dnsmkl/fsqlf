@@ -162,45 +162,34 @@ static char * struct_spacing_to_str(struct fsqlf_spacing cnt)
 }
 
 
-static struct fsqlf_spacing calculate_spacing(
-    struct fsqlf_kw_conf current_settings,
-    int global_indent_level
-)
+struct fsqlf_kw_conf * FSQLF_derive_kw_from_text(char *txt, size_t length)
 {
-    // keep track of 'after' spacing from previous call
-    static struct fsqlf_spacing from_prev__spacing = {0, 0, 0, 0};
-    // keep track of previous 'is_word'
-    static unsigned short int from_prev__isword = 0;
+    struct fsqlf_kw_conf *kw = calloc(1, sizeof(struct fsqlf_kw_conf));
 
-    struct fsqlf_spacing spacing = calculate_spacing_pure(
-            from_prev__spacing,
-            from_prev__isword,
-            current_settings.before,
-            current_settings.is_word,
-            global_indent_level
-        );
+    // Adjustment necessary for single line comments,
+    // for keeping indentation and new lines right.
+    int pos_last_char = length - 1;
+    if (txt[pos_last_char] == '\n') {
+        // 'Move' ending new line from 'txtdup' to 'kw'
+        txt[pos_last_char] = '\0';
+        kw->after.new_line = 1;
+    }
 
-    // Save settings for next function call - overwrite
-    from_prev__spacing = current_settings.after;
-    from_prev__isword = current_settings.is_word;
-    return spacing;
+    // Word-vs-operator check.
+    // Ensure that two adjacent words have spacing inbetween.
+    kw->is_word = !(length == 1 && !isalnum(txt[0]));
+    return kw;
 }
 
 
-static void print_kw(
+static void print_output(
     FILE *fout,
     struct FSQLF_out_buffer *bout,
-    size_t indent,
-    const char *yytext,
-    struct fsqlf_kw_conf s
+    struct fsqlf_spacing spacing,
+    const char *text
 )
 {
-    const struct fsqlf_spacing spacing = calculate_spacing(s, indent);
     char *spacing_txt = struct_spacing_to_str(spacing);
-
-    const char *text_nocase = choose_kw_text(s, yytext);
-    char *text = str_to_case(text_nocase, s.print_case);
-
     if (!bout->buffer) {
         fprintf(fout, "%s", spacing_txt);
         fprintf(fout, "%s", text);
@@ -219,65 +208,6 @@ static void print_kw(
         bout->len_used += len_text;
         bout->buffer[bout->len_used] = '\0';
     }
-
-    free(spacing_txt);
-    free(text);
-}
-
-
-static void print_nonkw_text(
-    FILE *fout,
-    struct FSQLF_out_buffer *bout,
-    size_t indent,
-    const char *txt
-)
-{
-    int length = strlen(txt);
-    char *txtdup;
-    txtdup = (char *) malloc(length+1);
-    strncpy(txtdup, txt, length+1);
-
-
-    // Spacing is calculated by calculate_spacing(),
-    // which requires as input struct fsqlf_kw_conf.
-    struct fsqlf_kw_conf s = {{0, 0, 0, 0}, {0, 0, 0, 0}, 0, 0, 0, 0};
-
-    // Adjustment necessary for single line comments,
-    // for keeping indentation and new lines right.
-    int pos_last_char = length - 1;
-    if (txtdup[pos_last_char] == '\n') {
-        // 'Move' ending new line from 'txtdup' to 's'
-        txtdup[pos_last_char] = '\0';
-        s.after.new_line = 1;
-    }
-
-    // Word-vs-operator check.
-    // Ensure that two adjacent words have spacing inbetween.
-    s.is_word = !(length == 1 && !isalnum(txtdup[0]));
-
-    const struct fsqlf_spacing spacing = calculate_spacing(s, indent);
-    char *spacing_txt = struct_spacing_to_str(spacing);
-
-    if (!bout->buffer) {
-        fprintf(fout, "%s", spacing_txt);
-        fprintf(fout, "%s", txtdup);
-    } else {
-        size_t len_spacing = strlen(spacing_txt);
-        size_t len_text = strlen(txtdup);
-        if (bout->len_used + len_spacing + len_text + 1 > bout->len_alloc) {
-            size_t len_realloc = bout->len_alloc * 1.5;
-            bout->buffer = realloc(bout->buffer, len_realloc);
-            assert(bout->buffer);
-            bout->len_alloc = len_realloc;
-        }
-        strncpy(bout->buffer + bout->len_used, spacing_txt, len_spacing);
-        bout->len_used += len_spacing;
-        strncpy(bout->buffer + bout->len_used, txtdup, len_text);
-        bout->len_used += len_text;
-        bout->buffer[bout->len_used] = '\0';
-    }
-
-    free(txtdup);
     free(spacing_txt);
 }
 
@@ -286,13 +216,22 @@ void FSQLF_print(
     FILE *fout,
     struct FSQLF_out_buffer *bout,
     size_t indent,
-    const char *text,
-    const struct fsqlf_kw_conf *kw
+    const char *yytext,
+    const struct fsqlf_kw_conf *kw,
+    const struct fsqlf_kw_conf *prev_kw
 )
 {
-    if (kw == NULL) {
-        print_nonkw_text(fout, bout, indent, text);
-    } else {
-        print_kw(fout, bout, indent, text, *kw);
-    }
+    assert(kw);
+    const char *text_nocase = choose_kw_text(*kw, yytext);
+    char *text = str_to_case(text_nocase, kw->print_case);
+
+    struct fsqlf_spacing spacing = calculate_spacing_pure(
+            prev_kw->after,
+            prev_kw->is_word,
+            kw->before,
+            kw->is_word,
+            indent);
+    print_output(fout, bout, spacing, text);
+
+    free(text);
 }
