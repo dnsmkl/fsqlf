@@ -77,6 +77,8 @@ LCOBJ += utils/string/read_int.o
 $(LCOBJ): %.o: %.c
 	$(CC) $(CFLAGS)  -c $<  -o $@
 
+$(filter lib_fsqlf/%,$(LCOBJ)): %.o: %.c include/lib_fsqlf.h
+
 $(LIBNAME): $(LCOBJ)
 	$(CC) $(CFLAGS) $(LIBFLAGS) $^   -o $@
 
@@ -95,10 +97,8 @@ lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/
 COBJ += cli/main.o
 COBJ += cli/cli.o
 
-$(COBJ): %.o: %.c
+$(COBJ): %.o: %.c include/lib_fsqlf.h
 	$(CC) $(CFLAGS)  -c $<  -o $@
-
-cli/main.o: lib_fsqlf/formatter/lex.yy.h
 
 $(EXEC_CLI): $(COBJ) $(LIBNAME)
 	$(CC) $(CFLAGS)  $(COBJ)  -L. -lfsqlf  -Wl,-rpath,.  -o $@
