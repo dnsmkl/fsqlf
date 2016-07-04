@@ -1,7 +1,7 @@
 #include <ctype.h> // isdigit
 #include <stdlib.h> // exit
 #include <stdio.h> // fprintf, stderr
-#include "../lib_fsqlf/formatter/lex.yy.h"
+#include <lib_fsqlf.h> // fsqlf_kw_get
 #include "../lib_fsqlf/conf_file/conf_file_constants.h"
 #include "../utils/string/read_int.h"   // FSQLF_read_int
 #include "cli.h"
