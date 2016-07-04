@@ -100,12 +100,23 @@ void fsqlf_kwmap_set_spelling(fsqlf_kwmap_t kwmap, enum fsqlf_kwspelling kw_text
 
 
 // Create & read formatting configuration file.
-// "read_default" looks in working directory or "~/.fslqf" for formatting.conf.
+#ifndef FSQLF_CONFFILE_NAME
+#define FSQLF_CONFFILE_NAME "formatting.conf"
+#endif
+
+
+#ifndef FSQLF_CONFFILE_LINELENGTH
+#define FSQLF_CONFFILE_LINELENGTH (100)
+#endif
+
+
 enum fsqlf_status fsqlf_kwmap_conffile_create(char *config_file_name);
 enum fsqlf_status fsqlf_kwmap_conffile_read(fsqlf_kwmap_t kwmap, const char *file);
+// "read_default" looks in working directory or "~/.fslqf" for formatting.conf.
 enum fsqlf_status fsqlf_kwmap_conffile_read_default(fsqlf_kwmap_t kwmap);
 
 
+// Actual formatting
 void fsqlf_format_file(fsqlf_kwmap_t kwmap, FILE *fin, FILE *fout);
 void fsqlf_format_bytes(fsqlf_kwmap_t kwmap,
     const char *bytes_in, int len, char **bytes_out

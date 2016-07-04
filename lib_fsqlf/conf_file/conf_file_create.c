@@ -1,6 +1,5 @@
 #include <stdio.h>  // FILE, fprintf, fputs, fclose
 #include <lib_fsqlf.h>
-#include "conf_file_constants.h"
 
 
 // Create formatting configuration file with default content.
