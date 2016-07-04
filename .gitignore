@@ -6,6 +6,7 @@ fsqlf
 fsqlf.exe
 wx_fsqlf
 wx_fsqlf.exe
+tests/format_files_test
 
 
 # Generated files
