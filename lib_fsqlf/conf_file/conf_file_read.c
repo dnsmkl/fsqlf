@@ -105,9 +105,8 @@ static char * get_path_to_user_folder_conf()
 }
 
 
-// Read configuration file from default conf file
-// This would be "formatting.conf" in working idrectory
-// If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
+// Read configuration file from default conf file.
+// (working directory and "fsqlf/" under user dir)
 enum fsqlf_status fsqlf_kwmap_conffile_read_default(struct fsqlf_kw_conf *kwall)
 {
     // First try file in working directory.
