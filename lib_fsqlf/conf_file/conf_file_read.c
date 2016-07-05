@@ -80,40 +80,49 @@ enum fsqlf_status fsqlf_kwmap_conffile_read(struct fsqlf_kw_conf *kwall, const c
 }
 
 
+static char * get_path_to_user_folder_conf()
+{
+    // Get path to conf file in user (home) directory.
+
+    // ..get all the ingredients.
+    #ifndef _WIN32
+    const char *home_dir = getenv("HOME");
+    #else
+    const char *home_dir = getenv("USERPROFILE");
+    #endif
+    if (home_dir == NULL) return NULL;
+    const char *fsqlf_sub = "/.fsqlf/";
+    const char *conf_file = FSQLF_CONFFILE_NAME;
+
+    // ..get complete path to conf file.
+    size_t full_len = strlen(home_dir) + strlen(fsqlf_sub)
+            + strlen(conf_file) + 1;
+    char * full_path = malloc(full_len);
+    if (full_path == NULL) return NULL;
+    strncpy(full_path, home_dir, full_len);
+    strncat(full_path, fsqlf_sub, full_len - strlen(full_path));
+    strncat(full_path, conf_file, full_len - strlen(full_path));
+}
+
 
 // Read configuration file from default conf file
 // This would be "formatting.conf" in working idrectory
 // If that does not exists, then on non-windows try "~/fslqf/formatting.conf"
 enum fsqlf_status fsqlf_kwmap_conffile_read_default(struct fsqlf_kw_conf *kwall)
 {
-    // First try file in working directory
+    // First try file in working directory.
     if (file_exists(FSQLF_CONFFILE_NAME)) {
         return fsqlf_kwmap_conffile_read(kwall, FSQLF_CONFFILE_NAME);
     }
 
-    // In non-windows (unix/linux) also try folder in user-home directory
-    #ifndef _WIN32
-        // Get all the ingredients
-        const char *home_dir = getenv("HOME");
-        if (home_dir == NULL) return FSQLF_FAIL; // TODO: Log it.
-        const char *fsqlf_sub = "/.fsqlf/";
-        const char *conf_file = FSQLF_CONFFILE_NAME;
+    char *full_path = get_path_to_user_folder_conf();
+    if (full_path == NULL) return FSQLF_FAIL;
 
-        // Mix the ingredients - get complete path till conf file.
-        size_t full_len = strlen(home_dir) + strlen(fsqlf_sub)
-                        + strlen(conf_file) + 1;
-        char * full_path = malloc(full_len);
-        if (full_path == NULL) return FSQLF_FAIL; // TODO: Log it.
-        strncpy(full_path, home_dir, full_len);
-        strncat(full_path, fsqlf_sub, full_len - strlen(full_path));
-        strncat(full_path, conf_file, full_len - strlen(full_path));
+    // Read the file.
+    enum fsqlf_status ret_code = fsqlf_kwmap_conffile_read(kwall, full_path);
 
-        // Read the file
-        int ret_code = fsqlf_kwmap_conffile_read(kwall, full_path);
+    // Cleanup.
+    free(full_path);
 
-        // Cleanup
-        free(full_path);
-
-        return ret_code;
-    #endif
+    return ret_code;
 }
