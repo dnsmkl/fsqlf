@@ -141,13 +141,7 @@ void read_cli_options(struct fsqlf_kw_conf *kwall, int argc, char **argv,
             fsqlf_kw_get(kwall, "kw_and")->after.new_line = get_int_arg(++i, argc, argv);
         } else if (ARGV_MATCH(i, "--newline-major-sections")) {
             int new_line_count = get_int_arg(++i, argc, argv);
-            fsqlf_kw_get(kwall, "kw_from")->before.new_line = new_line_count;
-            fsqlf_kw_get(kwall, "kw_where")->before.new_line = new_line_count;
-            fsqlf_kw_get(kwall, "kw_inner_join")->before.new_line = new_line_count;
-            fsqlf_kw_get(kwall, "kw_left_join")->before.new_line  = new_line_count;
-            fsqlf_kw_get(kwall, "kw_right_join")->before.new_line = new_line_count;
-            fsqlf_kw_get(kwall, "kw_full_join")->before.new_line  = new_line_count;
-            fsqlf_kw_get(kwall, "kw_cross_join")->before.new_line = new_line_count;
+            fsqlf_kwmap_set_major_clause_nl(kwall, new_line_count);
         } else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
             usage_info(argc, argv);
             exit(0);

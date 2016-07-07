@@ -57,3 +57,15 @@ void fsqlf_kwmap_destroy(fsqlf_kwmap_t kwmap)
         free(current_kw);
     }
 }
+
+
+void fsqlf_kwmap_set_major_clause_nl(fsqlf_kwmap_t kwmap, int nl_count)
+{
+    fsqlf_kw_get(kwmap, "kw_from")->before.new_line = nl_count;
+    fsqlf_kw_get(kwmap, "kw_where")->before.new_line = nl_count;
+    fsqlf_kw_get(kwmap, "kw_inner_join")->before.new_line = nl_count;
+    fsqlf_kw_get(kwmap, "kw_left_join")->before.new_line  = nl_count;
+    fsqlf_kw_get(kwmap, "kw_right_join")->before.new_line = nl_count;
+    fsqlf_kw_get(kwmap, "kw_full_join")->before.new_line  = nl_count;
+    fsqlf_kw_get(kwmap, "kw_cross_join")->before.new_line = nl_count;
+}

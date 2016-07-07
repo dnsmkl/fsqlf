@@ -98,6 +98,9 @@ void fsqlf_kwmap_set_case(fsqlf_kwmap_t kwmap, enum fsqlf_kwcase keyword_case);
 // Set used variation of keyword text. (e.g. "left outer join" vs "left join")
 void fsqlf_kwmap_set_spelling(fsqlf_kwmap_t kwmap, enum fsqlf_kwspelling kw_text_to_use);
 
+// Set new line count before major clauses (from, join, where)
+void fsqlf_kwmap_set_major_clause_nl(fsqlf_kwmap_t kwmap, int nl_count);
+
 
 // Create & read formatting configuration file.
 #ifndef FSQLF_CONFFILE_NAME
