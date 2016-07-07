@@ -1,6 +1,11 @@
 #include "wx_fsqlf.hpp"
 
 
+extern "C" {
+    #include "lib_fsqlf.h"
+}
+
+
 // define version if it was not passed as an argument in compilation command
 #ifndef VERSION
 #define VERSION "custom-version"
@@ -158,98 +163,80 @@ void FsqlfGui::create_options_text(wxSizer* parent_sizer)
 void FsqlfGui::onFormat(wxCommandEvent &event)
 {
     this->original_text = this->text_area->GetValue();
-    #ifdef _WIN32
-        #define EXEC_FILE "fsqlf.exe"
-        #define EXEC_PREFIX
-    #else
-        #define EXEC_FILE "fsqlf"
-        #define EXEC_PREFIX "./"
-    #endif
 
-    #define TMP_INPUT_FILE  "tmp_fsqlf_in.txt"
-    #define TMP_OUTPUT_FILE "tmp_fsqlf_out.txt"
-
-    wxString cmd;
-    cmd = _(EXEC_PREFIX EXEC_FILE " " TMP_INPUT_FILE " " TMP_OUTPUT_FILE);
+    // Init kwmap and set it according to gui-controls.
+    fsqlf_kwmap_t kwmap;
+    fsqlf_kwmap_init(&kwmap);
+    fsqlf_kwmap_conffile_read_default(kwmap);
     switch (this->sel_comma_nl->GetSelection()) {
-        case 1: cmd << _("  --select-comma-newline before") ; break;
-        case 2: cmd << _("  --select-comma-newline after")  ; break;
-        case 3: cmd << _("  --select-comma-newline none")   ; break;
+        case 1:
+            fsqlf_kw_get(kwmap, "kw_comma")->before.new_line = 1;
+            fsqlf_kw_get(kwmap, "kw_comma")->after.new_line  = 0;
+            break;
+        case 2:
+            fsqlf_kw_get(kwmap, "kw_comma")->before.new_line = 0;
+            fsqlf_kw_get(kwmap, "kw_comma")->after.new_line  = 1;
+            break;
+        case 3:
+            fsqlf_kw_get(kwmap, "kw_comma")->before.new_line = 0;
+            fsqlf_kw_get(kwmap, "kw_comma")->after.new_line  = 0;
+            break;
     }
 
     if (this->nl_use_config->GetValue() == 0) {
         switch (this->nl_after_select->GetValue()) {
-            case 0: cmd << _("  --select-newline-after 0") ; break;
-            case 1: cmd << _("  --select-newline-after 1") ; break;
+            case 0: fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0; break;
+            case 1: fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0; break;
         }
 
         switch (this->nl_before_or->GetValue()) {
-            case 0: cmd << _("  --newline-or-before 0") ; break;
-            case 1: cmd << _("  --newline-or-before 1") ; break;
+            case 0: fsqlf_kw_get(kwmap, "kw_or")->before.new_line = 0; break;
+            case 1: fsqlf_kw_get(kwmap, "kw_or")->before.new_line = 1; break;
         }
 
         switch (this->nl_after_or->GetValue()) {
-            case 0: cmd << _("  --newline-or-after 0") ; break;
-            case 1: cmd << _("  --newline-or-after 1") ; break;
+            case 0: fsqlf_kw_get(kwmap, "kw_or")->after.new_line = 0; break;
+            case 1: fsqlf_kw_get(kwmap, "kw_or")->after.new_line = 1; break;
         }
 
         switch (this->nl_before_and->GetValue()) {
-            case 0: cmd << _("  --newline-and-before 0") ; break;
-            case 1: cmd << _("  --newline-and-before 1") ; break;
+            case 0: fsqlf_kw_get(kwmap, "kw_and")->before.new_line = 0; break;
+            case 1: fsqlf_kw_get(kwmap, "kw_and")->before.new_line = 1; break;
         }
 
         switch (this->nl_after_and->GetValue()) {
-            case 0: cmd << _("  --newline-and-after 0") ; break;
-            case 1: cmd << _("  --newline-and-after 1") ; break;
+            case 0: fsqlf_kw_get(kwmap, "kw_and")->after.new_line = 0; break;
+            case 1: fsqlf_kw_get(kwmap, "kw_and")->after.new_line = 1; break;
         }
     }
 
     switch (this->nl_major_sections->GetSelection()) {
-        case 0: break;
-        case 1: cmd << _("  --newline-major-sections 1") ; break;
-        case 2: cmd << _("  --newline-major-sections 2")  ; break;
+        case 0: break; // Use config file.
+        case 1: fsqlf_kwmap_set_major_clause_nl(kwmap, 1); break;
+        case 2: fsqlf_kwmap_set_major_clause_nl(kwmap, 2); break;
     }
 
     switch (this->use_original_text->GetValue()) {
-        case 0: cmd << _("  --keyword-text default")  ; break;
-        case 1: cmd << _("  --keyword-text original") ; break;
+        case 0: fsqlf_kwmap_set_spelling(kwmap, FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT); break;
+        case 1: fsqlf_kwmap_set_spelling(kwmap, FSQLF_KWSPELLING_USE_ORIGINAL); break;
     }
 
     switch (this->case_all_kw->GetSelection()) {
-        case 0: cmd << _("  --keyword-case none")    ; break;
-        case 1: cmd << _("  --keyword-case upper")   ; break;
-        case 2: cmd << _("  --keyword-case lower")   ; break;
-        case 3: cmd << _("  --keyword-case initcap") ; break;
+        case 0: fsqlf_kwmap_set_case(kwmap, FSQLF_KWCASE_ORIGINAL); break;
+        case 1: fsqlf_kwmap_set_case(kwmap, FSQLF_KWCASE_UPPER); break;
+        case 2: fsqlf_kwmap_set_case(kwmap, FSQLF_KWCASE_LOWER); break;
+        case 3: fsqlf_kwmap_set_case(kwmap, FSQLF_KWCASE_INITCAP); break;
     }
 
-    wxDir dir(wxGetCwd());
-    if (!dir.HasFiles(_(EXEC_FILE))) {
-        wxMessageBox(_("Formatter executable file not found: " EXEC_FILE)
-            , _("Error")
-            , wxOK | wxICON_INFORMATION, this);
-        return;
-    }
+    // Actual formatting.
+    wxCharBuffer buffer = this->original_text.ToUTF8();
+    const char *input =  buffer.data();
+    char *output;
+    fsqlf_format_bytes(kwmap, input, strlen(input), &output);
+    this->text_area->SetValue(wxString(output, wxConvUTF8));
 
-    this->text_area->SaveFile(_(TMP_INPUT_FILE));
-
-    if (system(cmd.mb_str())) {   // non zero status
-        wxMessageBox(cmd << _("\n returned non zero code"),
-            _("Error"),
-            wxOK | wxICON_INFORMATION, this);
-        return;
-    }
-    this->text_area->LoadFile(_(TMP_OUTPUT_FILE));
-
-    if (!wxRemoveFile(_(TMP_INPUT_FILE))) {
-        wxMessageBox(_("Failed to remove temporary file " TMP_INPUT_FILE),
-            _("Error"),
-            wxOK | wxICON_INFORMATION, this);
-    }
-    if (!wxRemoveFile(_(TMP_OUTPUT_FILE))) {
-        wxMessageBox(_("Failed to remove temporary file " TMP_OUTPUT_FILE),
-            _("Error"),
-            wxOK | wxICON_INFORMATION, this);
-    }
+    // Cleanup of kwmap.
+    fsqlf_kwmap_destroy(kwmap);
 }
 
 

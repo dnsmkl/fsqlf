@@ -7,6 +7,7 @@ CFLAGS+=-g
 CFLAGS+=-Iinclude
 
 CXXFLAGS+=-DVERSION=\"$(VERSION)\"
+CXXFLAGS+=-Iinclude
 
 ifdef WIN
 	OS_TARGET=windows
@@ -108,8 +109,8 @@ $(EXEC_CLI): $(COBJ) $(LIBNAME)
 #
 # BUILD GUI
 #
-$(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o | $(EXEC_CLI)
-	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)
+$(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o  $(LIBNAME)
+	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)  -L. -lfsqlf  -Wl,-rpath,.
 	strip $@
 
 # generic rule for C++ building
