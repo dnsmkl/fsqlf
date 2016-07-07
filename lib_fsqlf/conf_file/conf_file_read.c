@@ -102,6 +102,7 @@ static char * get_path_to_user_folder_conf()
     strncpy(full_path, home_dir, full_len);
     strncat(full_path, fsqlf_sub, full_len - strlen(full_path));
     strncat(full_path, conf_file, full_len - strlen(full_path));
+    return full_path;
 }
 
 
