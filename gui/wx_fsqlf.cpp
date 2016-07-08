@@ -236,6 +236,7 @@ void FsqlfGui::onFormat(wxCommandEvent &event)
     this->text_area->SetValue(wxString(output, wxConvUTF8));
 
     // Cleanup of kwmap.
+    free(output);
     fsqlf_kwmap_destroy(kwmap);
 }
 
