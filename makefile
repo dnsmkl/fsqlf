@@ -122,10 +122,11 @@ $(CXXOBJ): %.o: gui/%.cpp  gui/%.hpp
 wx_fsqlf.o: gui/basic_notepad.hpp
 basic_notepad.o: gui/dnd_target.hpp  gui/license_text.h
 
-gui/license_text.h: LICENSE
-	buildtools/text_to_header.sh  $<  $@
+gui/license_text.h: LICENSE text_to_header
+	./text_to_header  $<  $@  LICENSE_TEXT
 
-
+text_to_header: utils/text_to_header/text_to_header.c
+	$(CC) $(CFLAGS)  $<  -o $@
 
 #
 # TESTING
@@ -162,7 +163,8 @@ clean_local:
 	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  lib_fsqlf/formatter/lex.yy.c  $(TMP_BAKUPS) \
 		lib_fsqlf/formatter/lex.yy.h \
 		$(LIBNAME) libfsqlf.a \
-		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE)
+		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE) \
+		text_to_header
 	make clean_obj
 
 clean_win:

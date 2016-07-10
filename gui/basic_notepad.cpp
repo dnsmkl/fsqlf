@@ -135,8 +135,8 @@ void BasicNotepad::onAbout(wxCommandEvent &event)
     info.SetName(_("Free SQL Formatter"));
     info.SetVersion(_(VERSION));
     info.SetDescription(_T("Free SQL Formatter beautifies SQL code. It is particularly useful in case one has to deal with machine generated SQL code"));
-    info.SetCopyright(_T("(C) 2011,2012,2013,2014  Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
-    info.SetLicence(_( LICENSE_TEXT ));
+    info.SetCopyright(_T("(C) 2011-2016 Danas Mikelinskas <danas.mikelinskas@gmail.com>"));
+    info.SetLicence(wxString(LICENSE_TEXT, wxConvUTF8, LICENSE_TEXT_LEN));
     wxAboutBox(info);
 }
 
