@@ -64,7 +64,6 @@ Stuff that I got installed:
 - mingw32   # cross compiler which is used to produce Windows executables under Linux
 - zip       # used only for creating zip archive with source code and executable files
 - git       # used for version control and creating zip archive with source code and executable files
-- bash,tr,awk,diff # used for some testing
 
 
 2.2 Compilation process
