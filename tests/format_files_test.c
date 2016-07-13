@@ -6,6 +6,11 @@
 #include "tools/file_compare.h"
 
 
+#ifndef PATH_FSQLF_CLI
+#define PATH_FSQLF_CLI "../fsqlf"
+#endif
+
+
 #define VERBOSE (0)
 
 
@@ -48,7 +53,7 @@ int main(int argc, char **argv)
 
     for (int i = 0; i < TC_COUNT; i++) {
         char *cmd;
-        const char *fsqlf = "../fsqlf";
+        const char *fsqlf = PATH_FSQLF_CLI;
         const char *lib_path = "LD_LIBRARY_PATH=..";
         alloc_join_4(&cmd,
             lib_path, strlen(lib_path),

@@ -2,6 +2,16 @@
 #define REGISTERED_TESTCASES_H
 
 
+#ifndef PATH_TC_STATICSQL
+#define PATH_TC_STATICSQL "cases/"
+#endif
+
+
+#ifndef PATH_TC_GENERATED
+#define PATH_TC_GENERATED "cases/"
+#endif
+
+
 enum tc_position
 {
     TC_INPUT = 0,
@@ -13,49 +23,49 @@ enum tc_position
 #define TC_COUNT (9)
 const char *tcs[TC_COUNT][3] = {
     {
-        "cases/bigquery_input.sql",
-        "cases/bigquery_actual.sql",
-        "cases/bigquery_expected.sql"
+        PATH_TC_STATICSQL "bigquery_input.sql",
+        PATH_TC_GENERATED "bigquery_actual.sql",
+        PATH_TC_STATICSQL "bigquery_expected.sql"
     },
     {
-        "cases/case_input.sql",
-        "cases/case_actual.sql",
-        "cases/case_expected.sql"
+        PATH_TC_STATICSQL "case_input.sql",
+        PATH_TC_GENERATED "case_actual.sql",
+        PATH_TC_STATICSQL "case_expected.sql"
     },
     {
-        "cases/create_table_input.sql",
-        "cases/create_table_actual.sql",
-        "cases/create_table_expected.sql"
+        PATH_TC_STATICSQL "create_table_input.sql",
+        PATH_TC_GENERATED "create_table_actual.sql",
+        PATH_TC_STATICSQL "create_table_expected.sql"
     },
     {
-        "cases/delete_input.sql",
-        "cases/delete_actual.sql",
-        "cases/delete_expected.sql"
+        PATH_TC_STATICSQL "delete_input.sql",
+        PATH_TC_GENERATED "delete_actual.sql",
+        PATH_TC_STATICSQL "delete_expected.sql"
     },
     {
-        "cases/group_order_input.sql",
-        "cases/group_order_actual.sql",
-        "cases/group_order_expected.sql"
+        PATH_TC_STATICSQL "group_order_input.sql",
+        PATH_TC_GENERATED "group_order_actual.sql",
+        PATH_TC_STATICSQL "group_order_expected.sql"
     },
     {
-        "cases/insert_input.sql",
-        "cases/insert_actual.sql",
-        "cases/insert_expected.sql"
+        PATH_TC_STATICSQL "insert_input.sql",
+        PATH_TC_GENERATED "insert_actual.sql",
+        PATH_TC_STATICSQL "insert_expected.sql"
     },
     {
-        "cases/many_semicolons_input.sql",
-        "cases/many_semicolons_actual.sql",
-        "cases/many_semicolons_expected.sql"
+        PATH_TC_STATICSQL "many_semicolons_input.sql",
+        PATH_TC_GENERATED "many_semicolons_actual.sql",
+        PATH_TC_STATICSQL "many_semicolons_expected.sql"
     },
     {
-        "cases/update_input.sql",
-        "cases/update_actual.sql",
-        "cases/update_expected.sql"
+        PATH_TC_STATICSQL "update_input.sql",
+        PATH_TC_GENERATED "update_actual.sql",
+        PATH_TC_STATICSQL "update_expected.sql"
     },
     {
-        "cases/using_input.sql",
-        "cases/using_actual.sql",
-        "cases/using_expected.sql"
+        PATH_TC_STATICSQL "using_input.sql",
+        PATH_TC_GENERATED "using_actual.sql",
+        PATH_TC_STATICSQL "using_expected.sql"
     }
 };
 
