@@ -87,14 +87,14 @@ void BasicNotepad::create_menubar()
 
 void BasicNotepad::onSave( wxCommandEvent &event)
 {
-    wxFileDialog *saveDialog = new wxFileDialog(this, _("Save File~"), _(""), _(""), _("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxSAVE);
+    wxFileDialog *saveDialog = new wxFileDialog(this, _("Save File~"), _(""), _(""), _("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxFD_SAVE);
     if (wxID_OK == saveDialog->ShowModal()) this->text_area->SaveFile(saveDialog->GetPath());
 }
 
 
 void BasicNotepad::onOpen( wxCommandEvent &event)
 {
-    wxFileDialog *openDialog = new wxFileDialog(this, _("Open File~"), _(""), _(""), _("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxOPEN);
+    wxFileDialog *openDialog = new wxFileDialog(this, _("Open File~"), _(""), _(""), _("SQL (*.sql)|*.sql|All (*.*)|*.*"), wxFD_OPEN);
     if (wxID_OK == openDialog->ShowModal()) this->text_area->LoadFile(openDialog->GetPath());
 }
 

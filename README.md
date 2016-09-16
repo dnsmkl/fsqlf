@@ -143,10 +143,10 @@ Install WxWidgets
 (http://wiki.wxwidgets.org/Installing_and_configuring_under_Ubuntu)
 
     #!/bin/bash
-    # apt-get install wx2.8-headers libwxgtk2.8-0 libwxgtk2.8-dev
+    # apt-get install libwxbase3.0-dev libwxgtk3.0-dev
     # cd /usr/include
     # ls | grep wx
-    # ln -sv wx-2.8/wx wx
+    # ln -sv wx-3.0/wx wx
 
 Install for cross-compiling windows binaries on linux
 ----
@@ -165,7 +165,7 @@ Build wxWidgets with mingw
     # make
     # make install
     # cd /usr/i586-mingw32msvc/include
-    # ln -sv wx-2.8/wx wx
+    # ln -sv wx-3.0/wx wx
 
 References
 ----
