@@ -18,6 +18,7 @@ gui/license_text.h
 *.so
 formatting.conf
 tests/cases/*_actual.sql
+build*
 
 
 #editor stuff
