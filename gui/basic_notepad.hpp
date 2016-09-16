@@ -2,8 +2,11 @@
 #define BASIC_NOTEPAD_HPP
 
 
-#include <wx/wx.h>
-
+#include <wx/filedlg.h>
+#include <wx/frame.h>
+#include <wx/menu.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
 #include "dnd_target.hpp"
 
 

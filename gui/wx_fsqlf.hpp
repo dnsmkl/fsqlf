@@ -2,11 +2,15 @@
 #define WX_FSQLF_HPP
 
 
-#include <wx/wx.h>
+#include <wx/app.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
 #include <wx/dir.h>
 #include <wx/font.h>
 #include <wx/notebook.h>
-
+#include <wx/panel.h>
+#include <wx/radiobox.h>
+#include <wx/statbox.h>
 #include "basic_notepad.hpp"
 
 

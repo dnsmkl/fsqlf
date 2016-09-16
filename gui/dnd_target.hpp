@@ -2,8 +2,8 @@
 #define DND_TARGET_HPP
 
 
-#include <wx/wx.h>
 #include <wx/dnd.h>
+#include <wx/textctrl.h>
 
 
 // Drag and drop target
