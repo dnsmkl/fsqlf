@@ -184,29 +184,34 @@ void FsqlfGui::onFormat(wxCommandEvent &event)
     }
 
     if (this->nl_use_config->GetValue() == 0) {
-        switch (this->nl_after_select->GetValue()) {
-            case 0: fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0; break;
-            case 1: fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0; break;
+        if (this->nl_after_select->GetValue()) {
+            fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0;
+        } else {
+            fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0;
         }
 
-        switch (this->nl_before_or->GetValue()) {
-            case 0: fsqlf_kw_get(kwmap, "kw_or")->before.new_line = 0; break;
-            case 1: fsqlf_kw_get(kwmap, "kw_or")->before.new_line = 1; break;
+        if (this->nl_before_or->GetValue()) {
+            fsqlf_kw_get(kwmap, "kw_or")->before.new_line = 1;
+        } else {
+            fsqlf_kw_get(kwmap, "kw_or")->before.new_line = 0;
         }
 
-        switch (this->nl_after_or->GetValue()) {
-            case 0: fsqlf_kw_get(kwmap, "kw_or")->after.new_line = 0; break;
-            case 1: fsqlf_kw_get(kwmap, "kw_or")->after.new_line = 1; break;
+        if (this->nl_after_or->GetValue()) {
+            fsqlf_kw_get(kwmap, "kw_or")->after.new_line = 1;
+        } else {
+            fsqlf_kw_get(kwmap, "kw_or")->after.new_line = 0;
         }
 
-        switch (this->nl_before_and->GetValue()) {
-            case 0: fsqlf_kw_get(kwmap, "kw_and")->before.new_line = 0; break;
-            case 1: fsqlf_kw_get(kwmap, "kw_and")->before.new_line = 1; break;
+        if (this->nl_before_and->GetValue()) {
+            fsqlf_kw_get(kwmap, "kw_and")->before.new_line = 1;
+        } else {
+            fsqlf_kw_get(kwmap, "kw_and")->before.new_line = 0;
         }
 
-        switch (this->nl_after_and->GetValue()) {
-            case 0: fsqlf_kw_get(kwmap, "kw_and")->after.new_line = 0; break;
-            case 1: fsqlf_kw_get(kwmap, "kw_and")->after.new_line = 1; break;
+        if (this->nl_after_and->GetValue()) {
+            fsqlf_kw_get(kwmap, "kw_and")->after.new_line = 1;
+        } else {
+            fsqlf_kw_get(kwmap, "kw_and")->after.new_line = 0;
         }
     }
 
@@ -216,9 +221,10 @@ void FsqlfGui::onFormat(wxCommandEvent &event)
         case 2: fsqlf_kwmap_set_major_clause_nl(kwmap, 2); break;
     }
 
-    switch (this->use_original_text->GetValue()) {
-        case 0: fsqlf_kwmap_set_spelling(kwmap, FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT); break;
-        case 1: fsqlf_kwmap_set_spelling(kwmap, FSQLF_KWSPELLING_USE_ORIGINAL); break;
+    if (this->use_original_text->GetValue()) {
+        fsqlf_kwmap_set_spelling(kwmap, FSQLF_KWSPELLING_USE_ORIGINAL);
+    } else {
+        fsqlf_kwmap_set_spelling(kwmap, FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT);
     }
 
     switch (this->case_all_kw->GetSelection()) {
