@@ -185,7 +185,7 @@ void FsqlfGui::onFormat(wxCommandEvent &event)
 
     if (this->nl_use_config->GetValue() == 0) {
         if (this->nl_after_select->GetValue()) {
-            fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0;
+            fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 1;
         } else {
             fsqlf_kw_get(kwmap, "kw_select")->after.new_line = 0;
         }
