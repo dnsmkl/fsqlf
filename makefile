@@ -84,7 +84,7 @@ $(LIBNAME): $(LCOBJ)
 	$(CC) $(CFLAGS) $(LIBFLAGS) $^   -o $@
 
 lib_fsqlf/conf_file/conf_file_read.o: utils/string/read_int.h
-
+lib_fsqlf/formatter/lex_wrapper.o: lib_fsqlf/formatter/lex.yy.h
 lib_fsqlf/formatter/lex.yy.h: lib_fsqlf/formatter/lex.yy.c
 lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/print_keywords.h
 	# flex options (e.g. `-o`) has to be before input file
