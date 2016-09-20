@@ -63,7 +63,7 @@ int main(int argc, char **argv)
         );
 
         if (VERBOSE) puts(cmd);
-        system(cmd);
+        if (system(cmd)) goto CASE_FCOMP_ERROR;
 
         enum fcomp_result m = file_compare(
             tcs[i][TC_EXPECTED],
@@ -72,14 +72,16 @@ int main(int argc, char **argv)
         switch (m) {
             case FCOMP_MATCH:
                 printf("file_compare: MATCH  (%s)\n", tcs[i][TC_ACTUAL]);
+                return_code = 0;
                 break;
             case FCOMP_DIFFER:
                 printf("file_compare: DIFFER  (%s)\n", tcs[i][TC_ACTUAL]);
                 return_code = 1; // failure
                 break;
             case FCOMP_ERROR:
+            CASE_FCOMP_ERROR:
                 printf("file_compare: ERROR  (%s)\n", tcs[i][TC_ACTUAL]);
-                return_code = 1; // failure
+                return_code = 2; // failure
                 break;
             default:
                 assert(0);
