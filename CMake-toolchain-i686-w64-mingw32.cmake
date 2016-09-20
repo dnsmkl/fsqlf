@@ -7,13 +7,13 @@ SET(CMAKE_SYSTEM_NAME Windows)
 
 
 # Compilers for C and C++.
-SET(CMAKE_C_COMPILER i586-mingw32msvc-gcc)
-SET(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
-SET(CMAKE_RC_COMPILER i586-mingw32msvc-windres)
+SET(CMAKE_C_COMPILER i686-w64-mingw32-gcc)
+SET(CMAKE_CXX_COMPILER i686-w64-mingw32-g++)
+SET(CMAKE_RC_COMPILER i686-w64-mingw32-windres)
 
 
 # Here is the target environment located.
-SET(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc)
+SET(CMAKE_FIND_ROOT_PATH /usr/i686-w64-mingw32)
 
 
 # Adjust where FIND_XXX() commands search:

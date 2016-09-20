@@ -13,10 +13,16 @@ ifdef WIN
 	OS_TARGET=windows
 	EXEC_CLI=fsqlf.exe
 	EXEC_GUI=wx_fsqlf.exe
-	CC=i586-mingw32msvc-gcc
-	CXX=i586-mingw32msvc-g++
-	CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
-	LDFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`
+	# i686
+	# https://myonlineusb.wordpress.com/2011/06/08/what-is-the-difference-between-i386-i486-i586-i686-i786/
+	# CC=i586-mingw32msvc-gcc
+	# CXX=i586-mingw32msvc-g++
+	# CXXFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+	# LDFLAGS+= `/usr/i586-mingw32msvc/bin/wx-config --libs     | sed 's/-mthreads//'`
+	CC=i686-w64-mingw32-gcc
+	CXX=i686-w64-mingw32-g++
+	CXXFLAGS+= `/usr/i686-w64-mingw32/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+	LDFLAGS+= `/usr/i686-w64-mingw32/bin/wx-config --libs     | sed 's/-mthreads//'`
 	# Option "-mthreads" needs to be removed, so mingwm10.dll would not be needed
 	# (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else

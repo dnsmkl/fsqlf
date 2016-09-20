@@ -153,18 +153,20 @@ Install for cross-compiling windows binaries on linux
 Install mingw (cross) compiler
 
     #!/bin/bash
-    # apt-get install mingw32
+    # apt-get install mingw-w64
 
 Download wxWidgets source from http://www.wxwidgets.org/
-(some forums mention that sources provided by ubuntu/debian are not good)
+(some forums mention that sources provided by ubuntu/debian are not good,
+after experiment it appeared that `apt-get source libwxbase3.0-dev`,
+doesn't contain several (external?) source files used by makefile e.g. png.c)
 
 Build wxWidgets with mingw
 
     #!/bin/bash
-    # ./configure --prefix=/usr/i586-mingw32msvc --host=i586-mingw32msvc --build=`./config.guess` --enable-unicode --disable-shared
+    # ./configure --prefix=/usr/i686-w64-mingw32 --host=i686-w64-mingw32 --build=`./config.guess` --enable-unicode --disable-shared
     # make
     # make install
-    # cd /usr/i586-mingw32msvc/include
+    # cd /usr/i686-w64-mingw32/include
     # ln -sv wx-3.0/wx wx
 
 References
