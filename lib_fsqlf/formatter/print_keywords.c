@@ -119,9 +119,10 @@ static const char * choose_kw_text(struct fsqlf_kw_conf s, const char *yytext)
         case FSQLF_KWSPELLING_USE_ORIGINAL:
             return yytext;
         case FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT:
-            return  s.text;
+            return s.text;
         default:
             assert(0);
+            return NULL; // remove gcc warning
     }
 }
 

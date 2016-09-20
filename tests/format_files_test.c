@@ -83,6 +83,7 @@ int main(int argc, char **argv)
                 break;
             default:
                 assert(0);
+                return 77; // remove gcc warning
         }
         free(cmd);
     }
