@@ -11,5 +11,5 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cases)
 add_definitions(
     -DPATH_TC_STATICSQL="${CMAKE_CURRENT_SOURCE_DIR}/cases/"
     -DPATH_TC_GENERATED="${CMAKE_CURRENT_BINARY_DIR}/cases/"
-    -DPATH_FSQLF_CLI="<TARGET_FILE:fsqlf>")
+    -DPATH_FSQLF_CLI="$<TARGET_FILE:fsqlf>")
 # target_compile_definitions() requires newer version of cmake.
