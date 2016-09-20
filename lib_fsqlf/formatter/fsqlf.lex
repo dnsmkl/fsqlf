@@ -299,9 +299,9 @@ END (?i:end)
             TUSE_SIMPLE(NULL);
         }
     };
-<stP_SUB>{COMMENT_ML_START}           { FSQLF_tokque_putthrough(&yyextra->tqueue, yyout, &yyextra->bout, &yyextra->currindent, "", 0,  NULL, YY_START); PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL); };
-<stP_SUB>{COMMENT_ONE_LINE}           { FSQLF_tokque_putthrough(&yyextra->tqueue, yyout, &yyextra->bout, &yyextra->currindent, "", 0,  NULL, YY_START); TUSE_SIMPLE(NULL); };
-<stP_SUB>{SPACE}                      { FSQLF_tokque_putthrough(&yyextra->tqueue, yyout, &yyextra->bout, &yyextra->currindent, "", 0,  NULL, YY_START); };
+<stP_SUB>{COMMENT_ML_START} { PUSH_STATE(stCOMMENTML); TUSE_SIMPLE( NULL); };
+<stP_SUB>{COMMENT_ONE_LINE} { TUSE_SIMPLE(NULL); };
+<stP_SUB>{SPACE}            { };
 <stP_SUB>{RIGHTP}  {
         FSQLF_tokque_putthrough(&yyextra->tqueue, yyout, &yyextra->bout, &yyextra->currindent, "(", 1, fsqlf_kw_get(yyextra->kwall, "kw_left_p"), YY_START);
         yyextra->left_p++;

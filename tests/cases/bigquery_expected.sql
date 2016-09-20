@@ -13,11 +13,11 @@ SELECT
 , cast ( 19.2 AS decimal ( 18,2 ) ) /*  sdsd   *****- -- */
 , asextract ( day FROM t ) as _toto -- komentaras case select from
 FROM ( bobo as gogo
-LEFT JOIN 
+LEFT JOIN
 (
     SELECT
       1
-    FROM 
+    FROM
     (
         SELECT
           1
@@ -36,7 +36,7 @@ LEFT JOIN
           2
     ) T
 ) baba
- ON 1 IN  ( 1,2,3 )
+ ON 1 IN ( 1,2,3 )
 OR x <> 1
 AND 1 = 1
 AND 1 = 1
@@ -51,7 +51,7 @@ AND EXISTS
       1
     FROM t
     WHERE b = g
-    AND NOT EXISTS 
+    AND NOT EXISTS
     (
         SELECT
           1
