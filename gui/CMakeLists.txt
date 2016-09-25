@@ -1,5 +1,5 @@
 project(fsqlf_gui)
-# GUI for fsqlf.
+# Sql formatter GUI.
 
 
 # Ordering is important for mingw: "adv" must go before "core".
@@ -13,17 +13,17 @@ list(REMOVE_ITEM wxWidgets_LIBRARIES -mthreads)
 string(REGEX REPLACE "-mthreads" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 
-add_executable(wx_fsqlf
+set(wx_fsqlf_sources
     basic_notepad.cpp
     dnd_target.cpp
     wx_fsqlf.cpp
     license_text.h)
-
-
-include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR})
-# target_include_directories() needs cmake 2.8.12.
-
-
+set(wx_fsqlf_includes
+    PRIVATE ${CMAKE_SOURCE_DIR}/include
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+add_executable(wx_fsqlf ${wx_fsqlf_sources})
+set_target_properties(fsqlf PROPERTIES CXX_STANDARD 11)
+target_include_directories(wx_fsqlf ${wx_fsqlf_includes})
 target_link_libraries(wx_fsqlf ${wxWidgets_LIBRARIES} libfsqlf_static)
 
 

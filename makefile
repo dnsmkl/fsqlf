@@ -170,7 +170,7 @@ clean_local:
 		lib_fsqlf/formatter/lex.yy.h \
 		$(LIBNAME) libfsqlf.a \
 		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE) \
-		text_to_header
+		text_to_header builds
 	make clean_obj
 
 clean_win:
@@ -237,8 +237,27 @@ endif
 endif
 
 
-cmake:
-	cd build && cmake -DCMAKE_BUILD_TYPE=RELEASE .. && make
+
+#
+# CMake
+#
+CMREL:=-DCMAKE_BUILD_TYPE=RELEASE
+CMTLINUX32:=-DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchain-linux-x86-gcc.cmake
+CMTLINUX64:=-DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchain-linux-x86-64-gcc.cmake
+CMTWIN32:=-DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchain-windows-x86-mingw.cmake
+
+cmake-linux-x86:
+	mkdir -p builds/linux-x86
+	cd builds/linux-x86 && cmake $(CMREL) $(CMTLINUX32) ../.. && make && make test
+
+cmake-linux-x86-64:
+	mkdir -p builds/linux-x86-64
+	cd builds/linux-x86-64 && cmake $(CMREL) $(CMTLINUX64) ../.. && make && make test
+
+cmake-win-x86:
+	mkdir -p builds/win-x86
+	cd builds/win-x86 && cmake $(CMREL) $(CMTWIN32) ../.. && make && make test
+
 
 
 # makefile reference
