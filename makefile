@@ -112,6 +112,7 @@ $(EXEC_CLI): $(COBJ) $(LIBNAME)
 	# strip $@
 
 
+
 #
 # BUILD GUI
 #
@@ -134,10 +135,11 @@ gui/license_text.h: LICENSE text_to_header
 text_to_header: utils/text_to_header/text_to_header.c
 	$(CC) $(CFLAGS)  $<  -o $@
 
+
+
 #
 # TESTING
 #
-
 # Simple regression testing - testing against gold (pre-saved correct output)
 # Given certain input to `fsqlf`, actual output (lead) is compared
 # against to it's predefined expected output (gold).
@@ -181,7 +183,6 @@ clean_obj:
 
 clean_test:
 	rm -f tests/format_files_test tests/*.o tests/tools/*.o tests/cases/*_actual.sql
-
 
 
 
