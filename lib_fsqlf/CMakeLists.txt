@@ -29,12 +29,14 @@ set(libfsqlf_includes
 add_library(libfsqlf SHARED ${libfsqlf_sources})
 set_target_properties(libfsqlf PROPERTIES C_STANDARD 99)
 set_target_properties(libfsqlf PROPERTIES LIBRARY_OUTPUT_NAME fsqlf)
+target_compile_definitions(libfsqlf PRIVATE BUILDING_LIBFSQLF)
 target_include_directories(libfsqlf ${libfsqlf_includes})
 
 
 add_library(libfsqlf_static STATIC ${libfsqlf_sources})
 set_target_properties(libfsqlf_static PROPERTIES C_STANDARD 99)
 set_target_properties(libfsqlf_static PROPERTIES LIBRARY_OUTPUT_NAME fsqlf_static)
+target_compile_definitions(libfsqlf_static PUBLIC STATIC_LIBFSQLF)
 target_include_directories(libfsqlf_static ${libfsqlf_includes})
 
 

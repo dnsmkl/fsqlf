@@ -84,22 +84,35 @@ struct fsqlf_kw_conf
 typedef struct fsqlf_kw_conf * fsqlf_kwmap_t;
 
 
+#ifdef STATIC_LIBFSQLF
+#    define FSQLF_API
+#elif defined(_WIN32)
+#    ifdef BUILDING_LIBFSQLF
+#        define FSQLF_API __declspec(dllexport)
+#    else
+#        define FSQLF_API __declspec(dllimport)
+#    endif
+#else
+#    define FSQLF_API
+#endif
+
+
 // Create and retrieve  new struct fsqlf_kw_conf and add it to global map.
 void FSQLF_kw_create(fsqlf_kwmap_t *kwmap, const char *name);
-struct fsqlf_kw_conf * fsqlf_kw_get(fsqlf_kwmap_t kwmap, const char *name);
+FSQLF_API struct fsqlf_kw_conf * fsqlf_kw_get(fsqlf_kwmap_t kwmap, const char *name);
 
 // Init and destroy kwmap
-void fsqlf_kwmap_init(fsqlf_kwmap_t *kwmap);
-void fsqlf_kwmap_destroy(fsqlf_kwmap_t kwmap);
+FSQLF_API void fsqlf_kwmap_init(fsqlf_kwmap_t *kwmap);
+FSQLF_API void fsqlf_kwmap_destroy(fsqlf_kwmap_t kwmap);
 
 // Set case for keyword text.
-void fsqlf_kwmap_set_case(fsqlf_kwmap_t kwmap, enum fsqlf_kwcase keyword_case);
+FSQLF_API void fsqlf_kwmap_set_case(fsqlf_kwmap_t kwmap, enum fsqlf_kwcase keyword_case);
 
 // Set used variation of keyword text. (e.g. "left outer join" vs "left join")
-void fsqlf_kwmap_set_spelling(fsqlf_kwmap_t kwmap, enum fsqlf_kwspelling kw_text_to_use);
+FSQLF_API void fsqlf_kwmap_set_spelling(fsqlf_kwmap_t kwmap, enum fsqlf_kwspelling kw_text_to_use);
 
 // Set new line count before major clauses (from, join, where)
-void fsqlf_kwmap_set_major_clause_nl(fsqlf_kwmap_t kwmap, int nl_count);
+FSQLF_API void fsqlf_kwmap_set_major_clause_nl(fsqlf_kwmap_t kwmap, int nl_count);
 
 
 // Create & read formatting configuration file.
@@ -113,15 +126,15 @@ void fsqlf_kwmap_set_major_clause_nl(fsqlf_kwmap_t kwmap, int nl_count);
 #endif
 
 
-enum fsqlf_status fsqlf_kwmap_conffile_create(char *config_file_name);
-enum fsqlf_status fsqlf_kwmap_conffile_read(fsqlf_kwmap_t kwmap, const char *file);
+FSQLF_API enum fsqlf_status fsqlf_kwmap_conffile_create(char *config_file_name);
+FSQLF_API enum fsqlf_status fsqlf_kwmap_conffile_read(fsqlf_kwmap_t kwmap, const char *file);
 // "read_default" looks in working directory or "~/.fslqf" for formatting.conf.
-enum fsqlf_status fsqlf_kwmap_conffile_read_default(fsqlf_kwmap_t kwmap);
+FSQLF_API enum fsqlf_status fsqlf_kwmap_conffile_read_default(fsqlf_kwmap_t kwmap);
 
 
 // Actual formatting
-void fsqlf_format_file(fsqlf_kwmap_t kwmap, FILE *fin, FILE *fout);
-void fsqlf_format_bytes(fsqlf_kwmap_t kwmap,
+FSQLF_API void fsqlf_format_file(fsqlf_kwmap_t kwmap, FILE *fin, FILE *fout);
+FSQLF_API void fsqlf_format_bytes(fsqlf_kwmap_t kwmap,
     const char *bytes_in, int len, char **bytes_out
 );
 
