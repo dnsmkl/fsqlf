@@ -11,6 +11,11 @@
 #endif
 
 
+#ifndef PATH_FSQLF_LIB
+#define PATH_FSQLF_LIB ".."
+#endif
+
+
 #define VERBOSE (0)
 
 
@@ -54,7 +59,7 @@ int main(int argc, char **argv)
     for (int i = 0; i < TC_COUNT; i++) {
         char *cmd;
         const char *fsqlf = PATH_FSQLF_CLI;
-        const char *lib_path = "LD_LIBRARY_PATH=..";
+        const char *lib_path = "LD_LIBRARY_PATH=" PATH_FSQLF_LIB;
         alloc_join_4(&cmd,
             lib_path, strlen(lib_path),
             fsqlf, strlen(fsqlf),
