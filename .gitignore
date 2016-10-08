@@ -1,23 +1,4 @@
-# files that are intentionaly not tracked by git
-
-
-# Executables
-fsqlf
-fsqlf.exe
-wx_fsqlf
-wx_fsqlf.exe
-text_to_header
-tests/format_files_test
-
-
 # Generated files
-lib_fsqlf/formatter/lex.yy.c
-lib_fsqlf/formatter/lex.yy.h
-gui/license_text.h
-*.o
-*.so
-formatting.conf
-tests/cases/*_actual.sql
 build*
 
 
@@ -30,10 +11,3 @@ build*
 
 #archive for uploading
 *.zip
-
-
-# Temporary stuff
-tmp
-tmp/*
-testing/*output_lead.sql
-*/*/a.out

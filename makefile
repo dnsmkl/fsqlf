@@ -1,4 +1,4 @@
-PROJECTFOLDER=fsqlf
+PRJNAME=fsqlf
 
 CFLAGS+=-std=c99
 CFLAGS+=-Wall
@@ -10,9 +10,12 @@ CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 CXXFLAGS+=-Iinclude
 
 ifdef WIN
+	BLD=builds/windows
 	OS_TARGET=windows
-	EXEC_CLI=fsqlf.exe
-	EXEC_GUI=wx_fsqlf.exe
+	EXEC_CLI=$(BLD)/fsqlf.exe
+	EXEC_GUI=$(BLD)/wx_fsqlf.exe
+	UTIL_TXT2H=$(BLD)/text_to_header.exe
+	CFLAGS+=-DBUILDING_LIBFSQLF
 	# i686
 	# https://myonlineusb.wordpress.com/2011/06/08/what-is-the-difference-between-i386-i486-i586-i686-i786/
 	# CC=i586-mingw32msvc-gcc
@@ -26,10 +29,12 @@ ifdef WIN
 	# Option "-mthreads" needs to be removed, so mingwm10.dll would not be needed
 	# (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else
+	BLD=builds/linux
 	OS_TARGET=linux
 	PREFIX=/usr/local
-	EXEC_CLI=fsqlf
-	EXEC_GUI=wx_fsqlf
+	EXEC_CLI=$(BLD)/fsqlf
+	EXEC_GUI=$(BLD)/wx_fsqlf
+	UTIL_TXT2H=$(BLD)/text_to_header
 	CC=gcc
 	CXX=g++
 	CXXFLAGS+= `wx-config --cxxflags`
@@ -41,99 +46,101 @@ else
 	endif
 endif
 
-
-
 ifeq (Darwin, ${_system_type})
-	LIBNAME=libfsqlf.dylib
+	LIBNAME=$(BLD)/libfsqlf.dylib
 	LIBFLAGS=-dynamiclib
 else
 	ifdef WIN
-		LIBNAME=libfsqlf.dll
+		LIBNAME=$(BLD)/libfsqlf.dll
 		LIBFLAGS=-shared -Wl,--out-implib,libfsqlf.a
 	else
-		LIBNAME=libfsqlf.so
+		LIBNAME=$(BLD)/libfsqlf.so
 		LIBFLAGS=-shared
 	endif
 endif
 
 
-.PHONY: all  clean  zip  test  test-print  test-gold  clean_obj  clean_test  install  uninstall
+
+.PHONY: all clean zip test install uninstall
 
 
 
-all: $(EXEC_CLI)  $(EXEC_GUI)
+all: $(EXEC_CLI) $(EXEC_GUI)
 
 
 
 #
 # BUILD LIB
 #
-LCOBJ += lib_fsqlf/conf_file/conf_file_create.o
-LCOBJ += lib_fsqlf/conf_file/conf_file_read.o
-LCOBJ += lib_fsqlf/formatter/lex.yy.o
-LCOBJ += lib_fsqlf/formatter/lex_wrapper.o
-LCOBJ += lib_fsqlf/formatter/print_keywords.o
-LCOBJ += lib_fsqlf/formatter/tokque.o
-LCOBJ += lib_fsqlf/kw/kw.o
-LCOBJ += lib_fsqlf/kw/kwmap.o
-LCOBJ += lib_fsqlf/lex/token.o
-LCOBJ += utils/queue/queue.o
-LCOBJ += utils/stack/stack.o
-LCOBJ += utils/string/read_int.o
+LCOBJ += $(BLD)/lib_fsqlf/conf_file/conf_file_create.o
+LCOBJ += $(BLD)/lib_fsqlf/conf_file/conf_file_read.o
+LCOBJ += $(BLD)/lib_fsqlf/formatter/lex_wrapper.o
+LCOBJ += $(BLD)/lib_fsqlf/formatter/print_keywords.o
+LCOBJ += $(BLD)/lib_fsqlf/formatter/tokque.o
+LCOBJ += $(BLD)/lib_fsqlf/kw/kw.o
+LCOBJ += $(BLD)/lib_fsqlf/kw/kwmap.o
+LCOBJ += $(BLD)/lib_fsqlf/lex/token.o
+LCOBJ += $(BLD)/utils/queue/queue.o
+LCOBJ += $(BLD)/utils/stack/stack.o
+LCOBJ += $(BLD)/utils/string/read_int.o
+BLDDIRS += $(dir $(LCOBJ))
 
-$(LCOBJ): %.o: %.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
+$(LCOBJ): $(BLD)/%.o: ./%.c | $(BLDDIRS)
+	$(CC) -o $@ -c $< $(CFLAGS) -I$(BLD) -Ilib_fsqlf/formatter
+$(BLD)/lex.yy.o: $(BLD)/lex.yy.c
+	$(CC) -o $@ -c $< $(CFLAGS) -Ilib_fsqlf/formatter
 
-$(filter lib_fsqlf/%,$(LCOBJ)): %.o: %.c include/lib_fsqlf.h
+$(filter lib_fsqlf/%,$(LCOBJ)): $(BLDP)%.o: ./%.c include/lib_fsqlf.h
 
-$(LIBNAME): $(LCOBJ)
-	$(CC) $(CFLAGS) $(LIBFLAGS) $^   -o $@
+$(LIBNAME): $(LCOBJ) $(BLD)/lex.yy.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBFLAGS)
 
-lib_fsqlf/conf_file/conf_file_read.o: utils/string/read_int.h
-lib_fsqlf/formatter/lex_wrapper.o: lib_fsqlf/formatter/lex.yy.h
-lib_fsqlf/formatter/lex.yy.h: lib_fsqlf/formatter/lex.yy.c
-lib_fsqlf/formatter/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/print_keywords.h
+$(BLD)/lib_fsqlf/conf_file/conf_file_read.o: utils/string/read_int.h
+$(BLD)/lib_fsqlf/formatter/lex_wrapper.o: $(BLD)/lex.yy.h
+$(BLD)/lex.yy.h: $(BLD)/lex.yy.c
+$(BLD)/lex.yy.c: lib_fsqlf/formatter/fsqlf.lex lib_fsqlf/formatter/print_keywords.h
 	# flex options (e.g. `-o`) has to be before input file
-	flex  -o $@ --header-file=lib_fsqlf/formatter/lex.yy.h $<
+	flex -o $@ --header-file=$(BLD)/lex.yy.h $<
 
 
 
 #
 # BUILD CLI
 #
-COBJ += cli/main.o
-COBJ += cli/cli.o
+COBJ += $(BLD)/cli/main.o
+COBJ += $(BLD)/cli/cli.o
+BLDDIRS += $(dir $(COBJ))
 
-$(COBJ): %.o: %.c include/lib_fsqlf.h
-	$(CC) $(CFLAGS)  -c $<  -o $@
+$(COBJ): $(BLD)/%.o: ./%.c include/lib_fsqlf.h | $(BLDDIRS)
+	$(CC) -o $@ -c $< $(CFLAGS)   
 
-$(EXEC_CLI): $(COBJ) $(LIBNAME)
-	$(CC) $(CFLAGS)  $(COBJ)  -L. -lfsqlf  -Wl,-rpath,.  -o $@
-	# strip $@
+INTUTIL = $(BLD)/utils/string/read_int.o
+$(EXEC_CLI): $(COBJ) $(INTUTIL) $(LIBNAME)
+	$(CC) -o $@ $(CFLAGS) $(COBJ) $(INTUTIL) -L$(BLD) -lfsqlf -Wl,-rpath,.
 
 
 
 #
 # BUILD GUI
 #
-$(EXEC_GUI): wx_fsqlf.o  basic_notepad.o  dnd_target.o  $(LIBNAME)
-	$(CXX)  $^  -o $@  $(CXXFLAGS)  $(LDFLAGS)  -L. -lfsqlf  -Wl,-rpath,.
-	strip $@
+CXXOBJ += $(BLD)/gui/wx_fsqlf.o
+CXXOBJ += $(BLD)/gui/basic_notepad.o
+CXXOBJ += $(BLD)/gui/dnd_target.o
+BLDDIRS += $(dir $(CXXOBJ))
 
-# generic rule for C++ building
-CXXOBJ = wx_fsqlf.o basic_notepad.o dnd_target.o
+$(CXXOBJ): $(BLD)/%.o: ./%.cpp ./%.hpp | $(BLDDIRS)
+	$(CXX) -o $@ -c $< $(CXXFLAGS) -I$(BLD)
 
-$(CXXOBJ): %.o: gui/%.cpp  gui/%.hpp
-	$(CXX)  -c $<  -o $@  $(CXXFLAGS)
+$(EXEC_GUI): $(CXXOBJ) $(LIBNAME)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS) -L$(BLD) -lfsqlf -Wl,-rpath,.
 
-wx_fsqlf.o: gui/basic_notepad.hpp
-basic_notepad.o: gui/dnd_target.hpp  gui/license_text.h
+$(BLD)/gui/wx_fsqlf.o: gui/basic_notepad.hpp
+$(BLD)/gui/basic_notepad.o: gui/dnd_target.hpp $(BLD)/license_text.h
 
-gui/license_text.h: LICENSE text_to_header
-	./text_to_header  $<  $@  LICENSE_TEXT
-
-text_to_header: utils/text_to_header/text_to_header.c
-	$(CC) $(CFLAGS)  $<  -o $@
+$(UTIL_TXT2H): utils/text_to_header/text_to_header.c
+	$(CC) -o $@ $< $(CFLAGS)
+$(BLD)/license_text.h: LICENSE $(UTIL_TXT2H)
+	$(UTIL_TXT2H) $< $@ LICENSE_TEXT
 
 
 
@@ -144,45 +151,39 @@ text_to_header: utils/text_to_header/text_to_header.c
 # Given certain input to `fsqlf`, actual output (lead) is compared
 # against to it's predefined expected output (gold).
 # TF stands for "test file".
-test: test-format-files
+TSTOBJ += $(BLD)/tests/tools/file_compare.o
+TSTOBJ += $(BLD)/tests/format_files_test.o
+BLDDIRS += $(dir $(TSTOBJ))
+BLDDIRS += $(BLD)/tests/cases
 
-test-format-files: $(EXEC_CLI) tests/format_files_test
-	cd tests && ./format_files_test
+test: $(EXEC_CLI) $(BLD)/tests/format_files_test
+	$(BLD)/tests/format_files_test
 
-tests/tools/file_compare.o: tests/tools/file_compare.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
+$(TSTOBJ): $(BLD)/%.o: ./%.c | $(BLDDIRS)
+	$(CC) -o $@ -c $< $(CFLAGS) \
+		-D PATH_FSQLF_CLI=\"$(EXEC_CLI)\" \
+		-D PATH_FSQLF_LIB=\"$(BLD)\" \
+		-D PATH_TC_STATICSQL=\"tests/cases/\" \
+		-D PATH_TC_GENERATED=\"$(BLD)/tests/cases/\"
 
-tests/format_files_test.o: tests/format_files_test.c
-	$(CC) $(CFLAGS)  -c $<  -o $@
+$(BLD)/tests/format_files_test: $(TSTOBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
-tests/format_files_test: tests/format_files_test.o tests/tools/file_compare.o
-	$(CC) $(CFLAGS)  $^  -o $@
+
+
+#
+# OUT OF SOURCE BUILD FOLDERS
+#
+$(sort $(BLDDIRS)):
+	mkdir -p $@
 
 
 
 #
 #  CLEANUP
 #
-TMP_BAKUPS=$(wildcard */*~) $(wildcard *~) $(TEST_TMP_ORIGINAL) $(TEST_TMP_FORMATED)
-
-clean: clean_local  clean_win  clean_obj  clean_test
-
-clean_local:
-	rm -R -f $(EXEC_GUI) $(EXEC_CLI)  lib_fsqlf/formatter/lex.yy.c  $(TMP_BAKUPS) \
-		lib_fsqlf/formatter/lex.yy.h \
-		$(LIBNAME) libfsqlf.a \
-		$(wildcard $(PROJECTFOLDER)*.zip) tmp gui/license_text.h $(CONF_FILE) \
-		text_to_header builds
-	make clean_obj
-
-clean_win:
-	make clean_local WIN=1
-
-clean_obj:
-	rm -f *.o lib_fsqlf/*.o lib_fsqlf/*/*.o utils/*/*.o cli/*.o
-
-clean_test:
-	rm -f tests/format_files_test tests/*.o tests/tools/*.o tests/cases/*_actual.sql
+clean:
+	rm -f -R builds/
 
 
 
@@ -190,25 +191,26 @@ clean_test:
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
 formatting.conf: lib_fsqlf/kw/kwmap_defaults.def $(EXEC_CLI)
-	./$(EXEC_CLI) --create-config-file
+	LD_LIBRARY_PATH=$(BLD) ./$(EXEC_CLI) --create-config-file
 
 VERSION:=$(shell git describe master)
-ZIP_NAME:=$(PROJECTFOLDER).$(VERSION).zip
+PKGAREA:=builds/packaging
+ZIP_NAME:=$(PKGAREA)/$(PRJNAME).$(VERSION).zip
 
 zip: tmp_folder
 	rm -f $(ZIP_NAME)
-	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PROJECTFOLDER)/source/'
-	cd tmp/ &&   zip -r ../$(ZIP_NAME)  $(PROJECTFOLDER)
+	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PRJNAME)/source/'
+	zip -r $(ZIP_NAME) $(PKGAREA)/$(PRJNAME)
 
 tmp_folder: LICENSE README.md
 	make prep_bin
-	make clean_obj # to ensure that object files are for needed OS
 	make prep_bin WIN=1
-	cp    -t tmp/$(PROJECTFOLDER)   $^
+	cp -t $(PKGAREA)/$(PRJNAME) $^
 
 prep_bin: $(EXEC_CLI) $(EXEC_GUI) $(LIBNAME) formatting.conf
-	mkdir -p tmp/$(PROJECTFOLDER)/$(OS_TARGET)
-	cp    -t tmp/$(PROJECTFOLDER)/$(OS_TARGET)    $^
+	rm -Rf $(PKGAREA)/$(PRJNAME)/$(OS_TARGET)
+	mkdir -p $(PKGAREA)/$(PRJNAME)/$(OS_TARGET)
+	cp -t $(PKGAREA)/$(PRJNAME)/$(OS_TARGET) $^
 
 
 
