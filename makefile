@@ -234,9 +234,11 @@ endif
 ifdef EXEC_GUI
 	rm -vf $(PREFIX)/bin/$(EXEC_GUI)
 endif
+ifdef LIBNAME
+	rm -vf $(PREFIX)/lib/$(LIBNAME)
+endif
 	rm -vf $(PREFIX)/share/fsqlf/formatting.conf.example
 	rm -vfd $(PREFIX)/share/fsqlf
-	rm -vf $(PREFIX)/lib/$(LIBNAME)
 endif
 
 
