@@ -52,7 +52,8 @@ ifeq (Darwin, ${_system_type})
 else
 	ifdef WIN
 		LIBNAME=$(BLD)/libfsqlf.dll
-		LIBFLAGS=-shared -Wl,--out-implib,libfsqlf.a
+		LIBNAME2=$(BLD)/libfsqlf.lib
+		LIBFLAGS=-shared -Wl,--out-implib,$(LIBNAME2)
 	else
 		LIBNAME=$(BLD)/libfsqlf.so
 		LIBFLAGS=-shared
@@ -210,7 +211,7 @@ tmp_folder: LICENSE README.md
 prep_bin: $(EXEC_CLI) $(EXEC_GUI) $(LIBNAME) $(BLD)/formatting.conf
 	rm -Rf $(PKGAREA)/$(PRJNAME)/$(OS_TARGET)
 	mkdir -p $(PKGAREA)/$(PRJNAME)/$(OS_TARGET)
-	cp -t $(PKGAREA)/$(PRJNAME)/$(OS_TARGET) $^
+	cp -t $(PKGAREA)/$(PRJNAME)/$(OS_TARGET) $^ $(LIBNAME2)
 
 
 
