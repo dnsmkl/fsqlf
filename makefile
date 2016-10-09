@@ -201,7 +201,7 @@ ZIP_NAME:=$(PKGAREA)/$(PRJNAME).$(VERSION).zip
 zip: tmp_folder
 	rm -f $(ZIP_NAME)
 	git archive master  -o $(ZIP_NAME)  --format=zip --prefix='$(PRJNAME)/source/'
-	zip -r $(ZIP_NAME) $(PKGAREA)/$(PRJNAME)
+	cd $(PKGAREA) && zip -r ../../$(ZIP_NAME) $(PRJNAME)
 
 tmp_folder: LICENSE README.md
 	make prep_bin
