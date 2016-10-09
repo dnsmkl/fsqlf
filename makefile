@@ -190,8 +190,8 @@ clean:
 #
 # BUILD ARCHIVE  (source and binaries for publishing)
 #
-formatting.conf: lib_fsqlf/kw/kwmap_defaults.def $(EXEC_CLI)
-	LD_LIBRARY_PATH=$(BLD) ./$(EXEC_CLI) --create-config-file
+$(BLD)/formatting.conf: lib_fsqlf/kw/kwmap_defaults.def $(EXEC_CLI)
+	LD_LIBRARY_PATH=$(BLD) ./$(EXEC_CLI) --create-config-file $(BLD)/formatting.conf
 
 VERSION:=$(shell git describe master)
 PKGAREA:=builds/packaging
@@ -207,7 +207,7 @@ tmp_folder: LICENSE README.md
 	make prep_bin WIN=1
 	cp -t $(PKGAREA)/$(PRJNAME) $^
 
-prep_bin: $(EXEC_CLI) $(EXEC_GUI) $(LIBNAME) formatting.conf
+prep_bin: $(EXEC_CLI) $(EXEC_GUI) $(LIBNAME) $(BLD)/formatting.conf
 	rm -Rf $(PKGAREA)/$(PRJNAME)/$(OS_TARGET)
 	mkdir -p $(PKGAREA)/$(PRJNAME)/$(OS_TARGET)
 	cp -t $(PKGAREA)/$(PRJNAME)/$(OS_TARGET) $^
@@ -219,11 +219,11 @@ prep_bin: $(EXEC_CLI) $(EXEC_GUI) $(LIBNAME) formatting.conf
 #
 ifeq ($(OS_TARGET),linux)
 
-install: $(EXEC_CLI) $(EXEC_GUI) formatting.conf
+install: $(EXEC_CLI) $(EXEC_GUI) $(BLD)/formatting.conf
 	install -d $(PREFIX)/bin
 	install $(EXEC_CLI) $(EXEC_GUI) $(PREFIX)/bin
 	install -d $(PREFIX)/share/fsqlf
-	install -m 644 formatting.conf $(PREFIX)/share/fsqlf/formatting.conf.example
+	install -m 644 $(BLD)/formatting.conf $(PREFIX)/share/fsqlf/formatting.conf.example
 	install -d $(PREFIX)/lib
 	install $(LIBNAME) $(PREFIX)/lib
 

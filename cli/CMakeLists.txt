@@ -15,7 +15,7 @@ target_link_libraries(fsqlf libfsqlf_static)
 
 
 add_custom_target(formatting.conf ALL
-    COMMAND $<TARGET_FILE:fsqlf> --create-config-file
+    COMMAND $<TARGET_FILE:fsqlf> --create-config-file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/formatting.conf
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     DEPENDS fsqlf)
 

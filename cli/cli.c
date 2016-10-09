@@ -29,7 +29,7 @@ static void usage_info(int argc, char **argv)
         "Read from <input_file> and write formatted output to <output_file> (use std I/O if missing)\n"
         "        If there are overlaping options set, then the last one (overlapping setting) wins.\n"
         "        e.g. If config file is set 2 times, then from 1st file use only configs that don't exist in the 2nd file.");
-    PRINT_OPTION_INFO( "fsqlf --create-config-file", "(Re)create '" FSQLF_CONFFILE_NAME "' config file.");
+    PRINT_OPTION_INFO( "fsqlf --create-config-file <conf_file>", "Create config file. (file is overwritten if already exists)");
     fprintf(stderr, "options:\n");
     PRINT_OPTION_INFO( "-i <input_file>" , "Use <input_file> as input");
     PRINT_OPTION_INFO( "-o <output_file>" , "Use  <output_file> as output");
@@ -65,10 +65,14 @@ void read_cli_options(struct fsqlf_kw_conf *kwall, int argc, char **argv,
     if (argc == 1) return; // use stdin and stdout
 
     if (argc == 2 && strcmp(argv[1], "--create-config-file") == 0) {
-        if (fsqlf_kwmap_conffile_create(FSQLF_CONFFILE_NAME) != 0) {
+        FAIL_WITH_ERROR(1, "Missing value for option : %s", argv[1]);
+    }
+    if (argc == 3 && strcmp(argv[1], "--create-config-file") == 0) {
+        if (fsqlf_kwmap_conffile_create(argv[2]) != FSQLF_OK) {
+            fprintf(stderr, "Problem occurred during creation of config file '%s'.\n", argv[2]);
             exit(1);
         } else {
-            fprintf(stderr, "File '%s' (re)created.\n", FSQLF_CONFFILE_NAME);
+            fprintf(stderr, "Configuration was written to file '%s'.\n", argv[2]);
             exit(0);
         }
     }
