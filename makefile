@@ -25,6 +25,7 @@ ifdef WIN
 	CC=i686-w64-mingw32-gcc
 	CXX=i686-w64-mingw32-g++
 	CXXFLAGS+= `/usr/i686-w64-mingw32/bin/wx-config --cxxflags | sed 's/-mthreads//'`
+	LDFLAGS+=-static-libgcc -static-libstdc++
 	LDFLAGS+= `/usr/i686-w64-mingw32/bin/wx-config --libs     | sed 's/-mthreads//'`
 	# Option "-mthreads" needs to be removed, so mingwm10.dll would not be needed
 	# (http://old.nabble.com/mingwm10.dll-ts8920679.html)
