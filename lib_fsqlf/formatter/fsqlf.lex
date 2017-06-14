@@ -149,6 +149,7 @@ COMP_GT (>)
 
 COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
 COMMENT_ONE_LINE_LAST_LINE_IN_FILE [-]{2,}[^\n]*
+COMMENT_ML_MARKER [/][*]+[*][/]
 COMMENT_ML_START [/][*]+
 COMMENT_ML_PART1 [^*]+
 COMMENT_ML_PART2 [*]+[^/]
@@ -349,6 +350,7 @@ END (?i:end)
 <stCOMMENTML>{COMMENT_ML_PART2}     { TUSE_SIMPLE( NULL);};
 <stCOMMENTML>{COMMENT_ML_END}       {POP_STATE(); TUSE_SIMPLE( NULL);};
 
+{COMMENT_ML_MARKER}     {TUSE_SIMPLE( NULL);};
 {COMMENT_ONE_LINE}     {TUSE_SIMPLE( NULL);};
     /* Exeption to one-line-comment: comment on last line, without new-line after it */
 {COMMENT_ONE_LINE_LAST_LINE_IN_FILE}    {TUSE_SIMPLE( NULL);};

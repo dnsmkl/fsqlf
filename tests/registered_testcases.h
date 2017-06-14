@@ -20,7 +20,7 @@ enum tc_position
 };
 
 
-#define TC_COUNT (9)
+#define TC_COUNT (10)
 const char *tcs[TC_COUNT][3] = {
     {
         PATH_TC_STATICSQL "bigquery_input.sql",
@@ -36,6 +36,11 @@ const char *tcs[TC_COUNT][3] = {
         PATH_TC_STATICSQL "create_table_input.sql",
         PATH_TC_GENERATED "create_table_actual.sql",
         PATH_TC_STATICSQL "create_table_expected.sql"
+    },
+    {
+        PATH_TC_STATICSQL "comment_marker_input.sql",
+        PATH_TC_GENERATED "comment_marker_actual.sql",
+        PATH_TC_STATICSQL "comment_marker_expected.sql"
     },
     {
         PATH_TC_STATICSQL "delete_input.sql",
