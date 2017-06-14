@@ -67,6 +67,7 @@ static struct FSQLF_state_change decide_new_state(
         else if (strcmp(s->name, "kw_orderby") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stORDERBY};
         else if (strcmp(s->name, "kw_having") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
         else if (strcmp(s->name, "kw_qualify") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
+        else if (strcmp(s->name, "kw_set") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stSET};
     }
 
     return (struct FSQLF_state_change) {0, 0};
