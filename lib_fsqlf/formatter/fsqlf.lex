@@ -372,11 +372,6 @@ END (?i:end)
 <<EOF>> {
             FSQLF_tokque_finish_out(&yyextra->tqueue, yyout, &yyextra->bout);
             fprintf(yyout,"\n");
-            switch (YY_START) {
-                case stCOMMENTML: fprintf(yyout,"--unterminated comment \n"); break;
-                case stSTRING: fprintf(yyout,"--unterminated  string\n"); break;
-                default: ;
-            }
             return 0 ;
         }
 
