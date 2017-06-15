@@ -147,8 +147,7 @@ COMP_GE (>=)
 COMP_LT (<)
 COMP_GT (>)
 
-COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
-COMMENT_ONE_LINE_LAST_LINE_IN_FILE [-]{2,}[^\n]*
+COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]?
 COMMENT_ML [/][*]([^*]|[*]+[^*/])*[*]+[/]
 
 STRING ([xX]?['][^'']*['])+
@@ -346,7 +345,6 @@ END (?i:end)
 
 {COMMENT_ONE_LINE}     { TUSE_SIMPLE(NULL);};
     /* Exeption to one-line-comment: comment on last line, without new-line after it */
-{COMMENT_ONE_LINE_LAST_LINE_IN_FILE}    { TUSE_SIMPLE(NULL);};
 
 
 {STRING}     { TUSE_W_STATES(NULL); }
