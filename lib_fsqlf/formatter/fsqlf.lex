@@ -192,7 +192,7 @@ END (?i:end)
 {DELETE}      { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_deletefrom")); }
 {INSERTINTO}  { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_insertinto")); }
 {UPDATE}      { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_update")); }
-<stUPDATE,stFROM>{SET} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_set")); }
+{SET} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_set")); }
 <stSET>{COMMA} { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_comma_set")); }
 
                 /* SET operations */
@@ -227,16 +227,16 @@ END (?i:end)
 <stLEFTP>{ORDERBY}          { TUSE_SIMPLE(NULL); };
 <stLEFTP>{FROM}             { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_from_2"));  };
 <stLEFTP>{RIGHTP}           { POP_STATE(); TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_right_p")); yyextra->right_p++; };
-<stSELECT,stCOMMA,stUPDATE>{FROM} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_from")); };
+{FROM} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_from")); };
 <stLEFTP,stSELECT>{AS}      { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_as")); };
 
 
                 /* FROM ... JOIN ... ON ... WHERE */
-<stON,stFROM,stJOIN>{IJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_inner_join")); };
-<stON,stFROM,stJOIN>{LJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_left_join")); };
-<stON,stFROM,stJOIN>{RJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_right_join")); };
-<stON,stFROM,stJOIN>{FJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_full_join")); };
-<stON,stFROM,stJOIN>{CJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_cross_join")); };
+{IJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_inner_join")); };
+{LJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_left_join")); };
+{RJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_right_join")); };
+{FJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_full_join")); };
+{CJOIN} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_cross_join")); };
 <stON,stFROM,stJOIN>{COMMA} { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_comma_join")); };
 
 <stJOIN>{ON} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_on")); };
@@ -244,12 +244,12 @@ END (?i:end)
 
 
                 /* WHERE ... (also join conditions) */
-<stFROM,stJOIN,stON,stSET,stDELETE>{WHERE} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_where")); };
+{WHERE} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_where")); };
 <stWHERE,stON,stJOIN>{AND}  { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_and"));   };
 <stWHERE,stON,stJOIN>{OR}   { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_or"));    };
 {NOT}    { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_not")); };
 
-<stWHERE>{EXISTS}   { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_exists")); };
+{EXISTS} { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_exists")); };
 
 
 {GROUPBY}    { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_groupby")); }
