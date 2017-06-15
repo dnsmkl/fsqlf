@@ -149,11 +149,7 @@ COMP_GT (>)
 
 COMMENT_ONE_LINE [-]{2,}[^\n]*[\n]
 COMMENT_ONE_LINE_LAST_LINE_IN_FILE [-]{2,}[^\n]*
-COMMENT_ML_MARKER [/][*]+[*][/]
-COMMENT_ML_START [/][*]+
-COMMENT_ML_PART1 [^*]+
-COMMENT_ML_PART2 [*]+[^/]
-COMMENT_ML_END   [*]+[/]
+COMMENT_ML [/][*]([^*]|[*]+[^*/])*[*]+[/]
 
 STRING ([xX]?['][^'']*['])+
 SEMICOLON ;
@@ -189,7 +185,7 @@ END (?i:end)
 %option always-interactive
 
 %s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST stCREATE stTAB_COL_LIST
-%x stCOMMENTML stSTRING
+%x stSTRING
 
 %%
 
@@ -301,7 +297,7 @@ END (?i:end)
             TUSE_SIMPLE(NULL);
         }
     };
-<stP_SUB>{COMMENT_ML_START} { PUSH_STATE(stCOMMENTML); TUSE_SIMPLE(NULL); };
+<stP_SUB>{COMMENT_ML} { TUSE_SIMPLE(NULL); };
 <stP_SUB>{COMMENT_ONE_LINE} { TUSE_SIMPLE(NULL); };
 <stP_SUB>{SPACE}            { };
 <stP_SUB>{RIGHTP} {
@@ -346,12 +342,8 @@ END (?i:end)
 {USING} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_using")); }
 
 
-{COMMENT_ML_START}     { PUSH_STATE(stCOMMENTML); TUSE_SIMPLE(NULL);};
-<stCOMMENTML>{COMMENT_ML_PART1}     { TUSE_SIMPLE(NULL);};
-<stCOMMENTML>{COMMENT_ML_PART2}     { TUSE_SIMPLE(NULL);};
-<stCOMMENTML>{COMMENT_ML_END}       { POP_STATE(); TUSE_SIMPLE(NULL);};
+{COMMENT_ML} { TUSE_SIMPLE(NULL); }
 
-{COMMENT_ML_MARKER}     { TUSE_SIMPLE(NULL);};
 {COMMENT_ONE_LINE}     { TUSE_SIMPLE(NULL);};
     /* Exeption to one-line-comment: comment on last line, without new-line after it */
 {COMMENT_ONE_LINE_LAST_LINE_IN_FILE}    { TUSE_SIMPLE(NULL);};

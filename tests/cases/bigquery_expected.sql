@@ -10,7 +10,7 @@ SELECT
 , 'dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg' as c
 , cast ( 19.2 AS decimal ( 18,2 ) )
 , ' */ '
-, cast ( 19.2 AS decimal ( 18,2 ) ) /*  sdsd   *****- -- */
+, cast ( 19.2 AS decimal ( 18,2 ) ) /* sdsd  *****---*/
 , asextract ( day FROM t ) as _toto -- komentaras case select from
 FROM ( bobo as gogo
 LEFT JOIN
