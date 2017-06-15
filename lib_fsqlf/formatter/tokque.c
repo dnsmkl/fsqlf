@@ -68,6 +68,16 @@ static struct FSQLF_state_change decide_new_state(
         else if (strcmp(s->name, "kw_having") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
         else if (strcmp(s->name, "kw_qualify") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
         else if (strcmp(s->name, "kw_set") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stSET};
+        else if (strcmp(s->name, "kw_select") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stSELECT};
+        else if (strcmp(s->name, "kw_comma") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stCOMMA};
+        else if (strcmp(s->name, "kw_inner_join") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stJOIN};
+        else if (strcmp(s->name, "kw_left_join") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stJOIN};
+        else if (strcmp(s->name, "kw_right_join") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stJOIN};
+        else if (strcmp(s->name, "kw_full_join") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stJOIN};
+        else if (strcmp(s->name, "kw_cross_join") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stJOIN};
+        else if (strcmp(s->name, "kw_on") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stON};
+        else if (strcmp(s->name, "kw_where") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stWHERE};
+        else if (strcmp(s->name, "kw_from") == 0) return (struct FSQLF_state_change) {FSQLF_SCA_BEGIN, stFROM};
     }
 
     return (struct FSQLF_state_change) {0, 0};
