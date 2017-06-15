@@ -184,7 +184,6 @@ END (?i:end)
 %option always-interactive
 
 %s stSELECT stFROM stWHERE stON stEXISTS stLEFTP stJOIN stIN stCOMMA stINLIST stFROM_LEFTP stP_SUB stORDERBY stGROUPBY stINSERT stINSCOLLIST stUPDATE stSET stDELETE stIN_CONSTLIST stCREATE stTAB_COL_LIST
-%x stSTRING
 
 %%
 
@@ -195,8 +194,9 @@ END (?i:end)
 <stSET>{COMMA} { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_comma_set")); }
 
 {DROP}       { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_drop")); }
-{TABLE}      { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_table")); }
 {IFEXISTS}   { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_ifexists")); }
+{USING} { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_using")); }
+{TABLE}      { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_table")); }
 {VIEW}       { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_view")); }
 
                 /* SET operations */
@@ -332,22 +332,20 @@ END (?i:end)
     };
 
 {CASE}  { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_case")); }
-{WHEN}  { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_when")); }
-{THEN}  { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_then")); }
-{ELSE}  { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_else")); }
+{WHEN}  { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_when")); }
+{THEN}  { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_then")); }
+{ELSE}  { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_else")); }
 {END}   { TUSE_SIMPLE(fsqlf_kw_get(yyextra->kwall, "kw_end")); }
-
-{USING} { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_using")); }
 
 {COMMENT_ML} { TUSE_SIMPLE(NULL); }
 {COMMENT_ONE_LINE} { TUSE_SIMPLE(NULL);};
 
-{STRING}     { TUSE_W_STATES(NULL); }
+{STRING}     { TUSE_SIMPLE(NULL); }
 {SPACE}+     { /* discard spaces */; }
-{DBOBJECT}   { TUSE_W_STATES(NULL); }
-{NUMBER}     { TUSE_W_STATES(NULL); }
+{DBOBJECT}   { TUSE_SIMPLE(NULL); }
+{NUMBER}     { TUSE_SIMPLE(NULL); }
 {SEMICOLON}  { TUSE_W_STATES(fsqlf_kw_get(yyextra->kwall, "kw_semicolon")); }
-<*>.         { TUSE_W_STATES(NULL); }
+<*>.         { TUSE_SIMPLE(NULL); }
 
 
 <<EOF>> {
