@@ -5,13 +5,13 @@ SELECT
 , 2 - 1 as b1
 , 2 * 1 as c1
 , 2 / 1 as d1
-, "str" || "cat"as concatted
+, "str" || "cat"as concatted /*/*/
 , min ( a ) over ( partition by x,c order by r rows between 1 preceeding and 1 preceeding )
-, 'dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg' as c
-, cast ( 19.2 AS decimal ( 18,2 ) )
-, ' */ '
+, 'dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg''dfgdf/*gdfgd*/fg' as c /*a*a*a*/
+, cast ( 19.2 AS decimal ( 18,2 ) ) /******/
+, ' */ ' /**/
 , cast ( 19.2 AS decimal ( 18,2 ) ) /* sdsd  *****---*/
-, asextract ( day FROM t ) as _toto -- komentaras case select from
+, asextract ( day FROM t ) as _toto -- comment case select from
 FROM ( bobo as gogo
 LEFT JOIN
 (
@@ -72,3 +72,8 @@ AND a IN
 )
 AND b IN ( 19,2,3 )
 ;
+
+
+
+
+--
