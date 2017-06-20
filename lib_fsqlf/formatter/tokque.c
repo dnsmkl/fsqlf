@@ -1,5 +1,6 @@
-#include <stdio.h>      // fprintf, fputs
+#include <stdio.h> // fprintf, fputs
 #include <assert.h> // assert
+#include <ctype.h> // isalnum
 #include "../lex/token.h" // struct FSQLF_token, FSQLF_clear_token, FSQLF_set_token
 #include "print_keywords.h" // FSQLF_print
 #include "tokque.h"
@@ -16,6 +17,26 @@ void FSQLF_tokque_init(struct FSQLF_queue *tq)
 }
 
 
+static struct fsqlf_kw_conf * derive_kw_from_text(char *txt, size_t length)
+{
+    struct fsqlf_kw_conf *kw = calloc(1, sizeof(struct fsqlf_kw_conf));
+
+    // Adjustment necessary for single line comments,
+    // for keeping indentation and new lines right.
+    int pos_last_char = length - 1;
+    if (txt[pos_last_char] == '\n') {
+        // 'Move' ending new line from 'txtdup' to 'kw'
+        txt[pos_last_char] = '\0';
+        kw->after.new_line = 1;
+    }
+
+    // Word-vs-operator check.
+    // Ensure that two adjacent words have spacing inbetween.
+    kw->is_word = !(length == 1 && !isalnum(txt[0]));
+    return kw;
+}
+
+
 static void tokque_put_kw(
     struct FSQLF_queue *tq,
     int *currindent,
@@ -28,7 +49,7 @@ static void tokque_put_kw(
     enum FSQLF_token_class tcls =
         kw0 ? FSQLF_TOKEN_CLASS_KW : FSQLF_TOKEN_CLASS_TXT;
     struct fsqlf_kw_conf *kw =
-        kw0 ? kw0 : FSQLF_derive_kw_from_text(text, len);
+        kw0 ? kw0 : derive_kw_from_text(text, len);
 
     struct FSQLF_token *tok =
         (struct FSQLF_token *) FSQLF_queue_alloc_back(tq);

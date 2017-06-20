@@ -5,9 +5,6 @@
 #include <lib_fsqlf.h> // struct fsqlf_kw_conf, fsqlf_kw_get
 
 
-struct fsqlf_kw_conf * FSQLF_derive_kw_from_text(char *txt, size_t length);
-
-
 void FSQLF_print(
     FILE *fout,
     struct FSQLF_out_buffer *bout,

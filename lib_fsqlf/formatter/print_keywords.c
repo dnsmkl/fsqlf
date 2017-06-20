@@ -163,26 +163,6 @@ static char * struct_spacing_to_str(struct fsqlf_spacing cnt)
 }
 
 
-struct fsqlf_kw_conf * FSQLF_derive_kw_from_text(char *txt, size_t length)
-{
-    struct fsqlf_kw_conf *kw = calloc(1, sizeof(struct fsqlf_kw_conf));
-
-    // Adjustment necessary for single line comments,
-    // for keeping indentation and new lines right.
-    int pos_last_char = length - 1;
-    if (txt[pos_last_char] == '\n') {
-        // 'Move' ending new line from 'txtdup' to 'kw'
-        txt[pos_last_char] = '\0';
-        kw->after.new_line = 1;
-    }
-
-    // Word-vs-operator check.
-    // Ensure that two adjacent words have spacing inbetween.
-    kw->is_word = !(length == 1 && !isalnum(txt[0]));
-    return kw;
-}
-
-
 static void print_output(
     FILE *fout,
     struct FSQLF_out_buffer *bout,
