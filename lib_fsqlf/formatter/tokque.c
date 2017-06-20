@@ -16,6 +16,28 @@ void FSQLF_tokque_init(struct FSQLF_queue *tq)
 }
 
 
+static void tokque_put_kw(
+    struct FSQLF_queue *tq,
+    int *currindent,
+    char *text,
+    size_t len,
+    struct fsqlf_kw_conf *kw0
+)
+{
+    // Note: de-allocation will be done based on token-class.
+    enum FSQLF_token_class tcls =
+        kw0 ? FSQLF_TOKEN_CLASS_KW : FSQLF_TOKEN_CLASS_TXT;
+    struct fsqlf_kw_conf *kw =
+        kw0 ? kw0 : FSQLF_derive_kw_from_text(text, len);
+
+    struct FSQLF_token *tok =
+        (struct FSQLF_token *) FSQLF_queue_alloc_back(tq);
+    *currindent += kw->before.global_indent_change;
+    FSQLF_set_token(tok, tcls, text, len, kw, (*currindent));
+    *currindent += kw->after.global_indent_change;
+}
+
+
 static int tokque_print_one(struct FSQLF_queue *tq, FILE *fout,
     struct FSQLF_out_buffer *bout)
 {
@@ -104,19 +126,7 @@ struct FSQLF_state_change FSQLF_tokque_putthrough(
 )
 {
     // Place on queue.
-    {
-        // Note: de-allocation will be done based on token-class.
-        enum FSQLF_token_class tcls =
-            kw0 ? FSQLF_TOKEN_CLASS_KW : FSQLF_TOKEN_CLASS_TXT;
-        struct fsqlf_kw_conf *kw =
-            kw0 ? kw0 : FSQLF_derive_kw_from_text(text, len);
-
-        struct FSQLF_token *tok =
-            (struct FSQLF_token *) FSQLF_queue_alloc_back(tq);
-        *currindent += kw->before.global_indent_change;
-        FSQLF_set_token(tok, tcls, text, len, kw, (*currindent));
-        *currindent += kw->after.global_indent_change;
-    }
+    tokque_put_kw(tq, currindent, text, len, kw0);
 
     // Retrieve from queue and print.
     tokque_print_one(tq, fout, bout);
