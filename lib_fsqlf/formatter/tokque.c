@@ -17,7 +17,7 @@ void FSQLF_tokque_init(struct FSQLF_queue *tq)
 }
 
 
-static struct fsqlf_kw_conf * derive_kw_from_text(char *txt, size_t length)
+static struct fsqlf_kw_conf * dummy_kw_for_txt(char *txt, size_t length)
 {
     struct fsqlf_kw_conf *kw = calloc(1, sizeof(struct fsqlf_kw_conf));
 
@@ -49,7 +49,7 @@ static void tokque_put_kw(
     enum FSQLF_token_class tcls =
         kw0 ? FSQLF_TOKEN_CLASS_KW : FSQLF_TOKEN_CLASS_TXT;
     struct fsqlf_kw_conf *kw =
-        kw0 ? kw0 : derive_kw_from_text(text, len);
+        kw0 ? kw0 : dummy_kw_for_txt(text, len);
 
     struct FSQLF_token *tok =
         (struct FSQLF_token *) FSQLF_queue_alloc_back(tq);
