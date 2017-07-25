@@ -10,7 +10,7 @@ CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 CXXFLAGS+=-Iinclude
 
 ifdef WIN
-	BLD=builds/windows
+	BLD=builds/make-win-x86-64
 	OS_TARGET=windows
 	EXEC_CLI=$(BLD)/fsqlf.exe
 	EXEC_GUI=$(BLD)/wx_fsqlf.exe
@@ -30,7 +30,7 @@ ifdef WIN
 	# Option "-mthreads" needs to be removed, so mingwm10.dll would not be needed
 	# (http://old.nabble.com/mingwm10.dll-ts8920679.html)
 else
-	BLD=builds/linux
+	BLD=builds/make-linux
 	OS_TARGET=linux
 	PREFIX=/usr/local
 	EXEC_CLI=$(BLD)/fsqlf
@@ -254,16 +254,20 @@ CMTLINUX64:=-DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchain-linux-x86-64-gcc.cmake
 CMTWIN32:=-DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchain-windows-x86-mingw.cmake
 
 cmake-linux-x86:
-	mkdir -p builds/linux-x86
-	cd builds/linux-x86 && cmake $(CMREL) $(CMTLINUX32) ../.. && make && make test
+	mkdir -p builds/cmake-linux-x86
+	cd builds/cmake-linux-x86 && cmake $(CMREL) $(CMTLINUX32) ../.. && make && make test
 
 cmake-linux-x86-64:
-	mkdir -p builds/linux-x86-64
-	cd builds/linux-x86-64 && cmake $(CMREL) $(CMTLINUX64) ../.. && make && make test
+	mkdir -p builds/cmake-linux-x86-64
+	cd builds/cmake-linux-x86-64 && cmake $(CMREL) $(CMTLINUX64) ../.. && make && make test
 
 cmake-win-x86:
-	mkdir -p builds/win-x86
-	cd builds/win-x86 && cmake $(CMREL) $(CMTWIN32) ../.. && make && make test
+	mkdir -p builds/cmake-win-x86
+	cd builds/cmake-win-x86 && cmake $(CMREL) $(CMTWIN32) ../.. && make && make test
+
+ninja-linux-x86:
+	mkdir -p builds/ninja-linux-x86
+	cd builds/ninja-linux-x86 && cmake $(CMREL) $(CMTLINUX32) -G Ninja ../.. && ninja
 
 
 
