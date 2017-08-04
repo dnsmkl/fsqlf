@@ -1,4 +1,5 @@
 #include <lib_fsqlf.h>
+#include "is_word.h"
 
 
 // Functions that operate on kw-map as a whole.
@@ -30,19 +31,22 @@ void fsqlf_kwmap_init(fsqlf_kwmap_t *kwmap)
     *kwmap = NULL;
     #define XMACRO(NAME, gib, nlb, tb, sb, gia, nla, ta, sa, TEXT) \
     do { \
+        size_t length = strlen(TEXT); \
         FSQLF_kw_create(kwmap, #NAME); \
         fsqlf_kw_get(*kwmap, #NAME)->before.global_indent_change = gib; \
-        fsqlf_kw_get(*kwmap, #NAME)->before.new_line    = nlb; \
-        fsqlf_kw_get(*kwmap, #NAME)->before.indent      = tb; \
-        fsqlf_kw_get(*kwmap, #NAME)->before.space       = sb; \
+        fsqlf_kw_get(*kwmap, #NAME)->before.new_line = nlb; \
+        fsqlf_kw_get(*kwmap, #NAME)->before.indent = tb; \
+        fsqlf_kw_get(*kwmap, #NAME)->before.space = sb; \
         fsqlf_kw_get(*kwmap, #NAME)->after.global_indent_change = gia; \
-        fsqlf_kw_get(*kwmap, #NAME)->after.new_line     = nla; \
-        fsqlf_kw_get(*kwmap, #NAME)->after.indent       = ta; \
-        fsqlf_kw_get(*kwmap, #NAME)->after.space        = sa; \
-        fsqlf_kw_get(*kwmap, #NAME)->print_original_text = FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT; \
-        fsqlf_kw_get(*kwmap, #NAME)->print_case         = FSQLF_KWCASE_UPPER; \
-        fsqlf_kw_get(*kwmap, #NAME)->text               = TEXT; \
-        fsqlf_kw_get(*kwmap, #NAME)->is_word            = 1;  \
+        fsqlf_kw_get(*kwmap, #NAME)->after.new_line = nla; \
+        fsqlf_kw_get(*kwmap, #NAME)->after.indent = ta; \
+        fsqlf_kw_get(*kwmap, #NAME)->after.space = sa; \
+        fsqlf_kw_get(*kwmap, #NAME)->print_original_text = \
+            FSQLF_KWSPELLING_USE_HARDCODED_DEFAULT; \
+        fsqlf_kw_get(*kwmap, #NAME)->print_case = FSQLF_KWCASE_UPPER; \
+        fsqlf_kw_get(*kwmap, #NAME)->text = TEXT; \
+        fsqlf_kw_get(*kwmap, #NAME)->is_word = \
+            FSQLF_is_word(TEXT, length); \
     } while (0);
     #include "kwmap_defaults.def"
     #undef XMACRO

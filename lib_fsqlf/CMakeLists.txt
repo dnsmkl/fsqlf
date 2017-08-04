@@ -17,6 +17,7 @@ set(libfsqlf_sources
     formatter/lex_wrapper.c
     formatter/print_keywords.c
     formatter/tokque.c
+    kw/is_word.c
     kw/kw.c
     kw/kwmap.c
     lex/token.c)

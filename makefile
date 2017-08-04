@@ -81,6 +81,7 @@ LCOBJ += $(BLD)/lib_fsqlf/formatter/print_keywords.o
 LCOBJ += $(BLD)/lib_fsqlf/formatter/tokque.o
 LCOBJ += $(BLD)/lib_fsqlf/kw/kw.o
 LCOBJ += $(BLD)/lib_fsqlf/kw/kwmap.o
+LCOBJ += $(BLD)/lib_fsqlf/kw/is_word.o
 LCOBJ += $(BLD)/lib_fsqlf/lex/token.o
 LCOBJ += $(BLD)/utils/queue/queue.o
 LCOBJ += $(BLD)/utils/stack/stack.o

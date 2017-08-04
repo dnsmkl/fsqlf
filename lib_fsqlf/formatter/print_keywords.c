@@ -71,7 +71,6 @@ static struct fsqlf_spacing calculate_spacing_pure(
             , beforespacing_of_current.space
             , beforespacing_of_current.new_line || beforespacing_of_current.indent);
 
-
     // adjacent words MUST have some spacing
     if (!r.new_line && !r.indent && !r.space &&
         isword_of_prev && isword_of_current) {

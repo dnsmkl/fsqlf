@@ -1,6 +1,7 @@
 #include <stdio.h> // fprintf, fputs
 #include <assert.h> // assert
 #include <ctype.h> // isalnum
+#include "../kw/is_word.h"
 #include "../lex/token.h" // struct FSQLF_token, FSQLF_clear_token, FSQLF_set_token
 #include "print_keywords.h" // FSQLF_print
 #include "tokque.h"
@@ -32,7 +33,7 @@ static struct fsqlf_kw_conf * dummy_kw_for_txt(char *txt, size_t length)
 
     // Word-vs-operator check.
     // Ensure that two adjacent words have spacing inbetween.
-    kw->is_word = !(length == 1 && !isalnum(txt[0]));
+    kw->is_word = FSQLF_is_word(txt, length);
     return kw;
 }
 
